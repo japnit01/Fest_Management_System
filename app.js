@@ -23,7 +23,11 @@ let festSchema = new mongoose.Schema({
 let userSchema = new mongoose.Schema({
     email:String,
     password:String,
-    username:String
+    username:String, 
+    age: Number, 
+    college: String,
+    scheduler: Array,
+    registration: Array
 });
 
 let fests = mongoose.model("fests",festSchema);
@@ -105,7 +109,7 @@ app.post("/login",async function(req,res){
 
 app.post("/logout",(req,res)=>{
            console.log("session ended");
-           req.session.user_id=null;
+       req.session.user_id=null;
            req.session.destroy();
 
 });
@@ -135,6 +139,16 @@ app.post("/newfest",function(req,res){
      });
      res.redirect("cordhome");
 });
+
+app.get("/cordhome/:fest",(req,res)=>{
+      const {fest}= req.params;
+      res.render("festpage",{fest:fest})    
+});
+
+app.post("/cordhome/:fest",(req,res)=>{
+      res.send("hogaya");
+});
+
 
 app.get("/visitorhome",function(req,res){
     res.render("visitorhome");
