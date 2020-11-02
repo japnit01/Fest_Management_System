@@ -3,135 +3,145 @@ let express = require("express"),
     bodyParser = require("body-parser"),
     nodemon = require("nodemon"),
     bcrypt = require("bcrypt"),
+    session = require("express-session"),
     app = express();
-
-app.set("view engine","ejs");
-app.use(bodyParser.urlencoded({extended:true}));
-mongoose.connect("mongodb://localhost/festdb",{useNewUrlParser: true,useUnifiedTopology:true});
 
 const port = 80;
 
-// Flow of Project (yet to be checked by "JAPNIT PRABHU"🙇‍♂️🙇‍♂️🙇‍♂️)
-// 1. Fest Coordinator LOGIN/SIGNUP
-// 2. Events upload by Coordinator
-// 3. Events scheduler (rules etc.)
-// 4. LOGIN/SIGNUP by Visitors
-// 5. Events Registration by Visitors.
+app.set("view engine","ejs");
+app.use(bodyParser.urlencoded({extended:true}));
+app.use(session({secret:"yes its secret"}));
 
-let festvisitorsSchema = new mongoose.Schema({
-    name: String,
-    email: String,
-    phonevisit: Number, 
-    age: Number, 
-    collegevisit: String,
-    scheduler: String,
-    registration: String //dekh lio registration no hai ya kuch aur
-});
-
-let festcordSchema = new mongoose.Schema({
-    collegecord: String,
-    name: String,
-    phonecord: Number,
-    email: String,
-    dept: String
-});
-
-let competitionsSchema = new mongoose.Schema({
-    type: String,
-    name: String,
-    imageUpload: String, // may be an image url
-    descr: String,
-    dateTiming: Date,
-    venue: String,
-    candidates: Number, //number of candidates
-    voting: Boolean,
-    Mobile: Number
-});
+mongoose.connect("mongodb://localhost/festdb",{useNewUrlParser: true,useUnifiedTopology:true});
 
 let festSchema = new mongoose.Schema({
-    collegeName: String,
-    festVisitors: [festvisitorsSchema],
-    festCord: [festcordSchema],
-    compete: [competitionsSchema]
+   college:String,
+   festname:String,
+   type:String
 });
 
-let allCollections = new Map();
+let userSchema = new mongoose.Schema({
+    email:String,
+    password:String,
+    username:String
+});
 
-function createNewCollection(NameOfCollection) {
-    let newfest = mongoose.model(NameOfCollection,festSchema);
-    allCollections[NameOfCollection] = newfest; //can be changed
-}
+let fests = mongoose.model("fests",festSchema);
+let users = mongoose.model("users",userSchema); 
 
-let details,logindetails;
+const requireLogin = (req,res,next)=>{
+    if(!req.session.user_id)
+    {
+        return res.redirect("/login");
+    }
+    next();
+};
 
-app.get("/",(req,res)=> {
+// users.create({
+//     email:"japnit2012@gmail.com",
+//     password:"kaamkar",
+//     username:"jap_01"
+//     },(err,fest)=>{
+//        if(err)
+//           console.log(err);
+//        else
+//           console.log(fest);   
+//     });
+
+
+
+// fests.create({
+//     college:"Dtu",
+//     festname:"Engifest",
+//     type:"Cultural"
+//     },(err,fest)=>{
+//        if(err)
+//           console.log(err);
+//        else
+//           console.log(fest);   
+//     });
+
+app.get("/",function(req,res){
     res.render("home");
 });
 
-// THE BELOW CODE WILL COME UNDER COORDINATOR CODE
-// createNewCollection("MJKPS");
-// console.log(allCollections)
-// let details = {
-//             collegeName: "MJKPS",
-//             festCord: {
-//                 name: "Japnit",
-//                 phonecord: 123
-//             }
-//         }
-// allCollections[allCollections.length-1].create(details,(err,record)=> {
-//     if(err)
-//         console.log(err);
-//     else    
-//         console.log(record);
-// })
-
-app.get("/competitions",(req,res)=> {
-    res.render("competitions");
+app.get("/signup",function(req,res){
+    res.render("Sign_up")
 });
 
-app.post("/competitions",(req,res)=> {
-    let collegename = collegename,
-        type = req.body.type,
-        name = req.body.name,
-        imageupload = req.body.imageupload,
-        descr = req.body.description,
-        datetiming = req.body.datetime,
-        venue = req.body.venue,
-        candidates = req.body.candidates,
-        voting,
-        mobile = req.body.mobile;
+app.post("/signup",async function(req,res){
+      const {email,password,username} = req.body;
+      const hash = await bcrypt.hash(password,12)
+      const userdetails = new users({
+          email,
+          password:hash,
+          username
+      });
+      req.session.user_id = userdetails._id;
+      await userdetails.save()
+      console.log("Account Created");
+      res.redirect("/");
+});
 
-    if(req.body.voting == "Yes")
-        voting = true;
-    else    
-        voting = false;
-    
-    details = {
-        type: type,
-        name: name,
-        imageUpload: imageupload,
-        descr: descr,
-        dateTiming: datetiming,
-        venue: venue,
-        candidates: candidates,
-        voting: voting,
-        Mobile: mobile
-    };
-    
-    // add new competition to competitions field in a particular college
-    // logindetails are the login details obtained during login by the fest coordinator
-    allCollections[logindetails.collegecord]["compete"].create(details,(err,record)=> {
+app.get("/login",(req,res)=>{
+    res.render("login");
+});
+
+app.post("/login",async function(req,res){
+    const {email,password} = req.body;
+    const user = await users.findOne({email:email});
+    const valid = await bcrypt.compare(password,user.password);
+    if(valid)
+    {
+        req.session.user_id = user._id;
+        console.log("Succesfull Login");
+        res.redirect("/")
+    }
+    else{
+        console.log("Try Again")
+        res.redirect("/login")
+    }
+});
+
+app.post("/logout",(req,res)=>{
+           console.log("session ended");
+           req.session.user_id=null;
+           req.session.destroy();
+
+});
+
+app.get("/cordhome",requireLogin,(req,res)=>{
+    fests.find({},function(err,fests){
         if(err)
-        {
-            console.log(err);
-        }
+           console.log(err);
         else
-        {
-            console.log(record);
-        }
-    });
+           res.render("cordhome",{fests:fests});         
+        });
 });
+
+app.post("/newfest",function(req,res){
+     var college = req.body.collegename;
+     var festname = req.body.festname;
+     var type = req.body.type;
+     var details = {college:college,
+                    festname:festname,
+                    type:type};
+     
+     fests.create(details,(err,fest)=>{
+         if(err)
+           console.log(err);
+         else
+           console.log("Created new fest");  
+     });
+     res.redirect("cordhome");
+});
+
+app.get("/visitorhome",function(req,res){
+    res.render("visitorhome");
+});
+
 
 app.listen(port,()=>{
     console.log("app is listening");
 });
+

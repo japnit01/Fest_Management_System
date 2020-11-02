@@ -1,0 +1,17 @@
+<form action="/newfest" method="POST">
+    <input type="text" name="collegename">
+    <input type="text" name="festname">
+    <input type="text" name="type">
+    <button>add</button>
+</form>
+
+    
+         <%var i;%>
+         <%for(i=0;i<fests.length;i++){ %> 
+            <div> 
+                 <%=fests[i].festname%>
+                 <%=fests[i].college%>
+                 <%=fests[i].type%>
+            </div>
+         <%}%>
+    
