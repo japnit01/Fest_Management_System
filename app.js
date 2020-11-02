@@ -144,4 +144,3 @@ app.get("/visitorhome",function(req,res){
 app.listen(port,()=>{
     console.log("app is listening");
 });
-
