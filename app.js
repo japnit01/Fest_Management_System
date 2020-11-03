@@ -223,9 +223,27 @@ app.post("/cordhome/:fest",(req,res)=>{
             });
                       
 });   
+app.get("/Visitorhome",function(req,res){
+    fests.find({},(err,records)=> {
+        if(err)
+            console.log(err);
+        else
+            res.render("Visitorhome",{fests:records});
+    });
 
-app.get("/visitorhome",function(req,res){
-    res.render("visitorhome");
+});
+
+app.get("/Visitorhome/:fest",(req,res)=> {
+    const {festrecord} =  req.params;
+
+    fests.findOne({festname:festrecord},(err,record)=> {
+        if(err)
+            console.log(err);
+        else {
+            // console.log("Fest Record: " + record);
+            res.render("visitorfestpage",{fest:fest, fests:record});    
+        }
+    });
 });
 
 app.listen(port,()=>{
