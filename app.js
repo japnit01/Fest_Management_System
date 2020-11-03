@@ -1,5 +1,3 @@
-const e = require("express");
-
 let express = require("express"),
     mongoose = require("mongoose"),
     bodyParser = require("body-parser"),
@@ -50,11 +48,12 @@ let fests = mongoose.model("fests",festSchema);
 let users = mongoose.model("users",userSchema); 
 
 const requireLogin = (req,res,next)=>{
+    req.session.returnto = req.url;
     if(!req.session.user_id)
     {
         return res.redirect("/login");
     }
-    next();
+    next()
 };
 
 // users.create({
@@ -120,7 +119,8 @@ app.post("/login",async function(req,res){
     {
         req.session.user_id = user._id;
         console.log("Succesfull Login");
-        res.redirect("/")
+        const url = req.session.returnto;
+        res.redirect(url);
     }
     else{
         console.log("Try Again")
@@ -209,7 +209,7 @@ app.post("/cordhome/:fest",(req,res)=>{
             endtime:endtime,
             venue: venue,
             voting: voting,
-        };
+        };-
 
             fests.update({festname:fest},{$push:{competitions:[details]}}, (err,reco)=> {
                 if(err)
@@ -218,7 +218,7 @@ app.post("/cordhome/:fest",(req,res)=>{
                     console.log("Competition organized!!");
                     var url="/cordhome/"+fest;
                     console.log(url);
-                    res.redirect("/");
+                      res.redirect(url);
                     }
             });
                       
@@ -233,15 +233,37 @@ app.get("/Visitorhome",function(req,res){
 
 });
 
-app.get("/Visitorhome/:fest",(req,res)=> {
-    const {festrecord} =  req.params;
+app.get("/Visitorhome/:fest",requireLogin,(req,res)=> {
+    const {fest} =  req.params;
 
-    fests.findOne({festname:festrecord},(err,record)=> {
+    fests.findOne({festname:fest},(err,record)=> {
         if(err)
             console.log(err);
         else {
             // console.log("Fest Record: " + record);
             res.render("visitorfestpage",{fest:fest, fests:record});    
+        }
+    });
+});
+
+app.post("/Visitorhome/:fest/:compid",(req,res)=>{
+    const {fest} = req.params;
+    const {compid} = req.params;
+    fests.findOne({festname:fest},(err,record)=>{
+        if(err)
+           console.log(err);
+        else
+        { var i;
+            users.updateOne({_id:req.session.user_id},{$push:{scheduler:[compid]}},(err,record)=>{
+                    if(err)
+                    {
+                        console.log(err);
+                    }
+                    else{
+                        console.log("tera happy birthay aww",record.scheduler)
+                    }
+            });
+            
         }
     });
 });

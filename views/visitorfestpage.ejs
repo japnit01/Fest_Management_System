@@ -1,36 +1,32 @@
 <a href="/">Home</a>
 
 
-
-<% for(var i=0;i<fests.competitions.length; i++){ %> 
-    <div>
-        Type : <%=fests.competitions[i].type%>
-    </div>
+<% var i%>
+<% for(i=0;i<fests.competitions.length; i++){ %> 
     <div>
         Name : <%=fests.competitions[i].name%>
     </div>
     <div>
-        Uploaded Image : <%=fests.competitions[i].imageUpload%>
+        Uploaded Image :<%=fests.competitions[i].imageUpload%>
     </div>
     <div>
         Description : <%=fests.competitions[i].descr%>
     </div>
     <div>
-        Date : <%=fests.competitions[i].dateTiming%>
+        Date : <%=fests.competitions[i].date%>
     </div>
     <div>
-        Time : <%=fests.competitions[i].dateTiming.getTime()%>
+        Time : <%=fests.competitions[i].date%>
     </div>
     <div>
         Venue : <%=fests.competitions[i].venue%>
     </div>
-    <div>
-        Candidates : <%=fests.competitions[i].candidates%>
-    </div>
-    <div>
-        Voting : <%=fests.competitions[i].voting%>
-    </div>
-    <div>
-        Mobile : <%=fests.competitions[i].Mobile%>
-    </div>
+    <form action="/Visitorhome/<%=fest%>/<%= fests.competitions[i]._id%>" method="POST">
+       <%if(fests.competitions[i].type == "Competition"){%> 
+             <button>Register</button>
+         <%}%>    
+       <button>Scheduler</button>
+    </form>   
+    <hr>
 <% } %>
+
