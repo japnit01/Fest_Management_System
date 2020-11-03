@@ -1,1 +1,48 @@
+<%- include("partials/header") %>
 
+<form action="/cordhome/:fest" method="POST">
+    <div>
+        <label for="type">Type of Competition:</label>
+        <input type="text" name="type" required>
+    </div>
+    <div>
+        <label for="name">Name of Competition:</label>
+        <input type="text" name="name">
+    </div>
+    <div>
+        <!-- to be included using "formidable" package -->
+        <label for="imageupload">Upload image:</label>
+        <input type="text" name="imageupload" required> 
+    </div>
+    <div>
+        <label for="description">Description of Competition:</label>
+        <textarea name="description" required>
+    </div>
+    <div>
+        <label for="datetime">Date and Timing</label>
+        <input type="date" name="datetime" required>
+    </div>
+    <div>
+        <label for="venue">Venue for Competition:</label>
+        <input type="text" name="venue" required>
+    </div>
+    <div>
+        <label for="candidates">Number of Candidates participating:</label>
+        <input type="number" name="candidates" required>
+    </div>
+    <div>
+        <label for="voting" >Will there be any voting?</label>
+        <select name="voting" required>
+            <option value="select" selected>Select</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+    </div>
+    <div>
+        <label for="mobile">Phone No.:</label>
+    </div>
+</form>
+
+
+
+<%- include("partials/footer") %>

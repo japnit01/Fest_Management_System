@@ -14,10 +14,23 @@ app.use(session({secret:"yes its secret"}));
 
 mongoose.connect("mongodb://localhost/festdb",{useNewUrlParser: true,useUnifiedTopology:true});
 
+let competitionsSchema = new mongoose.Schema({
+    type: String,
+    name: String,
+    imageUpload: String, // may be an image url
+    descr: String,
+    dateTiming: Date,
+    venue: String,
+    candidates: Number, //number of candidates
+    voting: Boolean,
+    Mobile: Number
+});
+
 let festSchema = new mongoose.Schema({
    college:String,
    festname:String,
-   type:String
+   type:String,
+   competitions: [competitionsSchema]
 });
 
 let userSchema = new mongoose.Schema({
@@ -103,14 +116,15 @@ app.post("/login",async function(req,res){
     }
     else{
         console.log("Try Again")
-        res.redirect("/login")
+        res.redirect("/login");
     }
 });
 
 app.post("/logout",(req,res)=>{
            console.log("session ended");
-       req.session.user_id=null;
+        req.session.user_id=null;
            req.session.destroy();
+           res.redirect("/");
 
 });
 
@@ -123,11 +137,12 @@ app.get("/cordhome",requireLogin,(req,res)=>{
         });
 });
 
+let details;
 app.post("/newfest",function(req,res){
      var college = req.body.collegename;
      var festname = req.body.festname;
      var type = req.body.type;
-     var details = {college:college,
+     details = {college:college,
                     festname:festname,
                     type:type};
      
@@ -142,18 +157,61 @@ app.post("/newfest",function(req,res){
 
 app.get("/cordhome/:fest",(req,res)=>{
       const {fest}= req.params;
-      res.render("festpage",{fest:fest})    
+      fests.findOne({festname:fest},(err,record)=> {
+        if(err)
+            console.log(err);
+        else {
+            console.log("Fest Record: " + record);
+            res.render("festpage",{fest:fest, fests:record});    
+        }
+    });
+      
 });
 
 app.post("/cordhome/:fest",(req,res)=>{
-      res.send("hogaya");
-});
+    const {fest} = req.params;
+    let type = req.body.type,
+        name = req.body.name,
+        imageupload = req.body.imageupload,
+        descr = req.body.description,
+        datetiming = req.body.datetime,
+        venue = req.body.venue,
+        candidates = req.body.candidates,
+        voting,
+        mobile = req.body.mobile;
 
+
+        if(req.body.voting == "Yes")
+                voting = true;
+            else    
+                voting = false;
+        
+        let details = {
+            type: type,
+            name: name,
+            imageUpload: imageupload,
+            descr: descr,
+            dateTiming: datetiming,
+            venue: venue,
+            candidates: candidates,
+            voting: voting,
+            Mobile: mobile
+        };
+
+            fests.update({festname:fest},{$push:{competitions:[details]}}, (err,reco)=> {
+                if(err)
+                    console.log(err);
+                else {
+                    console.log("Competition organized!!\n"+reco);
+                    res.render("festpage",{fest:fest, fests:reco});
+                    // res.redirect("/cordhome/:fest");
+                }
+            });
+});   
 
 app.get("/visitorhome",function(req,res){
     res.render("visitorhome");
 });
-
 
 app.listen(port,()=>{
     console.log("app is listening");

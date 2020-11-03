@@ -1,4 +1,3 @@
-
 <form action="/cordhome/<%=fest%>" method="POST">
         <div>
             <label for="type">Type of Competition:</label>
@@ -11,11 +10,11 @@
         <div>
             <!-- to be included using "formidable" package -->
             <label for="imageupload">Upload image:</label>
-            <input type="text" name="imageupload" required> 
+            <input type="text" name="imageupload" > 
         </div>
         <div>
             <label for="description">Description of Competition:</label>
-            <textarea name="description" required>
+            <textarea name="description" required></textarea>
         </div>
         <div>
             <label for="datetime">Date and Timing</label>
@@ -38,6 +37,52 @@
             </select>
         </div>
         <div>
-            <label for="mobile">Phone No.:</label>
+            <label for="mobile">Mobile No.:</label>
+            <input type="number" required>
         </div>    
+        <div>
+            <button>Organize!!</button>
+        </div>
+        <!-- type: String,
+        name: String,
+        imageUpload: String, // may be an image url
+        descr: String,
+        dateTiming: Date,
+        venue: String,
+        candidates: Number, //number of candidates
+        voting: Boolean,
+        Mobile: Number -->
+        <% for(var i=0;i<fests["competitions"].length; i++){ %> 
+            <div>
+                Type : <%=fests.competitions[i].type%>
+            </div>
+            <div>
+                Name : <%=fests.competitions[i].name%>
+            </div>
+            <div>
+                Uploaded Image : <%=fests.competitions[i].imageUpload%>
+            </div>
+            <div>
+                Description : <%=fests.competitions[i].descr%>
+            </div>
+            <div>
+                Date : <%=fests.competitions[i].dateTiming%>
+            </div>
+            <div>
+                Time : <%=fests.competitions[i].dateTiming.getTime()%>
+            </div>
+            <div>
+                Venue : <%=fests.competitions[i].venue%>
+            </div>
+            <div>
+                Candidates : <%=fests.competitions[i].candidates%>
+            </div>
+            <div>
+                Voting : <%=fests.competitions[i].voting%>
+            </div>
+            <div>
+                Mobile : <%=fests.competitions[i].Mobile%>
+            </div>
+        <% } %>
+       
 </form>
