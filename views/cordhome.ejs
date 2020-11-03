@@ -2,17 +2,26 @@
     <input type="text" name="collegename">
     <input type="text" name="festname">
     <input type="text" name="type">
+    <input type="date" name="from">
+    <input type="date" name="to">
     <button>add</button>
 </form>
 
     
          <%var i;%>
+         <%var months = [
+         'Jan', 'Feb', 'Mar', 'Apr', 'May',
+         'Jun', 'Jul', 'Aug', 'Sep',
+         'Oct', 'Nov', 'Dec'
+         ];%>
          <%for(i=0;i<fests.length;i++){ %> 
             <div>
                 <a href="/cordhome/<%= fests[i].festname %>" >
                  <%=fests[i].festname%>
                  <%=fests[i].college%>
                  <%=fests[i].type%>
+                 <%=fests[i].from.getDate() + '-' + months[fests[i].from.getMonth()] + '-' + fests[i].from.getFullYear()%>
+                 <%=fests[i].to.getDate() + '-' + months[fests[i].to.getMonth()] + '-' + fests[i].to.getFullYear()%>
                 </a>
             </div>
          <%}%>

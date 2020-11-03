@@ -1,3 +1,5 @@
+const e = require("express");
+
 let express = require("express"),
     mongoose = require("mongoose"),
     bodyParser = require("body-parser"),
@@ -19,17 +21,18 @@ let competitionsSchema = new mongoose.Schema({
     name: String,
     imageUpload: String, // may be an image url
     descr: String,
-    dateTiming: Date,
+    date: Date,
     venue: String,
-    candidates: Number, //number of candidates
+    candidates:Array, //number of candidates
     voting: Boolean,
-    Mobile: Number
 });
 
 let festSchema = new mongoose.Schema({
    college:String,
    festname:String,
    type:String,
+   from:Date,
+   to:Date,
    competitions: [competitionsSchema]
 });
 
@@ -107,6 +110,11 @@ app.get("/login",(req,res)=>{
 app.post("/login",async function(req,res){
     const {email,password} = req.body;
     const user = await users.findOne({email:email});
+    if(!user)
+    {
+        console.log("Username not registered");
+        res.redirect("/signup");
+    }
     const valid = await bcrypt.compare(password,user.password);
     if(valid)
     {
@@ -142,9 +150,14 @@ app.post("/newfest",function(req,res){
      var college = req.body.collegename;
      var festname = req.body.festname;
      var type = req.body.type;
+     var from = req.body.from;
+     var to = req.body.to;
      details = {college:college,
-                    festname:festname,
-                    type:type};
+                festname:festname,
+                type:type,
+                from:from,
+                to:to
+               };
      
      fests.create(details,(err,fest)=>{
          if(err)
@@ -152,7 +165,7 @@ app.post("/newfest",function(req,res){
          else
            console.log("Created new fest");  
      });
-     res.redirect("cordhome");
+     res.redirect("/cordhome");
 });
 
 app.get("/cordhome/:fest",(req,res)=>{
@@ -161,8 +174,7 @@ app.get("/cordhome/:fest",(req,res)=>{
         if(err)
             console.log(err);
         else {
-            console.log("Fest Record: " + record);
-            res.render("festpage",{fest:fest, fests:record});    
+           res.render("festpage",{fest:fest, fests:record});    
         }
     });
       
@@ -174,39 +186,42 @@ app.post("/cordhome/:fest",(req,res)=>{
         name = req.body.name,
         imageupload = req.body.imageupload,
         descr = req.body.description,
-        datetiming = req.body.datetime,
+        date = req.body.date,
+        starttime = req.body.starttime,
+        endtime = req.body.endtime,
         venue = req.body.venue,
-        candidates = req.body.candidates,
-        voting,
-        mobile = req.body.mobile;
-
-
-        if(req.body.voting == "Yes")
-                voting = true;
-            else    
-                voting = false;
-        
+        voting = req.body.voting;
+        if(voting=="YES")
+        {
+            voting=true;
+        }
+        else
+        {
+            voting=false;
+        }
         let details = {
             type: type,
             name: name,
             imageUpload: imageupload,
             descr: descr,
-            dateTiming: datetiming,
+            date: date,
+            starttime:starttime,
+            endtime:endtime,
             venue: venue,
-            candidates: candidates,
             voting: voting,
-            Mobile: mobile
         };
 
             fests.update({festname:fest},{$push:{competitions:[details]}}, (err,reco)=> {
                 if(err)
                     console.log(err);
                 else {
-                    console.log("Competition organized!!\n"+reco);
-                    res.render("festpage",{fest:fest, fests:reco});
-                    // res.redirect("/cordhome/:fest");
-                }
+                    console.log("Competition organized!!");
+                    var url="/cordhome/"+fest;
+                    console.log(url);
+                    res.redirect("/");
+                    }
             });
+                      
 });   
 
 app.get("/visitorhome",function(req,res){

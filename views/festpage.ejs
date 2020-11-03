@@ -17,32 +17,30 @@
             <textarea name="description" required></textarea>
         </div>
         <div>
-            <label for="datetime">Date and Timing</label>
-            <input type="date" name="datetime" required>
+            <label for="Date">Date</label>
+            <input type="date" name="date" required>
+        </div>
+        <div>
+            <label for="starttime">From</label>
+            <input type="time" name="starttime" required>
+            <label for="endtime">To</label>
+            <input type="time" name="endtime" required>
         </div>
         <div>
             <label for="venue">Venue for Competition:</label>
             <input type="text" name="venue" required>
         </div>
         <div>
-            <label for="candidates">Number of Candidates participating:</label>
-            <input type="number" name="candidates" required>
+            <p>Voting(will be there any voting)</p>
+            <input type="radio" id="yes" name="voting" value="yes">
+            <label for="yes">YES</label>
+            <input type="radio" id="no" name="voting" value="no">
+            <label for="no">NO</label>
         </div>
-        <div>
-            <label for="voting" >Will there be any voting?</label>
-            <select name="voting" required>
-                <option value="select" selected>Select</option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-            </select>
-        </div>
-        <div>
-            <label for="mobile">Mobile No.:</label>
-            <input type="number" required>
-        </div>    
         <div>
             <button>Organize!!</button>
         </div>
+</form>
         <!-- type: String,
         name: String,
         imageUpload: String, // may be an image url
@@ -50,12 +48,12 @@
         dateTiming: Date,
         venue: String,
         candidates: Number, //number of candidates
-        voting: Boolean,
-        Mobile: Number -->
-        <% for(var i=0;i<fests["competitions"].length; i++){ %> 
-            <div>
-                Type : <%=fests.competitions[i].type%>
-            </div>
+        voting: Boolean-->
+
+
+
+        <% var i%>
+        <% for(i=0;i<fests.competitions.length; i++){ %> 
             <div>
                 Name : <%=fests.competitions[i].name%>
             </div>
@@ -66,23 +64,13 @@
                 Description : <%=fests.competitions[i].descr%>
             </div>
             <div>
-                Date : <%=fests.competitions[i].dateTiming%>
+                Date : <%=fests.competitions[i].date%>
             </div>
             <div>
-                Time : <%=fests.competitions[i].dateTiming.getTime()%>
+                Time : <%=fests.competitions[i].date%>
             </div>
             <div>
                 Venue : <%=fests.competitions[i].venue%>
             </div>
-            <div>
-                Candidates : <%=fests.competitions[i].candidates%>
-            </div>
-            <div>
-                Voting : <%=fests.competitions[i].voting%>
-            </div>
-            <div>
-                Mobile : <%=fests.competitions[i].Mobile%>
-            </div>
         <% } %>
        
-</form>
