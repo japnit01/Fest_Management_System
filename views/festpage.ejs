@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <%- include("partials/header") %>
 
 <style>
@@ -97,6 +98,62 @@
     </div>
 
     <div class="displayform">
+=======
+<form action="/cordhome/<%=fest%>" method="POST">
+        <div>
+            <label for="type">Type of Competition:</label>
+            <input type="text" name="type" required>
+        </div>
+        <div>
+            <label for="name">Name of Competition:</label>
+            <input type="text" name="name">
+        </div>
+        <div>
+            <!-- to be included using "formidable" package -->
+            <label for="imageupload">Upload image:</label>
+            <input type="text" name="imageupload" > 
+        </div>
+        <div>
+            <label for="description">Description of Competition:</label>
+            <textarea name="description" required></textarea>
+        </div>
+        <div>
+            <label for="Date">Date</label>
+            <input type="date" name="date" required>
+        </div>
+        <div>
+            <label for="starttime">From</label>
+            <input type="time" name="starttime" required>
+            <label for="endtime">To</label>
+            <input type="time" name="endtime" required>
+        </div>
+        <div>
+            <label for="venue">Venue for Competition:</label>
+            <input type="text" name="venue" required>
+        </div>
+        <div>
+            <p>Voting(will be there any voting)</p>
+            <input type="radio" id="yes" name="voting" value="yes">
+            <label for="yes">YES</label>
+            <input type="radio" id="no" name="voting" value="no">
+            <label for="no">NO</label>
+        </div>
+        <div>
+            <button>Organize!!</button>
+        </div>
+</form>
+        <!-- type: String,
+        name: String,
+        imageUpload: String, // may be an image url
+        descr: String,
+        dateTiming: Date,
+        venue: String,
+        candidates: Number, //number of candidates
+        voting: Boolean-->
+
+
+
+>>>>>>> d9354a1d2379ceb3e1a9beb5b6a22b6706c00cc8
         <% var i%>
         <% for(i=0;i<fests.competitions.length; i++){ %> 
             <div>
@@ -109,6 +166,7 @@
                 Description : <%=fests.competitions[i].descr%>
             </div>
             <div>
+<<<<<<< HEAD
                 <% let suffix;
                 switch((fests.competitions[i].date.getDate())%10) {
                     case 1: suffix = "st";
@@ -142,6 +200,7 @@
             <div>
                 Venue : <%=fests.competitions[i].venue%>
             </div>
+
             <div>
                 Candidates : <%=fests.competitions[i].candidates%>
             </div>
@@ -154,3 +213,8 @@
 </div>
 
 <%- include("partials/footer") %>
+=======
+            <hr>
+        <% } %>
+       
+>>>>>>> d9354a1d2379ceb3e1a9beb5b6a22b6706c00cc8

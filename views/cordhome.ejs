@@ -1,7 +1,19 @@
+<<<<<<< HEAD
 <%- include("partials/header") %>
+=======
+<form action="/newfest" method="POST">
+    <input type="text" name="collegename">
+    <input type="text" name="festname">
+    <input type="text" name="type">
+    <input type="date" name="from">
+    <input type="date" name="to">
+    <button>add</button>
+</form>
+>>>>>>> d9354a1d2379ceb3e1a9beb5b6a22b6706c00cc8
 
 <style>
     
+<<<<<<< HEAD
     tr {
         margin: 10px auto;
         background-color: lightpink;
@@ -22,6 +34,25 @@
         border: 2px solid black;
         background-color: lightpink;
     }
+=======
+         <%var i;%>
+         <%var months = [
+         'Jan', 'Feb', 'Mar', 'Apr', 'May',
+         'Jun', 'Jul', 'Aug', 'Sep',
+         'Oct', 'Nov', 'Dec'
+         ];%>
+         <%for(i=0;i<fests.length;i++){ %> 
+            <div>
+                <a href="/cordhome/<%= fests[i].festname %>" >
+                 <%=fests[i].festname%>
+                 <%=fests[i].college%>
+                 <%=fests[i].type%>
+                 <%=fests[i].from.getDate() + '-' + months[fests[i].from.getMonth()] + '-' + fests[i].from.getFullYear()%>
+                 <%=fests[i].to.getDate() + '-' + months[fests[i].to.getMonth()] + '-' + fests[i].to.getFullYear()%>
+                </a>
+            </div>
+         <%}%>
+>>>>>>> d9354a1d2379ceb3e1a9beb5b6a22b6706c00cc8
     
 </style>
 

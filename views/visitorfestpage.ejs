@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <%- include("partials/header") %>
 
 
@@ -60,3 +61,37 @@
 </div>
 
 <%- include("partials/footer") %>
+=======
+<a href="/">Home</a>
+
+
+<% var i%>
+<% for(i=0;i<fests.competitions.length; i++){ %> 
+    <div>
+        Name : <%=fests.competitions[i].name%>
+    </div>
+    <div>
+        Uploaded Image :<%=fests.competitions[i].imageUpload%>
+    </div>
+    <div>
+        Description : <%=fests.competitions[i].descr%>
+    </div>
+    <div>
+        Date : <%=fests.competitions[i].date%>
+    </div>
+    <div>
+        Time : <%=fests.competitions[i].date%>
+    </div>
+    <div>
+        Venue : <%=fests.competitions[i].venue%>
+    </div>
+    <form action="/Visitorhome/<%=fest%>/<%= fests.competitions[i]._id%>" method="POST">
+       <%if(fests.competitions[i].type == "Competition"){%> 
+             <button>Register</button>
+         <%}%>    
+       <button>Scheduler</button>
+    </form>   
+    <hr>
+<% } %>
+
+>>>>>>> d9354a1d2379ceb3e1a9beb5b6a22b6706c00cc8
