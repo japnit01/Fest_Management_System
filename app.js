@@ -209,7 +209,7 @@ app.post("/cordhome/:fest",(req,res)=>{
             endtime:endtime,
             venue: venue,
             voting: voting,
-        };-
+        };
 
             fests.update({festname:fest},{$push:{competitions:[details]}}, (err,reco)=> {
                 if(err)
@@ -223,6 +223,7 @@ app.post("/cordhome/:fest",(req,res)=>{
             });
                       
 });   
+
 app.get("/Visitorhome",function(req,res){
     fests.find({},(err,records)=> {
         if(err)
@@ -249,21 +250,69 @@ app.get("/Visitorhome/:fest",requireLogin,(req,res)=> {
 app.post("/Visitorhome/:fest/:compid",(req,res)=>{
     const {fest} = req.params;
     const {compid} = req.params;
-    fests.findOne({festname:fest},(err,record)=>{
+    var register = req.body.register; 
+    var schedule = req.body.schedule;
+    console.log(register,schedule);
+    fests.findOne({festname:fest},async (err,record)=>{
         if(err)
            console.log(err);
         else
         { var i;
-            users.updateOne({_id:req.session.user_id},{$push:{scheduler:[compid]}},(err,record)=>{
+           if(schedule == "schedule")
+           {
+              users.findOne({_id:req.session.user_id},async (err,record)=>{
+                 if(err)
+                 {
+                    console.log(err);
+                 }
+                 else{
+                    users.updateOne({_id:req.session.user_id},{$addToSet:{scheduler:[compid]}},(err,record)=>{
+                        if(err)
+                        {
+                            console.log(err);
+                        }
+                        else{
+                            console.log("record added");
+                        }
+                    });
+                  }  
+              });
+            }
+            else if(register=="register")
+            {   for(i=0;i<record.competitions.length;i++)
+                {   const comp = JSON.stringify(compid);
+                    const reccomp = JSON.stringify(record.competitions[i]._id)
+                    //console.log(comp,reccomp);
+                    let a = comp.localeCompare(reccomp);
+                    //console.log(a);
+                    if(a == 0)
+                    {
+                        record.competitions[i].candidates.push(req.session.user_id)
+                        record.save();
+                        console.log("registered")
+                    }
+                }
+                
+                users.findOne({_id:req.session.user_id},async (err,record)=>{
                     if(err)
                     {
-                        console.log(err);
+                       console.log(err);
                     }
                     else{
-                        console.log("tera happy birthay aww",record.scheduler)
-                    }
-            });
-            
+                       users.updateOne({_id:req.session.user_id},{$addToSet:{scheduler:[compid],registration:[compid]}},(err,record)=>{
+                           if(err)
+                           {
+                               console.log(err);
+                           }
+                           else{
+                               console.log("record added");
+                           }
+                       }); 
+                     }  
+                 });
+            }
+            var url = "/Visitorhome/"+fest;
+            res.redirect(url)
         }
     });
 });

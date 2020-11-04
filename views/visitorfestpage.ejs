@@ -23,9 +23,9 @@
     </div>
     <form action="/Visitorhome/<%=fest%>/<%= fests.competitions[i]._id%>" method="POST">
        <%if(fests.competitions[i].type == "Competition"){%> 
-             <button>Register</button>
-         <%}%>    
-       <button>Scheduler</button>
+             <button id="registerb" name="register" value="register">Register</button>
+        <%}%>  
+             <button id="scheduleb" name="schedule" value="schedule">Scheduler</button>
     </form>   
     <hr>
 <% } %>
