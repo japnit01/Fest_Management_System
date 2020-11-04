@@ -17,15 +17,13 @@ mongoose.connect("mongodb://localhost/festdb",{useNewUrlParser: true,useUnifiedT
 let competitionsSchema = new mongoose.Schema({
     type: String,
     name: String,
-    imageUpload: String, // may be an image url
+    imageUpload: String, 
     descr: String,
     date: Date,
-    time: Date,
+    starttime: Date,
     endtime: Date,
     venue: String,
-    candidates: Number, //number of candidates
-    venue: String,
-    candidates:Array, //number of candidates
+    candidates:Array, 
     voting: Boolean,
 });
 
@@ -154,7 +152,7 @@ app.get("/cordhome/:fest",(req,res)=>{
       if(err)
           console.log(err);
       else {
-         res.render("festpage",{fest:fest, fests:record});    
+         res.render("festpage",{fest:fest,fests:record});    
       }
   });
     
@@ -162,20 +160,27 @@ app.get("/cordhome/:fest",(req,res)=>{
 
 app.post("/cordhome/:fest",(req,res)=>{
     const {fest} = req.params;
-    let type = req.body.type,
+    let type = req.body.events,
         name = req.body.name,
         imageupload = req.body.imageupload,
         descr = req.body.description,
         date = req.body.date,
-        hours = req.body.hours,
-        minutes = req.body.minutes,
-        time,
+        shours = req.body.shours,
+        sminutes = req.body.sminutes,
+        ehours = req.body.ehours,
+        eminutes = req.body.eminutes,
+        starttime,
+        endtime,
         venue = req.body.venue,
         voting = req.body.voting;
 
-        time = new Date();
-        time.setHours(hours);
-        time.setMinutes(minutes);
+        starttime = new Date();
+        starttime.setHours(shours);
+        starttime.setMinutes(sminutes);
+
+        endtime = new Date();
+        endtime.setHours(ehours);
+        endtime.setMinutes(eminutes);
 
         if(voting=="YES")
         {
@@ -191,91 +196,23 @@ app.post("/cordhome/:fest",(req,res)=>{
             imageUpload: imageupload,
             descr: descr,
             date: date,
-            time : time,
+            starttime : starttime,
+            endtime:endtime,
             venue: venue,
             voting: voting,
         };
-        const {fest}= req.params;
-      fests.findOne({festname:fest},(err,record)=> {
-        if(err)
-            console.log(err);
-        else {
-           res.render("festpage",{fest:fest, fests:record});    
-        }
-    });
-        // const {fest}= req.params;
-        // fests.findOne({festname:fest},(err,record)=> {
-        //   if(err)
-        //       console.log(err);
-        //   else {
-        //      res.render("festpage",{fest:fest, fests:record});    
-        //   }
-
-            fests.update({festname:fest},{$push:{competitions:[details]}}, (err,reco)=> {
-                if(err)
-                    console.log(err);
-                else {
-                    console.log("Competition organized!!");
-                    var url="/cordhome/"+fest;
-                    console.log(url);
-                      res.redirect(url);
-                    }
-            });
-                      
-});
-
-app.post("/cordhome/:fest",(req,res)=>{
-    const {fest} = req.params;
-    let type = req.body.type,
-        name = req.body.name,
-        imageupload = req.body.imageupload,
-        descr = req.body.description,
-        date = req.body.date,
-        hours = req.body.hours,
-        minutes = req.body.minutes,
-        time,
-        venue = req.body.venue,
-        candidates = req.body.candidates,
-        voting;
-
-        time = new Date();
-        time.setHours(hours);
-        time.setMinutes(minutes);
-        time = req.body.starttime,
-        endtime = req.body.endtime,
-        venue = req.body.venue,
-        voting = req.body.voting;
-        if(voting=="YES")
-        {
-            voting=true;
-        }
-        else
-        {
-            voting=false;
-        }
-        let details = {
-            type: type,
-            name: name,
-            imageUpload: imageupload,
-            descr: descr,
-            date: date,
-            time: time,
-            venue: venue,
-            voting: voting,
-        };
-
+        
             fests.updateOne({festname:fest},{$push:{competitions:[details]}}, (err,reco)=> {
                 if(err)
                     console.log(err);
                 else {
                     console.log("Competition organized!!");
-                    var url="/cordhome/"+fest;
-                    console.log(url);
-                      res.redirect(url);
                     }
             });
-                      
-});   
+            var url="/cordhome/"+fest;
+            console.log(url);
+              res.redirect(url);          
+});
 
 app.get("/Visitorhome",function(req,res){
     fests.find({},(err,records)=> {
@@ -377,6 +314,18 @@ app.post("/Visitorhome/:fest/:compid",(req,res)=>{
             res.redirect(url)
         }
     });
+});
+
+app.get("/scheduler",requireLogin,(req,res)=>{
+    users.findOne({_id:req.session.user_id},(err,record)=>{
+        if(err)
+        {
+            console.log(err);
+        }
+        else
+            console.log(record.registration);
+    });
+     res.render("scheduler");
 });
 
 app.listen(port,()=>{

@@ -1,6 +1,4 @@
-<<<<<<< HEAD
-<%- include("partials/header") %>
-
+<button><a href="/">Home</a></button>
 <style>
     .container {
         width:45%;
@@ -40,8 +38,9 @@
             <div class="formentity">
                 <label for="type">Type of Competition:</label>
                 <select name="events" required>
-                    <option value="EVENT TYPE" selected>Event Type</option>
-                    <option value="competitions">Competitions</option>
+                    <option value="" disabled selected>Event type</option>
+                    <option value="competitionss">Competition-single</option>
+                    <option value="competitionsd">Competition-dual</option>
                     <option value="concerts">Concerts</option>
                 </select>
             </div>
@@ -52,7 +51,7 @@
             <div class="formentity">
                 <!-- to be included using "formidable" package -->
                 <label for="imageupload">Upload image:</label>
-                <input type="text" name="imageupload" required> 
+                <input type="text" name="imageupload"> 
             </div>
             <div class="formentity">
                 <label for="description">Description of Competition:</label>
@@ -63,13 +62,26 @@
                 <input type="date" name="date" required>
             </div>
             <div class="formentity">
-                <label for="time">Time:</label>
-                <select name="hours">
+                <label for="time">Start Time:</label>
+                <select name="shours">
                     <% for(var i=0;i<24;i++) { %> 
                         <option value="<%=i%>"><%if(i/10 < 1){%>0<%}%><%=i%> </option>
                     <%} %>
                 </select>
-                <select name="minutes">
+                <select name="sminutes">
+                    <% for(var i=0;i<60;i++) { %> 
+                        <option value="<%=i%>"><%if(i/10 < 1){%>0<%}%><%=i%></option>
+                    <%} %>
+                </select>
+            </div>
+            <div class="formentity">
+                <label for="time">End Time:</label>
+                <select name="ehours">
+                    <% for(var i=0;i<24;i++) { %> 
+                        <option value="<%=i%>"><%if(i/10 < 1){%>0<%}%><%=i%> </option>
+                    <%} %>
+                </select>
+                <select name="eminutes">
                     <% for(var i=0;i<60;i++) { %> 
                         <option value="<%=i%>"><%if(i/10 < 1){%>0<%}%><%=i%></option>
                     <%} %>
@@ -78,10 +90,6 @@
             <div class="formentity">
                 <label for="venue">Venue:</label>
                 <input type="text" name="venue" required>
-            </div>
-            <div class="formentity">
-                <label for="candidates">Number of Participants:</label>
-                <input type="number" name="candidates" required>
             </div>
             <div class="formentity">
                 <label for="voting" >Will there be any voting?</label>
@@ -94,127 +102,56 @@
             <div class="formentity">
                 <button>Organize!</button>
             </div>
-    </form>
-    </div>
-
-    <div class="displayform">
-=======
-<form action="/cordhome/<%=fest%>" method="POST">
-        <div>
-            <label for="type">Type of Competition:</label>
-            <input type="text" name="type" required>
-        </div>
-        <div>
-            <label for="name">Name of Competition:</label>
-            <input type="text" name="name">
-        </div>
-        <div>
-            <!-- to be included using "formidable" package -->
-            <label for="imageupload">Upload image:</label>
-            <input type="text" name="imageupload" > 
-        </div>
-        <div>
-            <label for="description">Description of Competition:</label>
-            <textarea name="description" required></textarea>
-        </div>
-        <div>
-            <label for="Date">Date</label>
-            <input type="date" name="date" required>
-        </div>
-        <div>
-            <label for="starttime">From</label>
-            <input type="time" name="starttime" required>
-            <label for="endtime">To</label>
-            <input type="time" name="endtime" required>
-        </div>
-        <div>
-            <label for="venue">Venue for Competition:</label>
-            <input type="text" name="venue" required>
-        </div>
-        <div>
-            <p>Voting(will be there any voting)</p>
-            <input type="radio" id="yes" name="voting" value="yes">
-            <label for="yes">YES</label>
-            <input type="radio" id="no" name="voting" value="no">
-            <label for="no">NO</label>
-        </div>
-        <div>
-            <button>Organize!!</button>
-        </div>
-</form>
-        <!-- type: String,
-        name: String,
-        imageUpload: String, // may be an image url
-        descr: String,
-        dateTiming: Date,
-        venue: String,
-        candidates: Number, //number of candidates
-        voting: Boolean-->
-
-
-
->>>>>>> d9354a1d2379ceb3e1a9beb5b6a22b6706c00cc8
-        <% var i%>
-        <% for(i=0;i<fests.competitions.length; i++){ %> 
-            <div>
-                Name : <%=fests.competitions[i].name%>
-            </div>
-            <div>
-                Uploaded Image : <%=fests.competitions[i].imageUpload%>
-            </div>
-            <div>
-                Description : <%=fests.competitions[i].descr%>
-            </div>
-            <div>
-<<<<<<< HEAD
-                <% let suffix;
-                switch((fests.competitions[i].date.getDate())%10) {
-                    case 1: suffix = "st";
-                            break;
-                    case 2: suffix = "nd";
-                            break;
-                    case 3: suffix = "rd";
-                            break;
-                    default: suffix = "th";
-                } %>
-                Date : <%=fests[i].date.getDate()%><%=suffix%> <%=months.get(fests.competitions[i].date.getMonth()+1)%> <%=fests.competitions[i].date.getFullYear()%>, <%=days.get(fests.competitions[i].date.getDay())%>
-            </div>
-            <div>
-                <% if(fests.competitions[i].time.getMinutes() != 0) { %> 
-                    <% if(fests.competitions[i].time.getHours() < 12) { %> 
-                        Time : <%=fests.competitions[i].time.getHours()%>:<%=fests.competitions[i].time.getMinutes()%> a.m.
-                    <%}
-                else  {%>
-                        Time : <%=fests.competitions[i].time.getHours()-12%>:<%=fests.competitions[i].time.getMinutes()%> p.m.
-                    <% } %>
-                <%}
-                else {%>
-                    <% if(fests.competitions[i].time.getHours() < 12) { %> 
-                        Time : <%=fests.competitions[i].time.getHours()%> a.m.
-                    <%} 
-                     else  {%>
-                        Time : <%=fests.competitions[i].time.getHours()-12%> p.m.
-                    <% } %>
-                <%}%>
-            </div>
-            <div>
-                Venue : <%=fests.competitions[i].venue%>
-            </div>
-
-            <div>
-                Candidates : <%=fests.competitions[i].candidates%>
-            </div>
-            <div>
-                Voting : <%=fests.competitions[i].voting%>
-            </div>
-            <hr>
-        <% } %>
+        </form>
     </div>
 </div>
 
-<%- include("partials/footer") %>
-=======
-            <hr>
-        <% } %>
+<% var i%>
+<% for(i=0;i<fests.competitions.length; i++){ %> 
+    <div>
+        Name : <%=fests.competitions[i].name%>
+    </div>
+    <div>
+        Uploaded Image : <%=fests.competitions[i].imageUpload%>
+    </div>
+    <div>
+        Description : <%=fests.competitions[i].descr%>
+    </div>
+    <div>
+
+        <% let suffix;
+        switch((fests.competitions[i].date.getDate())%10) {
+            case 1: suffix = "st";
+                    break;
+            case 2: suffix = "nd";
+                    break;
+            case 3: suffix = "rd";
+                    break;
+            default: suffix = "th";
+        } %>
+        Date : <%=fests.competitions[i].date.getDate()%><%=suffix%><%=months.get(fests.competitions[i].date.getMonth()+1)%> 
+        <%=fests.competitions[i].date.getFullYear()%>, 
+        <%=days.get(fests.competitions[i].date.getDay())%>
+
+    </div>
+    <div>
+        Venue : <%=fests.competitions[i].venue%>
+    </div>
+    <div>
+        Voting : <%=fests.competitions[i].voting%>
+    </div>
+    <div> 
+        Start Time : <%=fests.competitions[i].starttime.getHours()%>:<%=fests.competitions[i].starttime.getMinutes()%>
+        End Time : <%=fests.competitions[i].endtime.getHours()%>:<%=fests.competitions[i].endtime.getMinutes()%>
+    </div>
+    <hr>
+<% } %>
+</div>
+</div>
+
+
+
+
+
+
        
->>>>>>> d9354a1d2379ceb3e1a9beb5b6a22b6706c00cc8

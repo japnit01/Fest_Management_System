@@ -1,5 +1,3 @@
-<%- include("partials/header") %>
-
 <style>
     button {
         margin: 10px auto;
@@ -46,23 +44,3 @@
         </form>
     </div>
 </div>
-
-<script>
-    function checkpass() {
-        let create = document.querySelector("#create"),
-            confirm = document.querySelector("#confirm");
-        
-        if(create != confirm){
-            alert("Passwords do not match. Please try again!!");
-            return false;
-        }
-        else
-        {
-            alert("Sign up successful!!");
-            console.log("Sign up successful!!");
-            return true;
-        }
-    }
-</script>
-
-<%- include("partials/footer") %>
