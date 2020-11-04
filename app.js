@@ -19,10 +19,11 @@ let competitionsSchema = new mongoose.Schema({
     name: String,
     imageUpload: String, // may be an image url
     descr: String,
-    dateTiming: Date,
+    date: Date,
+    time: Date,
     venue: String,
     candidates: Number, //number of candidates
-    voting: Boolean,
+    voting: String,
     Mobile: Number
 });
 
@@ -156,16 +157,15 @@ app.post("/newfest",function(req,res){
 });
 
 app.get("/cordhome/:fest",(req,res)=>{
-      const {fest}= req.params;
-      fests.findOne({festname:fest},(err,record)=> {
-        if(err)
-            console.log(err);
-        else {
-            console.log("Fest Record: " + record);
-            res.render("festpage",{fest:fest, fests:record});    
-        }
-    });
-      
+    const {fest}= req.params;
+    fests.findOne({festname:fest},(err,record)=> {
+      if(err)
+          console.log(err);
+      else {
+         res.render("festpage",{fest:fest, fests:record});    
+      }
+  });
+    
 });
 
 app.post("/cordhome/:fest",(req,res)=>{
@@ -174,24 +174,77 @@ app.post("/cordhome/:fest",(req,res)=>{
         name = req.body.name,
         imageupload = req.body.imageupload,
         descr = req.body.description,
-        datetiming = req.body.datetime,
+        date = req.body.date,
+        hours = req.body.hours,
+        minutes = req.body.minutes,
+        time,
+        venue = req.body.venue,
+        voting = req.body.voting;
+        mobile = req.body.mobile;
+
+        time = new Date();
+        time.setHours(hours);
+        time.setMinutes(minutes);
+
+        if(voting=="YES")
+        {
+            voting=true;
+        }
+        else
+        {
+            voting=false;
+        }
+        let details = {
+            type: type,
+            name: name,
+            imageUpload: imageupload,
+            descr: descr,
+            date: date,
+            time : time,
+            venue: venue,
+            voting: voting,
+        };
+
+
+            fests.update({festname:fest},{$push:{competitions:[details]}}, (err,reco)=> {
+                if(err)
+                    console.log(err);
+                else {
+                    console.log("Competition organized!!");
+                    var url="/cordhome/"+fest;
+                    console.log(url);
+                      res.redirect(url);
+                    }
+            });
+                      
+});
+
+app.post("/cordhome/:fest",(req,res)=>{
+    const {fest} = req.params;
+    let type = req.body.type,
+        name = req.body.name,
+        imageupload = req.body.imageupload,
+        descr = req.body.description,
+        date = req.body.date,
+        hours = req.body.hours,
+        minutes = req.body.minutes,
+        time,
         venue = req.body.venue,
         candidates = req.body.candidates,
         voting,
         mobile = req.body.mobile;
 
-
-        if(req.body.voting == "Yes")
-                voting = true;
-            else    
-                voting = false;
+        time = new Date();
+        time.setHours(hours);
+        time.setMinutes(minutes);
         
         let details = {
             type: type,
             name: name,
             imageUpload: imageupload,
             descr: descr,
-            dateTiming: datetiming,
+            date: date,
+            time: time,
             venue: venue,
             candidates: candidates,
             voting: voting,
@@ -202,15 +255,35 @@ app.post("/cordhome/:fest",(req,res)=>{
                 if(err)
                     console.log(err);
                 else {
-                    console.log("Competition organized!!\n"+reco);
+                    // console.log("Competition organized!!\n"+reco);
+                    // competerecords = reco;
                     res.render("festpage",{fest:fest, fests:reco});
                     // res.redirect("/cordhome/:fest");
                 }
             });
 });   
 
-app.get("/visitorhome",function(req,res){
-    res.render("visitorhome");
+app.get("/Visitorhome",function(req,res){
+    fests.find({},(err,records)=> {
+        if(err)
+            console.log(err);
+        else
+            res.render("Visitorhome",{fests:records});
+    });
+
+});
+
+app.get("/Visitorhome/:fest",(req,res)=> {
+    const {festrecord} =  req.params;
+
+    fests.findOne({festname:festrecord},(err,record)=> {
+        if(err)
+            console.log(err);
+        else {
+            // console.log("Fest Record: " + record);
+            res.render("visitorfestpage",{fest:fest, fests:record});    
+        }
+    });
 });
 
 app.listen(port,()=>{

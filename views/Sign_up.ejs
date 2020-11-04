@@ -1,7 +1,68 @@
-<form action="/signup" method="POST">
-    <input type="text" name="email">
-    <input type="text" name="password">
-    <input type="text" name="Username">
-    <button>Sign Up</button>
-</form>
+<%- include("partials/header") %>
 
+<style>
+    button {
+        margin: 10px auto;
+    }
+    .container {
+        width: 45%;
+        border: 2px solid black;
+        padding-left: 60px;
+        padding-right: 60px;
+        padding-top: 30px;
+        padding-bottom: 30px;
+    }
+    h1 {
+        margin: 35px auto;
+    }
+</style>
+
+<div class="container">
+    <div>
+        <h1>SIGN UP PLEASE!</h1>
+    </div>
+
+    <div class="formcontent">
+        <form onsubmit="checkpass()" class="form-group" action="/signup" method="POST">
+            <div>
+                <label for="Username"><strong>Username :</strong></label>
+                <input class="formentity" type="text" name="Username" placeholder="Username">
+            </div>
+            <div>
+                <label for="email"><strong>Email ID :</strong></label>
+                <input class="formentity" type="email" name="email" placeholder="Email ID">
+            </div>
+            <div>
+                <label for="password"><strong>Create Password :</strong></label>
+                <input class="formentity" id="create" type="password" name="password" placeholder="Password">
+            </div>
+            <div>
+                <label for="confirmpassword"><strong>Confirm Password :</strong></label>
+                <input class="formentity" id="confirm" type="password" name="confirmpassword" placeholder="Confirm Password">
+            </div>
+            <div>
+                <button class="btn btn-large btn-danger">Sign Up!</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function checkpass() {
+        let create = document.querySelector("#create"),
+            confirm = document.querySelector("#confirm");
+        
+        if(create != confirm){
+            alert("Passwords do not match. Please try again!!");
+            return false;
+        }
+        else
+        {
+            alert("Sign up successful!!");
+            console.log("Sign up successful!!");
+            return true;
+        }
+    }
+</script>
+
+<%- include("partials/footer") %>

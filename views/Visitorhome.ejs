@@ -1,1 +1,19 @@
+<%- include("partials/header") %>
+
 <h1>Visitor Home Page</h1>
+
+<a href="/">Home</a>
+
+<%var i;%>
+         <%for(i=0;i<fests.length;i++){ %> 
+            <div>
+                <a href="/Visitorhome/<%= fests[i].festname %>" >
+                 <%=fests[i].festname%>
+                 <%=fests[i].college%>
+                 <%=fests[i].type%>
+                </a>
+            </div>
+         <%}%>
+
+
+<%- include("partials/header") %>

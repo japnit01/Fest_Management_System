@@ -1,8 +1,53 @@
-<form action="/login" method="POST">
-    <input type="text" name="email">
-    <input type="text" name="password">
-    <button>Login</button>
-</form>
+<%- include("partials/header") %>
 
-<a href="/signup">Create Account</a>
+<style>
+    button {
+        margin: 10px auto;
+    }
+    .container {
+        width: 45%;
+        border: 2px solid black;
+        padding-left: 60px;
+        padding-right: 60px;
+        padding-top: 30px;
+        padding-bottom: 30px;
+    }
+    h1 {
+        margin: 35px auto;
+    }
+    .signuplink {
+        margin: 20px auto;
+    }
+</style>
 
+
+<div class="container">
+    
+    <div class="formcontent">
+        <div>
+            <h1>LOGIN PLEASE!</h1>
+        </div>
+        <form action="/login" method="POST">
+            <div class = "formentity">
+                <label for="email">Email ID :</label>
+                <input type="email" name="email" placeholder="Email ID" required>
+            </div>
+            <div class = "formentity">
+                <label for="password">Password :</label>
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+            <div>
+                <button class="btn btn-primary btn-large">Login</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="signuplink">
+        <a href="/signup" id="createAcc">Create Account</a>
+    </div>
+
+</div>
+
+
+
+<%- include("partials/footer") %>
