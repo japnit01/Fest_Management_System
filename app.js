@@ -23,8 +23,7 @@ let competitionsSchema = new mongoose.Schema({
     time: Date,
     venue: String,
     candidates: Number, //number of candidates
-    voting: String,
-    Mobile: Number
+    voting: String
 });
 
 let festSchema = new mongoose.Schema({
@@ -54,30 +53,6 @@ const requireLogin = (req,res,next)=>{
     }
     next();
 };
-
-// users.create({
-//     email:"japnit2012@gmail.com",
-//     password:"kaamkar",
-//     username:"jap_01"
-//     },(err,fest)=>{
-//        if(err)
-//           console.log(err);
-//        else
-//           console.log(fest);   
-//     });
-
-
-
-// fests.create({
-//     college:"Dtu",
-//     festname:"Engifest",
-//     type:"Cultural"
-//     },(err,fest)=>{
-//        if(err)
-//           console.log(err);
-//        else
-//           console.log(fest);   
-//     });
 
 app.get("/",function(req,res){
     res.render("home");
@@ -180,7 +155,6 @@ app.post("/cordhome/:fest",(req,res)=>{
         time,
         venue = req.body.venue,
         voting = req.body.voting;
-        mobile = req.body.mobile;
 
         time = new Date();
         time.setHours(hours);
@@ -231,8 +205,7 @@ app.post("/cordhome/:fest",(req,res)=>{
         time,
         venue = req.body.venue,
         candidates = req.body.candidates,
-        voting,
-        mobile = req.body.mobile;
+        voting;
 
         time = new Date();
         time.setHours(hours);
@@ -248,10 +221,9 @@ app.post("/cordhome/:fest",(req,res)=>{
             venue: venue,
             candidates: candidates,
             voting: voting,
-            Mobile: mobile
         };
 
-            fests.update({festname:fest},{$push:{competitions:[details]}}, (err,reco)=> {
+            fests.updateOne({festname:fest},{$push:{competitions:[details]}}, (err,reco)=> {
                 if(err)
                     console.log(err);
                 else {

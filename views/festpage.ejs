@@ -65,12 +65,12 @@
                 <label for="time">Time:</label>
                 <select name="hours">
                     <% for(var i=0;i<24;i++) { %> 
-                        <option value="<%=i%>"><%if(i/10 == 0){%>0<%}%><%=i%> </option>
+                        <option value="<%=i%>"><%if(i/10 < 1){%>0<%}%><%=i%> </option>
                     <%} %>
                 </select>
                 <select name="minutes">
                     <% for(var i=0;i<60;i++) { %> 
-                        <option value="<%=i%>"><%if(i/10 == 0){%>0<%}%><%=i%></option>
+                        <option value="<%=i%>"><%if(i/10 < 1){%>0<%}%><%=i%></option>
                     <%} %>
                 </select>
             </div>
@@ -89,11 +89,7 @@
                     <option value="yes">Yes</option>
                     <option value="no">No</option>
                 </select>
-            </div>
-            <div class="formentity">
-                <label for="mobile">Mobile No.:</label>
-                <input type="number" required>
-            </div>    
+            </div>  
             <div class="formentity">
                 <button>Organize!</button>
             </div>
@@ -123,7 +119,7 @@
                             break;
                     default: suffix = "th";
                 } %>
-                Date : <%=fests.competitions[i].date.getDate()%><%=suffix%> <%=months.get(fests.competitions[i].date.getMonth()+1)%> <%=fests.competitions[i].date.getFullYear()%>, <%=days.get(fests.competitions[i].date.getDay())%>
+                Date : <%=fests[i].date.getDate()%><%=suffix%> <%=months.get(fests.competitions[i].date.getMonth()+1)%> <%=fests.competitions[i].date.getFullYear()%>, <%=days.get(fests.competitions[i].date.getDay())%>
             </div>
             <div>
                 <% if(fests.competitions[i].time.getMinutes() != 0) { %> 
@@ -151,9 +147,6 @@
             </div>
             <div>
                 Voting : <%=fests.competitions[i].voting%>
-            </div>
-            <div>
-                Mobile : <%=fests.competitions[i].Mobile%>
             </div>
             <hr>
         <% } %>

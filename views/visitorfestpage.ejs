@@ -1,40 +1,62 @@
 <%- include("partials/header") %>
 
-<a href="/">Home</a>
 
 
 
-<% for(var i=0;i<fests.competitions.length; i++){ %> 
-    <div>
-        Type : <%=fests.competitions[i].type%>
-    </div>
-    <div>
-        Name : <%=fests.competitions[i].name%>
-    </div>
-    <div>
-        Uploaded Image : <%=fests.competitions[i].imageUpload%>
-    </div>
-    <div>
-        Description : <%=fests.competitions[i].descr%>
-    </div>
-    <div>
-        Date : <%=fests.competitions[i].dateTiming%>
-    </div>
-    <div>
-        Time : <%=fests.competitions[i].dateTiming.getTime()%>
-    </div>
-    <div>
-        Venue : <%=fests.competitions[i].venue%>
-    </div>
-    <div>
-        Candidates : <%=fests.competitions[i].candidates%>
-    </div>
-    <div>
-        Voting : <%=fests.competitions[i].voting%>
-    </div>
-    <div>
-        Mobile : <%=fests.competitions[i].Mobile%>
-    </div>
-<% } %>
+<div class="container">
+    <% var i%>
+    <% for(i=0;i<fests.competitions.length; i++){ %> 
+        <div>
+            Name : <%=fests.competitions[i].name%>
+        </div>
+        <div>
+            Uploaded Image : <%=fests.competitions[i].imageUpload%>
+        </div>
+        <div>
+            Description : <%=fests.competitions[i].descr%>
+        </div>
+        <div>
+            <% let suffix;
+            switch((fests.competitions[i].date.getDate())%10) {
+                case 1: suffix = "st";
+                        break;
+                case 2: suffix = "nd";
+                        break;
+                case 3: suffix = "rd";
+                        break;
+                default: suffix = "th";competitions
+            } %>
+            Date : <%=fests.[i].date.getDate()%><%=suffix%> <%=months.get(fests.competitions[i].date.getMonth()+1)%> <%=fests.competitions[i].date.getFullYear()%>, <%=days.get(fests.competitions[i].date.getDay())%>
+        </div>
+        <div>
+            <% if(fests.competitions[i].time.getMinutes() != 0) { %> 
+                <% if(fests.competitions[i].time.getHours() < 12) { %> 
+                    Time : <%=fests.competitions[i].time.getHours()%>:<%=fests.competitions[i].time.getMinutes()%> a.m.
+                <%}
+            else  {%>
+                    Time : <%=fests.competitions[i].time.getHours()-12%>:<%=fests.competitions[i].time.getMinutes()%> p.m.
+                <% } %>
+            <%}
+            else {%>
+                <% if(fests.competitions[i].time.getHours() < 12) { %> 
+                    Time : <%=fests.competitions[i].time.getHours()%> a.m.
+                <%} 
+                 else  {%>
+                    Time : <%=fests.competitions[i].time.getHours()-12%> p.m.
+                <% } %>
+            <%}%>
+        </div>
+        <div>
+            Venue : <%=fests.competitions[i].venue%>
+        </div>
+        <div>
+            Candidates : <%=fests.competitions[i].candidates%>
+        </div>
+        <div>
+            Voting : <%=fests.competitions[i].voting%>
+        </div>
+        <hr>
+    <% } %>
+</div>
 
 <%- include("partials/footer") %>
