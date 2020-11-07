@@ -65,12 +65,13 @@
                 <label for="time">Start Time:</label>
                 <select name="shours">
                     <% for(var i=0;i<24;i++) { %> 
-                        <option value="<%=i%>"><%if(i/10 < 1){%>0<%}%><%=i%> </option>
+                        <option value="<%=i%>"><%if(i<10){%>0<%}%><%=i%> </option>
                     <%} %>
                 </select>
+                <span>:</span>
                 <select name="sminutes">
                     <% for(var i=0;i<60;i++) { %> 
-                        <option value="<%=i%>"><%if(i/10 < 1){%>0<%}%><%=i%></option>
+                        <option value="<%=i%>"><%if(i< 10){%>0<%}%><%=i%></option>
                     <%} %>
                 </select>
             </div>
@@ -81,6 +82,7 @@
                         <option value="<%=i%>"><%if(i/10 < 1){%>0<%}%><%=i%> </option>
                     <%} %>
                 </select>
+                <span>:</span>
                 <select name="eminutes">
                     <% for(var i=0;i<60;i++) { %> 
                         <option value="<%=i%>"><%if(i/10 < 1){%>0<%}%><%=i%></option>

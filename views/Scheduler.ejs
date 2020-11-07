@@ -1,1 +1,56 @@
 <h4>Scheduler</h4>
+
+<% let months = new Map();
+    months.set(1,"January");
+    months.set(2,"February");
+    months.set(3,"March");
+    months.set(4,"April");
+    months.set(5,"May");
+    months.set(6,"June");
+    months.set(7,"July");
+    months.set(8,"August");
+    months.set(9,"September");
+    months.set(10,"October");
+    months.set(11,"November");
+    months.set(12,"December"); %>
+
+<% let days = new Map();
+    days.set(1,"Monday");
+    days.set(2,"Tuesday");
+    days.set(3,"Wednesday");
+    days.set(4,"Thursday");
+    days.set(5,"Friday");
+    days.set(6,"Saturday");
+    days.set(7,"Sunday"); %>
+
+
+
+<%var i,j,id;%>
+  <% const it = N.keys();
+     for(i=0;i<N.size;i++){%>
+         <%const fid = it.next().value%>
+         <button><%=N.get(fid)%></button>
+          <%for(j=0;j<A.length;j++){ %> 
+               <%const compid = JSON.stringify(A[j][0])%>
+               <%const a = fid.localeCompare(compid)%>
+               <%if(a == 0){%>
+                    <%=A[j][3]%>
+                    <% let suffix;
+                    switch((A[j][4].getDate())%10) {
+                        case 1: suffix = "st";
+                                break;
+                        case 2: suffix = "nd";
+                                break;
+                        case 3: suffix = "rd";
+                                break;
+                        default: suffix = "th";
+                    } %>
+                    Date : <%=A[j][4].getDate()%><%=suffix%><%=months.get(A[j][4].getMonth()+1)%> 
+                    <%=A[j][4].getFullYear()%>, 
+                    <%=days.get(A[j][4].getDay())%>
+                    
+               <%}%>
+                            
+          <%}%>
+    <%}%>  
+     

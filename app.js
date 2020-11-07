@@ -173,7 +173,6 @@ app.post("/cordhome/:fest",(req,res)=>{
         endtime,
         venue = req.body.venue,
         voting = req.body.voting;
-
         starttime = new Date();
         starttime.setHours(shours);
         starttime.setMinutes(sminutes);
@@ -257,25 +256,18 @@ app.post("/Visitorhome/:fest/:compid",(req,res)=>{
            console.log(err);
         else
         { var i;
+          
            if(schedule == "schedule")
            {
-              users.findOne({_id:req.session.user_id},async (err,record)=>{
-                 if(err)
-                 {
-                    console.log(err);
-                 }
-                 else{
-                    users.updateOne({_id:req.session.user_id},{$addToSet:{scheduler:[compid]}},(err,record)=>{
-                        if(err)
-                        {
-                            console.log(err);
-                        }
-                        else{
-                            console.log("record added");
-                        }
-                    });
-                  }  
-              });
+                users.updateOne({_id:req.session.user_id},{$addToSet:{scheduler:[{compid:compid,festid:record._id}],registration:[compid]}},(err,record)=>{
+                    if(err)
+                    {
+                        console.log(err);
+                    }
+                    else{
+                         console.log("record added");
+                    }
+                });
             }
             else if(register=="register")
             {   for(i=0;i<record.competitions.length;i++)
@@ -292,13 +284,14 @@ app.post("/Visitorhome/:fest/:compid",(req,res)=>{
                     }
                 }
                 
-                users.findOne({_id:req.session.user_id},async (err,record)=>{
+                users.findOne({_id:req.session.user_id},async (err,user)=>{
                     if(err)
                     {
                        console.log(err);
                     }
                     else{
-                       users.updateOne({_id:req.session.user_id},{$addToSet:{scheduler:[compid],registration:[compid]}},(err,record)=>{
+                        
+                       users.updateOne({_id:req.session.user_id},{$addToSet:{scheduler:[{compid:compid,festid:record._id}],registration:[compid]}},(err,record)=>{
                            if(err)
                            {
                                console.log(err);
@@ -316,16 +309,105 @@ app.post("/Visitorhome/:fest/:compid",(req,res)=>{
     });
 });
 
-app.get("/scheduler",requireLogin,(req,res)=>{
-    users.findOne({_id:req.session.user_id},(err,record)=>{
+app.get("/scheduler",requireLogin,async(req,res)=>{
+    var A = [];
+    var D = [];
+    var N = [];
+    let festset = new Map() 
+    users.findOne({_id:req.session.user_id}, async (err,user)=>{
         if(err)
         {
             console.log(err);
         }
         else
-            console.log(record.registration);
+        {
+           var i,j; 
+           
+           //var p = [compid,date,starttime,endtime];
+           for(i=0;i<user.scheduler.length;i++)
+           { 
+             var X = [];  
+             const fest = await fests.findOne({_id:user.scheduler[i].festid}) 
+             fid = JSON.stringify(fest._id); 
+             if(festset.has(fid) == false)
+             {
+                 festset.set(fid,fest.festname);
+             }
+             const doc = fest.competitions.id(user.scheduler[i].compid);
+             D.push(doc);
+             X.push(fest._id)
+             X.push(doc._id);
+             var str = JSON.stringify(doc.date.getFullYear())+JSON.stringify(doc.date.getMonth())+JSON.stringify(doc.date.getDate());
+             if(doc.starttime.getHours()<10)
+             {
+                 str = str + '0' + JSON.stringify(doc.starttime.getHours())
+             }
+             else
+             {
+                 str = str + JSON.stringify(doc.starttime.getHours());
+             }
+
+             if(doc.starttime.getMinutes()<10)
+             {
+                str = str + '0' + JSON.stringify(doc.starttime.getMinutes());
+             }
+             else
+             {
+                str = str + JSON.stringify(doc.starttime.getMinutes()); 
+             }
+
+             if(doc.endtime.getHours()<10)
+             {
+                str = str + '0' + JSON.stringify(doc.endtime.getHours());
+             }
+             else
+             {
+                str = str + JSON.stringify(doc.endtime.getHours())
+             }
+
+             if(doc.endtime.getMinutes()<10)
+             {
+                str = str + '0' + JSON.stringify(doc.endtime.getMinutes());
+             }
+             else
+             {
+                str = str + JSON.stringify(doc.endtime.getMinutes());
+             }
+             X.push(parseInt(str));
+             X.push(doc.name);
+             X.push(doc.date)
+             X.push(doc.starttime);
+             X.push(doc.endtime);
+             X.push(doc.venue);
+                A.push(X);
+           }
+           
+            const n = A.length;
+            for(i=0;i<n-1;i++)
+            {
+               check=0;
+               index=i;
+               for(j=i+1;j<n;j++)
+               { 
+                  if(A[index][2]>A[j][2])
+                  {   
+                    check=1
+                    index = j;
+                  }
+                }
+                if(check==1)
+                {   
+                    temp = A[i];
+                    A[i]=A[index];
+                    A[index]=temp;
+                }             
+           }
+           console.log(A);
+        }
+        console.log(festset);
+        res.render("scheduler",{A:A,N:festset});    
     });
-     res.render("scheduler");
+     
 });
 
 app.listen(port,()=>{
