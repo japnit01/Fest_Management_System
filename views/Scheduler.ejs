@@ -1,4 +1,22 @@
+<%- include("partials/header") %>
+
 <h4>Scheduler</h4>
+
+<style>
+    .hidden{
+        display:none;
+    }
+    .show{
+        background-color: aliceblue;
+    }
+    .active{
+        color: royalblue;
+    }
+    .disabled{
+        pointer-events: none;
+        color :red;
+    }
+</style>
 
 <% let months = new Map();
     months.set(1,"January");
@@ -23,19 +41,25 @@
     days.set(6,"Saturday");
     days.set(7,"Sunday"); %>
 
+<%const it1 = N.keys()%>
+<%const s = N.size%>
+<%for(i=0;i<N.size;i++){%>
+    <button id="festb<%=i%>"><%=N.get(it1.next().value)%></button> 
+<%}%>    
 
 
 <%var i,j,id;%>
   <% const it = N.keys();
      for(i=0;i<N.size;i++){%>
-         <%const fid = it.next().value%>
-         <button><%=N.get(fid)%></button>
-          <%for(j=0;j<A.length;j++){ %> 
+         <%const fid = it.next().value%> 
+         <div id="festd<%=i%>">  
+         <%for(j=0;j<A.length;j++){ %> 
                <%const compid = JSON.stringify(A[j][0])%>
                <%const a = fid.localeCompare(compid)%>
                <%if(a == 0){%>
-                    <%=A[j][3]%>
-                    <% let suffix;
+               
+                    <div id="yes"><%=A[j][3]%></div>
+                    <div><% let suffix;
                     switch((A[j][4].getDate())%10) {
                         case 1: suffix = "st";
                                 break;
@@ -48,9 +72,61 @@
                     Date : <%=A[j][4].getDate()%><%=suffix%><%=months.get(A[j][4].getMonth()+1)%> 
                     <%=A[j][4].getFullYear()%>, 
                     <%=days.get(A[j][4].getDay())%>
-                    
+                    </div>
+                    <div> 
+                        Start Time : <%=A[j][5].getHours()%>:<%=A[j][5].getMinutes()%>
+                        End Time : <%=A[j][6].getHours()%>:<%=A[j][6].getMinutes()%>
+                    </div>
+                  
                <%}%>
                             
           <%}%>
+          <hr>
+         </div>
+          
     <%}%>  
-     
+</div>     
+
+<script>
+    var n = <%=s%>;
+    var i;
+    document.querySelector("#festb0").classList.toggle("disabled");
+    document.querySelector("#festd0").classList.toggle("show");
+
+    for(i=1;i<n;i++)
+    {
+        document.querySelector(`#festb`+i).classList.toggle("active");
+        document.querySelector(`#festd`+i).classList.toggle("hidden");
+    }
+
+    
+    for(let i=0;i<n;i++)
+    {
+        document.querySelector(`#festb`+i).addEventListener("click",(e)=>{
+            console.log(i);
+                    if(document.querySelector(`#festd`+i).classList.contains("hidden"))
+                    {
+                         document.querySelector(`#festd`+i).className = "show";
+                    }
+                    if(document.querySelector(`#festb`+i).classList.contains("active"))
+                    {
+                         document.querySelector(`#festb`+i).className = "disabled";
+                    }
+                    for(j=0;j<n;j++)
+                    {
+                        if(j!=i)
+                        {
+                            if(document.querySelector(`#festd`+j).classList.contains("show"))
+                            {
+                               document.querySelector(`#festd`+j).className = "hidden";
+                            }
+                           if(document.querySelector(`#festb`+j).classList.contains("disabled"))
+                            {
+                               document.querySelector(`#festb`+j).className = "active";
+                            }
+                        }
+                    }
+               });
+              
+    }
+</script>

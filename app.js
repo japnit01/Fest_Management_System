@@ -1,9 +1,9 @@
-let express = require("express"),
-    mongoose = require("mongoose"),
-    bodyParser = require("body-parser"),
+let express = require("express"),      
+    mongoose = require("mongoose"),      //connects backend to backend 
+    bodyParser = require("body-parser"),  //takes the input of the user from the front-end and send to backend
     nodemon = require("nodemon"),
-    bcrypt = require("bcrypt"),
-    session = require("express-session"),
+    bcrypt = require("bcrypt"),         
+    session = require("express-session"),  
     app = express();
 
 const port = 80;
@@ -14,6 +14,12 @@ app.use(session({secret:"yes its secret"}));
 
 mongoose.connect("mongodb://localhost/festdb",{useNewUrlParser: true,useUnifiedTopology:true});
 
+let candidateSchema = new mongoose.Schema({
+    name: String,
+    id: String,
+    score: Number
+})
+
 let competitionsSchema = new mongoose.Schema({
     type: String,
     name: String,
@@ -23,8 +29,9 @@ let competitionsSchema = new mongoose.Schema({
     starttime: Date,
     endtime: Date,
     venue: String,
-    candidates:Array, 
+    candidates:[candidateSchema], 
     voting: Boolean,
+    result: Array
 });
 
 let festSchema = new mongoose.Schema({
@@ -39,7 +46,7 @@ let festSchema = new mongoose.Schema({
 let userSchema = new mongoose.Schema({
     email:String,
     password:String,
-    username:String, 
+    name:String, 
     age: Number, 
     college: String,
     scheduler: Array,
@@ -48,6 +55,30 @@ let userSchema = new mongoose.Schema({
 
 let fests = mongoose.model("fests",festSchema);
 let users = mongoose.model("users",userSchema); 
+
+// users.create(
+//     {
+//      name:"Japnit Singh",
+//      email:"japnit2012@gmail.com",
+//      password:"karo",
+//     },
+//     {
+//       name:"Gurtej Singh",
+//       email:"gurtej777@gmail.com",
+//       password:"karo"
+//     },
+//     {
+//         name: "Japnit Prabhu",
+//         email: "prabhu@gmail.com",
+//         password: "karo"
+//     },
+//     {
+//         name: "Sarthak Arora",
+//         email: "sarthakarora1503@gmail.com",
+//         password: "karo"
+//     }
+// )
+
 
 const requireLogin = (req,res,next)=>{
     req.session.returnto = req.url;
@@ -67,12 +98,12 @@ app.get("/signup",function(req,res){
 });
 
 app.post("/signup",async function(req,res){
-      const {email,password,username} = req.body;
+      const {email,password,name} = req.body;
       const hash = await bcrypt.hash(password,12)
       const userdetails = new users({
           email,
           password:hash,
-          username
+          name
       });
       req.session.user_id = userdetails._id;
       await userdetails.save()
@@ -96,8 +127,10 @@ app.post("/login",async function(req,res){
     if(valid)
     {
         req.session.user_id = user._id;
+        req.session.user_name = user.name;
         console.log("Succesfull Login");
-        const url = req.session.returnto;
+        var url = req.session.returnto;
+        
         res.redirect(url);
     }
     else{
@@ -213,13 +246,25 @@ app.post("/cordhome/:fest",(req,res)=>{
               res.redirect(url);          
 });
 
-app.get("/Visitorhome",function(req,res){
-    fests.find({},(err,records)=> {
-        if(err)
-            console.log(err);
-        else
-            res.render("Visitorhome",{fests:records});
-    });
+app.get("/cordhome/:fest/:compid",async(req,res)=>{
+    const festname = req.params.fest;
+    const compid = req.params.compid;
+    
+    const fest = await fests.findOne({festname:festname});
+    const doc = fest.competitions.id(compid);
+    
+    res.render("livecompetition",{registrations:doc,fest:fest});
+})
+
+app.post("/cordhome/:fest/:compid/:candidatesid",async (req,res)=>{
+    const festname = req.params.fest;
+    const compid = req.params.compid;
+    const candid = req.params.candidatesid;
+    
+    const fest = await fests.findOne({festname:festname});
+    const doc = fest.competitions.id(compid);
+    const url = "/cordhome/" + festname + "/" + compid;
+    res.redirect(url)
 });
 
 app.get("/Visitorhome",function(req,res){
@@ -245,68 +290,71 @@ app.get("/Visitorhome/:fest",requireLogin,(req,res)=> {
     });
 });
 
-app.post("/Visitorhome/:fest/:compid",(req,res)=>{
+app.post("/Visitorhome/:fest/:compid",requireLogin,async (req,res)=>{
     const {fest} = req.params;
     const {compid} = req.params;
     var register = req.body.register; 
     var schedule = req.body.schedule;
     console.log(register,schedule);
-    fests.findOne({festname:fest},async (err,record)=>{
-        if(err)
-           console.log(err);
-        else
-        { var i;
-          
-           if(schedule == "schedule")
-           {
-                users.updateOne({_id:req.session.user_id},{$addToSet:{scheduler:[{compid:compid,festid:record._id}],registration:[compid]}},(err,record)=>{
-                    if(err)
-                    {
-                        console.log(err);
-                    }
-                    else{
-                         console.log("record added");
-                    }
-                });
-            }
-            else if(register=="register")
-            {   for(i=0;i<record.competitions.length;i++)
-                {   const comp = JSON.stringify(compid);
-                    const reccomp = JSON.stringify(record.competitions[i]._id)
-                    //console.log(comp,reccomp);
-                    let a = comp.localeCompare(reccomp);
-                    //console.log(a);
-                    if(a == 0)
-                    {
-                        record.competitions[i].candidates.push(req.session.user_id)
-                        record.save();
-                        console.log("registered")
-                    }
+    const festfound = await fests.findOne({festname:fest});
+    if(schedule == "schedule")
+        {
+            users.updateOne({_id:req.session.user_id},{$addToSet:{scheduler:[{compid:compid,festid:record._id}],registration:[compid]}},(err,record)=>{
+                if(err)
+                {
+                    console.log(err);
                 }
-                
-                users.findOne({_id:req.session.user_id},async (err,user)=>{
-                    if(err)
-                    {
-                       console.log(err);
-                    }
-                    else{
-                        
-                       users.updateOne({_id:req.session.user_id},{$addToSet:{scheduler:[{compid:compid,festid:record._id}],registration:[compid]}},(err,record)=>{
-                           if(err)
-                           {
-                               console.log(err);
-                           }
-                           else{
-                               console.log("record added");
-                           }
-                       }); 
-                     }  
-                 });
-            }
-            var url = "/Visitorhome/"+fest;
-            res.redirect(url)
+                else
+                {
+                console.log("record added");
+                }
+            });
         }
-    });
+    else if(register=="register")
+        {  
+            var candidate  = new Map();
+            const doc = festfound.competitions.id(compid);   
+            doc.candidates.push({id:req.session.user_id,name:req.session.user_name,score:0});
+            for(i=0;i<doc.candidates.length;i++)
+            {
+                if(candidate.has(doc.candidates[i].id)==false)
+                {
+                    candidate.set(doc.candidates[i].id,{name: doc.candidates[i].name, score: doc.candidates[i].score})
+                }               
+            }
+            var A = [];
+            
+            const it = candidate.keys()
+            for(i=0;i<candidate.size;i++)
+            {
+                var id = it.next().value;
+                A.push({id:id,name:candidate.get(id).name,score:candidate.get(id).score});
+            }
+            doc.candidates = A;
+            console.log(doc.candidates);
+            festfound.save();
+            
+            users.findOne({_id:req.session.user_id},async (err,user)=>{
+                if(err)
+                {
+                   console.log(err);
+                }
+                else{
+                    
+                   users.updateOne({_id:req.session.user_id},{$addToSet:{scheduler:[{compid:compid,festid:festfound._id}],registration:[compid]}},(err,record)=>{
+                       if(err)
+                       {
+                           console.log(err);
+                       }
+                       else{
+                           console.log("record added");
+                       }
+                   }); 
+                 }  
+             });
+        }  
+        var url = "/Visitorhome/"+fest;
+            res.redirect(url)
 });
 
 app.get("/scheduler",requireLogin,async(req,res)=>{

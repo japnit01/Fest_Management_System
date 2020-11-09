@@ -146,6 +146,9 @@
         Start Time : <%=fests.competitions[i].starttime.getHours()%>:<%=fests.competitions[i].starttime.getMinutes()%>
         End Time : <%=fests.competitions[i].endtime.getHours()%>:<%=fests.competitions[i].endtime.getMinutes()%>
     </div>
+    <div>
+        <button><a href="/cordhome/<%=fests.festname%>/<%=fests.competitions[i]._id%>">View</a></button>
+    </div>
     <hr>
 <% } %>
 </div>
