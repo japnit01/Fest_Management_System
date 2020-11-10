@@ -14,8 +14,9 @@
     <div>
         Date : <%=fests.competitions[i].date%>
     </div>
-    <div>
-        Time : <%=fests.competitions[i].date%>
+    <div> 
+        Start Time : <%=fests.competitions[i].starttime.getHours()%>:<%=fests.competitions[i].starttime.getMinutes()%>
+        End Time : <%=fests.competitions[i].endtime.getHours()%>:<%=fests.competitions[i].endtime.getMinutes()%>
     </div>
     <div>
         Venue : <%=fests.competitions[i].venue%>

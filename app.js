@@ -31,7 +31,8 @@ let competitionsSchema = new mongoose.Schema({
     venue: String,
     candidates:[candidateSchema], 
     voting: Boolean,
-    result: Array
+    result: Array,
+    currentround: Array
 });
 
 let festSchema = new mongoose.Schema({
@@ -56,32 +57,7 @@ let userSchema = new mongoose.Schema({
 let fests = mongoose.model("fests",festSchema);
 let users = mongoose.model("users",userSchema); 
 
-// users.create(
-//     {
-//      name:"Japnit Singh",
-//      email:"japnit2012@gmail.com",
-//      password:"karo",
-//     },
-//     {
-//       name:"Gurtej Singh",
-//       email:"gurtej777@gmail.com",
-//       password:"karo"
-//     },
-//     {
-//         name: "Japnit Prabhu",
-//         email: "prabhu@gmail.com",
-//         password: "karo"
-//     },
-//     {
-//         name: "Sarthak Arora",
-//         email: "sarthakarora1503@gmail.com",
-//         password: "karo"
-//     }
-// )
-
-
 const requireLogin = (req,res,next)=>{
-    req.session.returnto = req.url;
     if(!req.session.user_id)
     {
         return res.redirect("/login");
@@ -106,6 +82,7 @@ app.post("/signup",async function(req,res){
           name
       });
       req.session.user_id = userdetails._id;
+      req.session.user_name = userdetails.name
       await userdetails.save()
       console.log("Account Created");
       res.redirect("/");
@@ -129,9 +106,7 @@ app.post("/login",async function(req,res){
         req.session.user_id = user._id;
         req.session.user_name = user.name;
         console.log("Succesfull Login");
-        var url = req.session.returnto;
-        
-        res.redirect(url);
+        res.redirect('/');
     }
     else{
         console.log("Try Again")
@@ -249,20 +224,66 @@ app.post("/cordhome/:fest",(req,res)=>{
 app.get("/cordhome/:fest/:compid",async(req,res)=>{
     const festname = req.params.fest;
     const compid = req.params.compid;
-    
+    var start=0;
     const fest = await fests.findOne({festname:festname});
     const doc = fest.competitions.id(compid);
     
-    res.render("livecompetition",{registrations:doc,fest:fest});
-})
+     if((doc.currentround.length)%2 == 0)
+     {
+        start = doc.currentround.length
+        console.log(start);
+     }
+    res.render("livecompetition",{registrations:doc,fest:fest,start:start});
+});
 
 app.post("/cordhome/:fest/:compid/:candidatesid",async (req,res)=>{
     const festname = req.params.fest;
     const compid = req.params.compid;
     const candid = req.params.candidatesid;
-    
+    const score1 = req.body.score1;
+    const score2 = req.body.score2;
+
     const fest = await fests.findOne({festname:festname});
-    const doc = fest.competitions.id(compid);
+    const doc = await fest.competitions.id(compid);
+    const candidate = await doc.candidates.id(candid);
+    console.log(candid);
+    if(!score2)
+    {
+        candidate.score = score1;
+    }
+    else if(!score1)
+    {
+        candidate.score = score2;
+    }
+
+    if(candidate.score!=null)
+    {
+       doc.currentround.push(candidate);
+       var currcand = new Map();
+       for(i=0;i<doc.currentround.length;i++)
+            {
+                if(currcand.has(doc.currentround[i].id)==false)
+                {
+                    currcand.set(doc.currentround[i].id,{name: doc.candidates[i].name, score: doc.candidates[i].score})
+                }               
+            }
+        var A = [],B = [];
+        
+        const it = currcand.keys()
+            for(i=0;i<currcand.size;i++)
+            {
+                var id = it.next().value;
+                A.push({userid:id,name:currcand.get(id).name,score:currcand.get(id).score});
+            }
+            
+            doc.currentround = A;
+            //console.log(doc.candidates[0])
+            //doc.currentround = B;
+            fest.save()
+            console.log(currcand);        
+            console.log(doc.currentround);
+    }
+
     const url = "/cordhome/" + festname + "/" + compid;
     res.redirect(url)
 });
@@ -328,9 +349,9 @@ app.post("/Visitorhome/:fest/:compid",requireLogin,async (req,res)=>{
             for(i=0;i<candidate.size;i++)
             {
                 var id = it.next().value;
-                A.push({id:id,name:candidate.get(id).name,score:candidate.get(id).score});
+                A.push({userid:id,name:candidate.get(id).name,score:candidate.get(id).score});
             }
-            doc.candidates = A;
+            doc.currentround = A;
             console.log(doc.candidates);
             festfound.save();
             
