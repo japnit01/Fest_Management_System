@@ -239,21 +239,25 @@ app.get("/cordhome/:fest/:compid",requireLogin,async(req,res)=>{
     //fest.save();
     console.log(doc.currentround.length)
 
-    if(doc.currentround.length == doc.candidates.length-1)
-    {
-        res.send("Next Round")
-    }
-    else if((doc.currentround.length)%2 == 0)
+    
+    if((doc.currentround.length)%2 == 0)
     {  
-       start = doc.currentround.length
-       console.log(start);
-       res.render("livecompetition",{registrations:doc,fest:fest,start:start});
+        if(doc.currentround.length == doc.candidates.length-1)
+        {
+            start =  doc.currentround.length;
+            console.log(start);
+        }
+        else
+        {
+           start = doc.currentround.length
+           console.log(start);
+        }
     }
     else if(start%2!=0)
     {
          start = doc.currentround.length-1;
-         res.render("livecompetition",{registrations:doc,fest:fest,start:start});
     }
+    res.render("livecompetition",{registrations:doc,fest:fest,start:start});
 });
 
 app.post("/cordhome/:fest/:compid/:candidatesid",async (req,res)=>{

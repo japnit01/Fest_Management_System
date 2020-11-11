@@ -1,52 +1,57 @@
 <%-include("partials/header")%>
 
-<h1>Live</h1>
-<div class="container" style="width:70%">
-   <div class="row"> 
-   <div class="competitor col-md-5">
-       <div>
-         <form action="/cordhome/<%=fest.festname%>/<%=registrations._id%>/<%=registrations.candidates[start]._id%>" method="POST">   
-            <div>
-                 <%=registrations.candidates[start].name%>
-            </div> 
-          <input type="text" name="score1">
-           <button>Arrow</button>
-         </form>  
-       </div>
-   </div>
-   <div class="col-md-1" style="text-align: center;">
-      VS
-   </div>
-   <div class="competitor col-md-5">
-       <div>
-         <form action="/cordhome/<%=fest.festname%>/<%=registrations._id%>/<%=registrations.candidates[start+1]._id%>" method="POST">
-            <div>
-              <%=registrations.candidates[start+1].name%>
-            </div>
-              <input type="text" name="score2">
-           <button>Arrow</button>
-         </form>
-       </div>
-   </div>
-   </div>
-</div>
-   <% var i,n; %>
-   <% if((registrations.candidates.length)%2 == 0){%>
-         <% n = registrations.candidates.length;%>     
-    <%}else{%>
-         <% n = registrations.candidates.length-1;%>
-    <%}%>
-   <% for(i=start+2;i<n;i+=2) {%> 
-           
-            <div>
-            <%=registrations.candidates[i].name%>
-            </div>
-            <div>
-             vs
-            </div>
-            <div>
-           <%=registrations.candidates[i+1].name%>
-           </div>
-   <%}%>
+<%if(start%2==0 && (start == registrations.candidates.length-1 || start == registrations.candidates.length)){%>
+   <button>Next Level</button>
+<%}else{%>
+  <h1>Live</h1>
+  <div class="container" style="width:70%">
+     <div class="row"> 
+     <div class="competitor col-md-5">
+         <div>
+           <form action="/cordhome/<%=fest.festname%>/<%=registrations._id%>/<%=registrations.candidates[start]._id%>" method="POST">   
+              <div>
+                   <%=registrations.candidates[start].name%>
+              </div> 
+            <input type="text" name="score1">
+             <button>Arrow</button>
+           </form>  
+         </div>
+     </div>
+     <div class="col-md-1" style="text-align: center;">
+        VS
+     </div>
+     <div class="competitor col-md-5">
+         <div>
+           <form action="/cordhome/<%=fest.festname%>/<%=registrations._id%>/<%=registrations.candidates[start+1]._id%>" method="POST">
+              <div>
+                <%=registrations.candidates[start+1].name%>
+              </div>
+                <input type="text" name="score2">
+             <button>Arrow</button>
+           </form>
+         </div>
+     </div>
+     </div>
+  </div>
+     <% var i,n; %>
+     <% if((registrations.candidates.length)%2 == 0){%>
+           <% n = registrations.candidates.length;%>     
+      <%}else{%>
+           <% n = registrations.candidates.length-1;%>
+      <%}%>
+     <% for(i=start+2;i<n;i+=2) {%> 
+             
+              <div>
+              <%=registrations.candidates[i].name%>
+              </div>
+              <div>
+               vs
+              </div>
+              <div>
+             <%=registrations.candidates[i+1].name%>
+             </div>
+     <%}%>
+  
+ <%}%> 
 
 <%-include("partials/footer")%>
