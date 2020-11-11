@@ -16,9 +16,15 @@ mongoose.connect("mongodb://localhost/festdb",{useNewUrlParser: true,useUnifiedT
 
 let candidateSchema = new mongoose.Schema({
     name: String,
-    id: String,
+    userid: String,
     score: Number
-})
+});
+
+let currentroundSchema = new mongoose.Schema({
+   name:String,
+   candidateid:String,
+   score:Number
+});
 
 let competitionsSchema = new mongoose.Schema({
     type: String,
@@ -32,7 +38,7 @@ let competitionsSchema = new mongoose.Schema({
     candidates:[candidateSchema], 
     voting: Boolean,
     result: Array,
-    currentround: Array
+    currentround:[currentroundSchema]
 });
 
 let festSchema = new mongoose.Schema({
@@ -59,13 +65,14 @@ let users = mongoose.model("users",userSchema);
 
 const requireLogin = (req,res,next)=>{
     if(!req.session.user_id)
-    {
+    {  
+        var check = 1;
         return res.redirect("/login");
     }
     next()
 };
 
-app.get("/",function(req,res){
+app.get("/",function(req,res){ 
     res.render("home");
 });
 
@@ -95,6 +102,7 @@ app.get("/login",(req,res)=>{
 app.post("/login",async function(req,res){
     const {email,password} = req.body;
     const user = await users.findOne({email:email});
+
     if(!user)
     {
         console.log("Username not registered");
@@ -221,19 +229,31 @@ app.post("/cordhome/:fest",(req,res)=>{
               res.redirect(url);          
 });
 
-app.get("/cordhome/:fest/:compid",async(req,res)=>{
+app.get("/cordhome/:fest/:compid",requireLogin,async(req,res)=>{
     const festname = req.params.fest;
     const compid = req.params.compid;
-    var start=0;
+    var start ;
     const fest = await fests.findOne({festname:festname});
     const doc = fest.competitions.id(compid);
-    
-     if((doc.currentround.length)%2 == 0)
-     {
-        start = doc.currentround.length
-        console.log(start);
-     }
-    res.render("livecompetition",{registrations:doc,fest:fest,start:start});
+    //doc.currentround=[];
+    //fest.save();
+    console.log(doc.currentround.length)
+
+    if(doc.currentround.length == doc.candidates.length-1)
+    {
+        res.send("Next Round")
+    }
+    else if((doc.currentround.length)%2 == 0)
+    {  
+       start = doc.currentround.length
+       console.log(start);
+       res.render("livecompetition",{registrations:doc,fest:fest,start:start});
+    }
+    else if(start%2!=0)
+    {
+         start = doc.currentround.length-1;
+         res.render("livecompetition",{registrations:doc,fest:fest,start:start});
+    }
 });
 
 app.post("/cordhome/:fest/:compid/:candidatesid",async (req,res)=>{
@@ -242,11 +262,12 @@ app.post("/cordhome/:fest/:compid/:candidatesid",async (req,res)=>{
     const candid = req.params.candidatesid;
     const score1 = req.body.score1;
     const score2 = req.body.score2;
-
+  
     const fest = await fests.findOne({festname:festname});
     const doc = await fest.competitions.id(compid);
     const candidate = await doc.candidates.id(candid);
     console.log(candid);
+    
     if(!score2)
     {
         candidate.score = score1;
@@ -257,33 +278,31 @@ app.post("/cordhome/:fest/:compid/:candidatesid",async (req,res)=>{
     }
 
     if(candidate.score!=null)
-    {
-       doc.currentround.push(candidate);
+    {  var A = [];
+       doc.currentround.push({candidateid:candid,name:candidate.name,score:candidate.score});
+       //doc.currentround=[];
+       console.log(candidate,doc.currentround);
        var currcand = new Map();
        for(i=0;i<doc.currentround.length;i++)
-            {
-                if(currcand.has(doc.currentround[i].id)==false)
+            {   
+                //console.log(doc.currentround[i]._id);
+                if(currcand.has(doc.currentround[i]._id)==false)
                 {
-                    currcand.set(doc.currentround[i].id,{name: doc.candidates[i].name, score: doc.candidates[i].score})
+                    currcand.set(doc.currentround[i].candidateid,{name: doc.currentround[i].name, score: doc.currentround[i].score})
                 }               
             }
-        var A = [],B = [];
-        
-        const it = currcand.keys()
+            console.log(currcand);
+            const it = currcand.keys()
             for(i=0;i<currcand.size;i++)
-            {
+            {   
                 var id = it.next().value;
-                A.push({userid:id,name:currcand.get(id).name,score:currcand.get(id).score});
-            }
-            
-            doc.currentround = A;
-            //console.log(doc.candidates[0])
-            //doc.currentround = B;
-            fest.save()
-            console.log(currcand);        
-            console.log(doc.currentround);
+                A.push({candidateid:id,name:currcand.get(id).name,score:currcand.get(id).score});
+            } 
+            console.log(A);
+             doc.currentround = A;
+             console.log(doc.currentround)
+            fest.save();
     }
-
     const url = "/cordhome/" + festname + "/" + compid;
     res.redirect(url)
 });
@@ -320,7 +339,7 @@ app.post("/Visitorhome/:fest/:compid",requireLogin,async (req,res)=>{
     const festfound = await fests.findOne({festname:fest});
     if(schedule == "schedule")
         {
-            users.updateOne({_id:req.session.user_id},{$addToSet:{scheduler:[{compid:compid,festid:record._id}],registration:[compid]}},(err,record)=>{
+            users.updateOne({_id:req.session.user_id},{$addToSet:{scheduler:[{compid:compid,festid:festfound._id}],registration:[compid]}},(err,record)=>{
                 if(err)
                 {
                     console.log(err);
@@ -332,28 +351,34 @@ app.post("/Visitorhome/:fest/:compid",requireLogin,async (req,res)=>{
             });
         }
     else if(register=="register")
-        {  
+        {   var A = [];
             var candidate  = new Map();
             const doc = festfound.competitions.id(compid);   
-            doc.candidates.push({id:req.session.user_id,name:req.session.user_name,score:0});
+            doc.candidates.push({userid:req.session.user_id,name:req.session.user_name,score:0});
+            //doc.candidates = A;
+            //console.log(doc.candidates.length);
             for(i=0;i<doc.candidates.length;i++)
-            {
-                if(candidate.has(doc.candidates[i].id)==false)
+            {    id = doc.candidates[i].userid
+    
+                if(candidate.has(id) == false)
                 {
-                    candidate.set(doc.candidates[i].id,{name: doc.candidates[i].name, score: doc.candidates[i].score})
-                }               
+                    candidate.set(id,{name:doc.candidates[i].name,score:doc.candidates[i].score})
+                }  
+                            
             }
-            var A = [];
-            
+            console.log(candidate); 
             const it = candidate.keys()
             for(i=0;i<candidate.size;i++)
             {
-                var id = it.next().value;
-                A.push({userid:id,name:candidate.get(id).name,score:candidate.get(id).score});
+                var userid = it.next().value;
+                A.push({userid:userid,name:candidate.get(userid).name,score:doc.candidates[i].score})
             }
-            doc.currentround = A;
-            console.log(doc.candidates);
-            festfound.save();
+            var B = [];
+            console.log(A);
+            doc.candidates = A;
+            festfound.save()
+            console.log(doc.candidates)
+            
             
             users.findOne({_id:req.session.user_id},async (err,user)=>{
                 if(err)
@@ -390,8 +415,7 @@ app.get("/scheduler",requireLogin,async(req,res)=>{
         }
         else
         {
-           var i,j; 
-           
+           var i,j;         
            //var p = [compid,date,starttime,endtime];
            for(i=0;i<user.scheduler.length;i++)
            { 

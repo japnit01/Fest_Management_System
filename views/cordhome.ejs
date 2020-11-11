@@ -1,52 +1,70 @@
 <%- include("partials/header") %>
 <style>
-    tr {
-        margin: 10px auto;
-        background-color: lightpink;
-    }
-
-    td {
-        margin: auto 10px;
-    }
-    th {
-        margin: auto 10px;
-    }
-    
-    .festdetails {
-        margin: 30px 30px;
-    }
-    .fests {
-        margin: 10px auto;
-        border: 2px solid black;
-        background-color: lightpink;
-    }
+.container{
+    width:40%;
+    height: 50%;
+    border:1px solid #dadce0;
+    margin:3rem auto 5rem auto;
+    text-align: center;
+}
+.formcontent{
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+.formgroup{
+    padding:1rem 0 1rem 0;
+}
+input{
+    border:1px solid #dadce0;
+}
+input.textfield{
+    width:100%;
+    height:2.7rem;
+}
+.datecontent{
+   padding:1rem 0 0 0;
+}
+.innerarea{
+    border:1rem solid white
+}
+input.dt{
+    width:45%;
+    height:2.7rem;
+}
 </style>    
 
 <div class="container">
-    <div>
-        <h1>ADD NEW FEST TO THE SEASON!</h1>
-    </div>
-    <div class="form-group formcontent">
+    <div class="formcontent">
+      <div>
+        <h3>Add Fest</h3>
+      </div>
+    <div class="innerarea">
         <form class="form" action="/newfest" method="POST">
-            <div class = "formentity">
-                <label for="collegename">College Name</label>
-                <input type="text" name="collegename" placeholder="College Name" required>
+            <div class = "formgroup">
+                <input type="text" class="textfield" name="collegename" placeholder="College Name" required>
             </div>
-            <div class = "formentity">
-                <label for="festname">Fest Name</label>
-                <input type="text" name="festname" placeholder="Fest Name" required>
+            <div class = "formgroup">
+                <input type="text" class="textfield" name="festname" placeholder="Fest Name" required>
             </div>
-            <div class = "formentity">
-                <label for="type">Type of Fest</label>
-                <input type="text" name="type" placeholder="Type of Fest" required>
+            <div class = "formgroup">
+                <input type="text" class="textfield" name="type" placeholder="Type of Fest" required>
             </div>
-            <input type="date" name="from">
-            <input type="date" name="to">
+            <div class="datecontent">
+                <span style="font-size:1rem; font-weight: 500; margin-right: 9rem;">Start Date</span>
+                <span style="font-size:1rem; font-weight: 500; margin-right: 7.4rem">End Date</span>
+            </div>
+            <div style="padding-top: 0.3rem;">
+            <span style="padding-right:2rem"><input type="date" class="dt" name="from"></span>
+            <span><input type="date" class="dt" name="to"></span>
+            </div>
+            <div style="padding: 3rem 0 0 0;">
             <button class="btn btn-large btn-primary submit" type="submit">Add Fest and Enjoy!</button>
+            </div>
         </form>
     </div>
-
+  </div>
 </div>
+
 
 <div class="container">
     <div class="displayform">
