@@ -314,7 +314,7 @@ app.post("/cordhome/:fest/:compid",async (req,res)=>{
                 A.push(doc.currentround[i]);
             }            
         }
-        //console.log(A);
+        console.log(A);
         
         if(doc.round[doc.round.length-1]=="Special Round")
         {
@@ -324,15 +324,23 @@ app.post("/cordhome/:fest/:compid",async (req,res)=>{
                  A.push(doc.result[1][i]);
              }
         }
+        else if(doc.round[doc.round.length-1]=="Round")
+        {  console.log("ended");
+           if(doc.result[doc.result.length-1].length==2)
+           {
+               res.render("results");
+           }
+        }
+
         //console.log(A);
         doc.result.push(A);
         doc.result[doc.result.length-1].sort(function (a, b) {return a.score - b.score});
         doc.result[doc.result.length-1].reverse()
         //console.log(doc.result.length)
-        //console.log(doc.result[doc.result.length-1]);
+        console.log(doc.result[doc.result.length-1]);
        
         if(doc.result.length == 2 && doc.currentround.length != doc.candidates)
-        {   
+        {   console.log("sub round")
             doc.round.push("Special Round");
             doc.currentcand = [];
             doc.currentround = [];
@@ -342,17 +350,23 @@ app.post("/cordhome/:fest/:compid",async (req,res)=>{
             
         }
         else if((doc.result[doc.result.length-1].length)%2!=0)
-        {
+        {    doc.round.push("Round");
              var B =[];
              doc.currentcand = [];
              doc.currentround = [];
               //console.log(doc.result[doc.result.length-1])
               B = doc.result[doc.result.length-1].slice(0,doc.result[doc.result.length-1].length-1);
-              //console.log(B);
+              console.log(B);
               doc.result.push(B);
               doc.currentcand = B;
               console.log(doc.result[doc.result.length-1]);
         } 
+        else if((doc.result[doc.result.length-1].length)%2!=0)
+        {
+            doc.round.push("Round");  
+            doc.currentcand = doc.result[doc.result.length-1];
+             doc.currentround = []; 
+        }
         //console.log(doc.result.length,doc.result);
         //console.log(doc.result[0][1]);
             
@@ -408,7 +422,7 @@ app.post("/cordhome/:fest/:compid/:candidatesid",async (req,res)=>{
             } 
             //console.log(A);
              doc.currentround = A;
-             //console.log(doc.currentround)
+             console.log(doc.currentround)
             fest.save();
     }
     const url = "/cordhome/" + festname + "/" + compid;
