@@ -241,11 +241,16 @@ app.post("/cordhome/:fest/:compid/start",async(req,res)=>{
     const festname = req.params.fest;
     const compid = req.params.compid;
     
-    var A = [],i;
+    
     const fest = await fests.findOne({festname:festname});
     //console.log(fest);
     const doc = await fest.competitions.id(compid);
-    doc.round.push("Round 1");
+    // doc.currentround=[];
+    // doc.result = [];
+    // doc.currentcand = [];
+    // doc.round = [];
+    // fest.save();
+    doc.round.push("Round");
     doc.currentcand  = doc.candidates;
     if(doc.candidates.length%2!==0)
     {
@@ -264,16 +269,15 @@ app.get("/cordhome/:fest/:compid",requireLogin,async(req,res)=>{
     var start ;
     const fest = await fests.findOne({festname:festname});
     const doc = fest.competitions.id(compid);
-    //doc.currentround=[];
-    //doc.result = [];
-    //doc.currentcand = [];
-    //doc.round = [];
-    //fest.save();
+    // doc.currentround=[];
+    // doc.result = [];
+    // doc.currentcand = [];
+    // doc.round = [];
+    // fest.save();
     console.log(doc.currentround.length)
     
     if((doc.currentround.length)%2 == 0)
     {  
-        
            start = doc.currentround.length
            console.log(start);
     }
@@ -310,12 +314,22 @@ app.post("/cordhome/:fest/:compid",async (req,res)=>{
             }            
         }
         //console.log(A);
+        
+        if(doc.round[doc.round.length-1]=="Special Round")
+        {
+           var i;
+             for(i=0;i<doc.result[1].length-1;i++)
+             {
+                 A.push(doc.result[1][i]);
+             }
+        }
+        //console.log(A);
         doc.result.push(A);
         doc.result[doc.result.length-1].sort(function (a, b) {return a.score - b.score});
         doc.result[doc.result.length-1].reverse()
         //console.log(doc.result.length)
-        console.log(doc.result[1]);
-
+        //console.log(doc.result[doc.result.length-1]);
+       
         if(doc.result.length == 2 && doc.currentround.length != doc.candidates)
         {   
             doc.round.push("Special Round");
@@ -324,21 +338,26 @@ app.post("/cordhome/:fest/:compid",async (req,res)=>{
             doc.currentcand.push(doc.result[1][doc.result[1].length-1]);
             doc.currentcand.push(doc.candidates[doc.candidates.length-1]);
             console.log(doc.currentcand);
-            fest.save();
-            var url = "/cordhome/" + festname + "/" +  compid;
-            res.redirect(url);
+            
         }
-        else if(doc.resut[doc.result.length-1].length%2!=0)
+        else if((doc.result[doc.result.length-1].length)%2!=0)
         {
-            var B =[];
-            B = doc.result[doc.result.length-1].slice(0,doc.result.length-1);
-            doc.result.push(B);
-            doc.currentcand = B;
+             var B =[];
+             doc.currentcand = [];
+             doc.currentround = [];
+              //console.log(doc.result[doc.result.length-1])
+              B = doc.result[doc.result.length-1].slice(0,doc.result[doc.result.length-1].length-1);
+              //console.log(B);
+              doc.result.push(B);
+              doc.currentcand = B;
+              console.log(doc.result[doc.result.length-1]);
         } 
         //console.log(doc.result.length,doc.result);
         //console.log(doc.result[0][1]);
             
-        
+            fest.save();
+            var url = "/cordhome/" + festname + "/" +  compid;
+            res.redirect(url);
     }
     
 });
@@ -475,7 +494,7 @@ app.post("/Visitorhome/:fest/:compid",requireLogin,async (req,res)=>{
                 }
                 else{
                     
-                   users.updateOne({_id:req.session.user_id},{$addToSet:{scheduler:[{compid:compid,festid:festfound._id}],registration:[compid]}},(err,record)=>{
+                   users.updateOne({_id:req.session.user_id},{$addToSet:{scheduler:[{compid:compid,festid:festfound._id}],registration:[{compid:compid,festid:festfound._id}]}},(err,record)=>{
                        if(err)
                        {
                            console.log(err);

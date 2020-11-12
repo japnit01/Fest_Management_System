@@ -1,6 +1,6 @@
 <%-include("partials/header")%>
 
-<%if(start%2==0 && start == registrations.currentcand.length){%>
+<%if(start!=0 && start%2==0 && start == registrations.currentcand.length){%>
   <form action="/cordhome/<%=fest.festname%>/<%=registrations._id%>" method="POST"> 
       <button name="nextlevel" value="nextlevel">Next Level</button>
   </form>    
