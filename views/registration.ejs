@@ -1,6 +1,9 @@
 <%- include("partials/header") %>
 
-<h4>Scheduler</h4>
+<!-- <button onclick="goback()">Back</button> -->
+    
+
+<h4>Registrations</h4>
 
 <style>
     .hidden{
@@ -17,13 +20,6 @@
         color :red;
     }
 </style>
-
-<button onclick="goback()">Back</button>
-    <script>
-        function goback() {
-            window.history.back();
-        }
-    </script>
 
 <% let months = new Map();
     months.set(1,"January");
@@ -95,7 +91,7 @@
 </div>     
 
 <script>
-    var n = <%=s%>;
+    var n = s;
     var i;
     document.querySelector("#festb0").classList.toggle("disabled");
     document.querySelector("#festd0").classList.toggle("show");

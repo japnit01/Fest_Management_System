@@ -1,5 +1,13 @@
 <%- include("partials/header") %>
 
+<style>
+    .desc{ 
+  width: 200px; 
+  height:200px; 
+  resize: none;
+}
+</style>
+
 <form action="/cordhome/:fest" method="POST">
     <div>
         <label for="type">Type of Competition:</label>
@@ -16,7 +24,7 @@
     </div>
     <div>
         <label for="description">Description of Competition:</label>
-        <textarea name="description" required>
+        <textarea class="desc" name="description" required>
     </div>
     <div>
         <label for="Date">Date and Timing</label>
