@@ -35,10 +35,12 @@ let competitionsSchema = new mongoose.Schema({
     starttime: Date,
     endtime: Date,
     venue: String,
-    candidates:[candidateSchema], 
+    candidates:[candidateSchema],
+    currentcand:Array, 
     voting: Boolean,
     result: Array,
-    currentround:[currentroundSchema]
+    currentround:[currentroundSchema],
+    round:Array
 });
 
 let festSchema = new mongoose.Schema({
@@ -64,9 +66,9 @@ let fests = mongoose.model("fests",festSchema);
 let users = mongoose.model("users",userSchema); 
 
 const requireLogin = (req,res,next)=>{
+    req.session.returnto = req.url;
     if(!req.session.user_id)
-    {  
-        var check = 1;
+    {
         return res.redirect("/login");
     }
     next()
@@ -102,7 +104,6 @@ app.get("/login",(req,res)=>{
 app.post("/login",async function(req,res){
     const {email,password} = req.body;
     const user = await users.findOne({email:email});
-
     if(!user)
     {
         console.log("Username not registered");
@@ -112,9 +113,9 @@ app.post("/login",async function(req,res){
     if(valid)
     {
         req.session.user_id = user._id;
-        req.session.user_name = user.name;
         console.log("Succesfull Login");
-        res.redirect('/');
+        const url = req.session.returnto;
+        res.redirect(url);
     }
     else{
         console.log("Try Again")
@@ -229,6 +230,34 @@ app.post("/cordhome/:fest",(req,res)=>{
               res.redirect(url);          
 });
 
+app.get("/cordhome/:fest/:compid/start",async(req,res)=>{
+    const festname = req.params.fest;
+    const compid = req.params.compid;
+
+    res.render("startcomp",{fest:festname,compid:compid});
+})
+
+app.post("/cordhome/:fest/:compid/start",async(req,res)=>{
+    const festname = req.params.fest;
+    const compid = req.params.compid;
+    
+    var A = [],i;
+    const fest = await fests.findOne({festname:festname});
+    //console.log(fest);
+    const doc = await fest.competitions.id(compid);
+    doc.round.push("Round 1");
+    doc.currentcand  = doc.candidates;
+    if(doc.candidates.length%2!==0)
+    {
+        doc.currentcand = doc.currentcand.slice(0,doc.candidates.length-1)
+    }
+    fest.save();
+    //console.log(doc.currentcand[0],doc.candidates);  
+    console.log(doc.currentcand.length) 
+    var url = "/cordhome/" + festname + "/" + compid;
+    res.redirect(url)
+});
+
 app.get("/cordhome/:fest/:compid",requireLogin,async(req,res)=>{
     const festname = req.params.fest;
     const compid = req.params.compid;
@@ -236,28 +265,82 @@ app.get("/cordhome/:fest/:compid",requireLogin,async(req,res)=>{
     const fest = await fests.findOne({festname:festname});
     const doc = fest.competitions.id(compid);
     //doc.currentround=[];
+    //doc.result = [];
+    //doc.currentcand = [];
+    //doc.round = [];
     //fest.save();
     console.log(doc.currentround.length)
-
     
     if((doc.currentround.length)%2 == 0)
     {  
-        if(doc.currentround.length == doc.candidates.length-1)
-        {
-            start =  doc.currentround.length;
-            console.log(start);
-        }
-        else
-        {
+        
            start = doc.currentround.length
            console.log(start);
-        }
     }
     else if(start%2!=0)
     {
          start = doc.currentround.length-1;
     }
+
     res.render("livecompetition",{registrations:doc,fest:fest,start:start});
+});
+
+
+app.post("/cordhome/:fest/:compid",async (req,res)=>{
+    const festname = req.params.fest;
+    const compid = req.params.compid;
+ 
+    const fest = await fests.findOne({festname:festname});
+    const doc = fest.competitions.id(compid);
+    const nextlevel = req.body.nextlevel;
+    console.log(nextlevel)
+    if(nextlevel == "nextlevel")
+    {   var A = [];
+        //console.log(doc.currentround);
+        doc.result.push(doc.currentround);
+        for(i=0;i<doc.currentround.length;i+=2)
+        {
+            if(doc.currentround[i].score < doc.currentround[i+1].score)
+            {
+                A.push(doc.currentround[i+1])
+            }
+            else if(doc.currentround[i].score > doc.currentround[i+1].score)
+            {
+                A.push(doc.currentround[i]);
+            }            
+        }
+        //console.log(A);
+        doc.result.push(A);
+        doc.result[doc.result.length-1].sort(function (a, b) {return a.score - b.score});
+        doc.result[doc.result.length-1].reverse()
+        //console.log(doc.result.length)
+        console.log(doc.result[1]);
+
+        if(doc.result.length == 2 && doc.currentround.length != doc.candidates)
+        {   
+            doc.round.push("Special Round");
+            doc.currentcand = [];
+            doc.currentround = [];
+            doc.currentcand.push(doc.result[1][doc.result[1].length-1]);
+            doc.currentcand.push(doc.candidates[doc.candidates.length-1]);
+            console.log(doc.currentcand);
+            fest.save();
+            var url = "/cordhome/" + festname + "/" +  compid;
+            res.redirect(url);
+        }
+        else if(doc.resut[doc.result.length-1].length%2!=0)
+        {
+            var B =[];
+            B = doc.result[doc.result.length-1].slice(0,doc.result.length-1);
+            doc.result.push(B);
+            doc.currentcand = B;
+        } 
+        //console.log(doc.result.length,doc.result);
+        //console.log(doc.result[0][1]);
+            
+        
+    }
+    
 });
 
 app.post("/cordhome/:fest/:compid/:candidatesid",async (req,res)=>{
@@ -266,11 +349,12 @@ app.post("/cordhome/:fest/:compid/:candidatesid",async (req,res)=>{
     const candid = req.params.candidatesid;
     const score1 = req.body.score1;
     const score2 = req.body.score2;
-  
+    console.log(candid);
     const fest = await fests.findOne({festname:festname});
     const doc = await fest.competitions.id(compid);
-    const candidate = await doc.candidates.id(candid);
-    console.log(candid);
+    const index = doc.currentcand.findIndex(x => x._id == candid);
+    const candidate = doc.currentcand[index];
+    console.log(index,candidate);
     
     if(!score2)
     {
@@ -285,7 +369,7 @@ app.post("/cordhome/:fest/:compid/:candidatesid",async (req,res)=>{
     {  var A = [];
        doc.currentround.push({candidateid:candid,name:candidate.name,score:candidate.score});
        //doc.currentround=[];
-       console.log(candidate,doc.currentround);
+       //console.log(candidate,doc.currentround);
        var currcand = new Map();
        for(i=0;i<doc.currentround.length;i++)
             {   
@@ -302,9 +386,9 @@ app.post("/cordhome/:fest/:compid/:candidatesid",async (req,res)=>{
                 var id = it.next().value;
                 A.push({candidateid:id,name:currcand.get(id).name,score:currcand.get(id).score});
             } 
-            console.log(A);
+            //console.log(A);
              doc.currentround = A;
-             console.log(doc.currentround)
+             //console.log(doc.currentround)
             fest.save();
     }
     const url = "/cordhome/" + festname + "/" + compid;

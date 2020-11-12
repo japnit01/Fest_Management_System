@@ -31,3 +31,51 @@
 <% } %>
 
 
+<div class="container">
+    <div class="displayform">
+        <%var months = [
+         'Jan', 'Feb', 'Mar', 'Apr', 'May',
+         'Jun', 'Jul', 'Aug', 'Sep',
+         'Oct', 'Nov', 'Dec'
+         ];%>
+        <%var i;%>
+             <table>
+                 <tr>
+                    <th>FEST Name</th>
+                    <th>COLLEGE Name</th>
+                    <th>TYPE of Fest</th>
+                 </tr>
+                <%for(i=0;i<fests.length;i++){ %> 
+                    <tr>
+                        <td>
+                            <a href="/cordhome/<%= fests[i].festname %>" >
+                                <span class="festdetails">
+                                    <%=fests[i].festname%>
+                                </span>
+                               </a>
+                        </td>
+                          <td>
+                            <span class="festdetails">
+                                <%=fests[i].college%>
+                            </span>
+                          </td>
+                           <td>
+                            <span class="festdetails">
+                                <%=fests[i].type%>
+                            </span>
+                           </td>
+                            <td>
+                            <span class="festdetails">
+                                <%=fests[i].from.getDate() + '-' + months[fests[i].from.getMonth()] + '-' + fests[i].from.getFullYear()%>
+                            </span>
+                          </td>
+                          <td>
+                            <span class="festdetails">
+                                <%=fests[i].to.getDate() + '-' + months[fests[i].to.getMonth()] + '-' + fests[i].to.getFullYear()%>
+                            </span>
+                          </td>
+                    </tr>
+                 <%}%>
+             </table>
+    </div>    
+</div>/
