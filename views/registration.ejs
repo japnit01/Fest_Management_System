@@ -91,7 +91,7 @@
 </div>     
 
 <script>
-    var n = s;
+    var n = <%=s%>;
     var i;
     document.querySelector("#festb0").classList.toggle("disabled");
     document.querySelector("#festd0").classList.toggle("show");
@@ -133,3 +133,5 @@
               
     }
 </script>
+
+<%- include("partials/footer") %>

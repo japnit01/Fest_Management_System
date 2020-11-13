@@ -1,61 +1,90 @@
 <%- include("partials/header") %>
 
 <style>
-    .desc{ 
-  width: 200px; 
-  height:200px; 
-  resize: none;
-}
+    .container{
+        margin:2rem auto 2rem auto;
+        border:1px solid black;
+        width:35%;
+    }
+    .formcontent{
+        text-align: center;
+    }
 </style>
-
-<form action="/cordhome/:fest" method="POST">
-    <div>
-        <label for="type">Type of Competition:</label>
-        <input type="text" name="type" required>
+<div class="container">
+    <div class="formcontent">
+        <div>
+            <h3>New Competition</h3>
+        </div>
+        <div class="inputarea">
+            <form action="/cordhome/<%=fest%>" method="POST">
+                <div class="formentity">
+                    <input type="text" name="name" placeholder="Name of Competition" required>
+                </div>
+                <hr>
+                <div class="formentity" style="position: fixed;">
+                    <label for="type">Type of Competition:</label>
+                    <select name="events" required>
+                    <option value="" disabled selected>Event type</option>
+                    <option value="competitionss">Competition-single</option>
+                    <option value="competitionsd">Competition-dual</option>
+                    <option value="concerts">Concerts</option>
+                    </select>
+                </div>
+                <hr>
+                <div class="formentity">
+                    <input type="date" name="date" required>
+                </div>
+                <div class="formentity">
+                    <label for="time">Start Time:</label>
+                    <select name="shours" onmousedown="if(this.options.length>8){this.size=8;}" onchange='this.size=0;' onblur="this.size=0;">
+                        <% for(var i=0;i<24;i++) { %> 
+                            <option value="<%=i%>"><%if(i<10){%>0<%}%><%=i%> </option>
+                        <%} %>
+                    </select>
+                    <span>:</span>
+                    <select name="sminutes" onmousedown="if(this.options.length>8){this.size=8;}" onchange='this.size=0;' onblur="this.size=0;"">
+                        <% for(var i=0;i<60;i++) { %> 
+                            <option value="<%=i%>"><%if(i< 10){%>0<%}%><%=i%></option>
+                        <%}%>
+                    </select>
+                </div>
+                <div class="formentity">
+                    <label for="time">End Time:</label>
+                    <select name="ehours"onmousedown="if(this.options.length>8){this.size=8;}" onchange='this.size=0;' onblur="this.size=0;"">
+                        <% for(var i=0;i<24;i++) { %> 
+                            <option value="<%=i%>"><%if(i/10 < 1){%>0<%}%><%=i%> </option>
+                        <%}%>
+                    </select>
+                    <span>:</span>
+                    <select name="eminutes" onmousedown="if(this.options.length>8){this.size=8;}" onchange='this.size=0;' onblur="this.size=0;"">
+                        <% for(var i=0;i<60;i++) { %> 
+                          <option value="<%=i%>"><%if(i/10 < 1){%>0<%}%><%=i%></option>
+                        <%}%>
+                    </select>
+                </div>
+                <div class="formentity">
+                    <label for="venue">Venue:</label>
+                    <input type="text" name="venue" required>
+                </div>
+                <div class="formentity">
+                    <label for="voting" >Will there be any voting?</label>
+                    <select name="voting" required>
+                        <option value="select" selected>Select</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>  
+                <div class="formentity">
+                    <div><label for="description">Description of Competition:</label></div> 
+                    <div><textarea style="resize:none" name="description" required></textarea></div>   
+                 </div>
+                <div class="formentity">
+                    <button>Organize!</button>
+                </div>
+            </form>
+        </div>
     </div>
-    <div>
-        <label for="name">Name of Competition:</label>
-        <input type="text" name="name">
-    </div>
-    <div>
-        <!-- to be included using "formidable" package -->
-        <label for="imageupload">Upload image:</label>
-        <input type="text" name="imageupload" required> 
-    </div>
-    <div>
-        <label for="description">Description of Competition:</label>
-        <textarea class="desc" name="description" required>
-    </div>
-    <div>
-        <label for="Date">Date and Timing</label>
-        <input type="date" name="datetime" required>
-    </div>
-    <div>
-        <label for="starttime">From</label>
-        <input type="time" name="starttime" required>
-        <label for="endtime">To</label>
-        <input type="time" name="endtime" required>
-    </div>    
-    <div>
-        <label for="venue">Venue for Competition:</label>
-        <input type="text" name="venue" required>
-    </div>
-    <div>
-        <label for="candidates">Number of Candidates participating:</label>
-        <input type="number" name="candidates" required>
-    </div>
-    <div>
-        <label for="voting" >Will there be any voting?</label>
-        <select name="voting" required>
-            <option value="select" selected>Select</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-        </select>
-    </div>
-    <div>
-        <label for="mobile">Phone No.:</label>
-    </div>
-</form>
+</div>
 
 
 

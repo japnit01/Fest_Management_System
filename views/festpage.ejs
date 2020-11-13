@@ -1,12 +1,15 @@
+<%- include("partials/header") %>
+
 <button onclick="window.location.href='/cordhome'">Back</button>
 
-<button><a href="/">Home</a></button>
 <style>
     .container {
         width:45%;
         padding: 50px 50px;
     }
 </style>
+
+<button onclick="window.location.href='/addcompetitions'">Add</button>
 
 <% let months = new Map();
     months.set(1,"January");
@@ -31,84 +34,6 @@
     days.set(6,"Saturday");
     days.set(7,"Sunday"); %>
 
-<div class="container">
-    <div>
-        <h1>BRING NEW COMPETITION TO THE PARTY!</h1>
-    </div>
-    <div class="formcontent">
-        <form action="/cordhome/<%=fest%>" method="POST">
-            <div class="formentity">
-                <label for="type">Type of Competition:</label>
-                <select name="events" required>
-                    <option value="" disabled selected>Event type</option>
-                    <option value="competitionss">Competition-single</option>
-                    <option value="competitionsd">Competition-dual</option>
-                    <option value="concerts">Concerts</option>
-                </select>
-            </div>
-            <div class="formentity">
-                <label for="name">Name of Competition:</label>
-                <input type="text" name="name" required>
-            </div>
-            <div class="formentity">
-                <!-- to be included using "formidable" package -->
-                <label for="imageupload">Upload image:</label>
-                <input type="text" name="imageupload"> 
-            </div>
-            <div class="formentity">
-                <label for="description">Description of Competition:</label>
-                <textarea name="description" required></textarea>
-            </div>
-            <div class="formentity">
-                <label for="date">Date:</label>
-                <input type="date" name="date" required>
-            </div>
-            <div class="formentity">
-                <label for="time">Start Time:</label>
-                <select name="shours">
-                    <% for(var i=0;i<24;i++) { %> 
-                        <option value="<%=i%>"><%if(i<10){%>0<%}%><%=i%> </option>
-                    <%} %>
-                </select>
-                <span>:</span>
-                <select name="sminutes">
-                    <% for(var i=0;i<60;i++) { %> 
-                        <option value="<%=i%>"><%if(i< 10){%>0<%}%><%=i%></option>
-                    <%} %>
-                </select>
-            </div>
-            <div class="formentity">
-                <label for="time">End Time:</label>
-                <select name="ehours">
-                    <% for(var i=0;i<24;i++) { %> 
-                        <option value="<%=i%>"><%if(i/10 < 1){%>0<%}%><%=i%> </option>
-                    <%} %>
-                </select>
-                <span>:</span>
-                <select name="eminutes">
-                    <% for(var i=0;i<60;i++) { %> 
-                        <option value="<%=i%>"><%if(i/10 < 1){%>0<%}%><%=i%></option>
-                    <%} %>
-                </select>
-            </div>
-            <div class="formentity">
-                <label for="venue">Venue:</label>
-                <input type="text" name="venue" required>
-            </div>
-            <div class="formentity">
-                <label for="voting" >Will there be any voting?</label>
-                <select name="voting" required>
-                    <option value="select" selected>Select</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                </select>
-            </div>  
-            <div class="formentity">
-                <button>Organize!</button>
-            </div>
-        </form>
-    </div>
-</div>
 
 <% var i%>
 <% for(i=0;i<fests.competitions.length; i++){ %> 
@@ -160,6 +85,7 @@
 </div>
 </div>
 
+<%- include("partials/footer") %>
 
 
 

@@ -164,6 +164,19 @@ app.post("/newfest",function(req,res){
      res.redirect("/cordhome");
 });
 
+
+app.get("/addcompetitions",(req,res)=>{
+    const {fest}= req.params;
+    fests.findOne({festname:fest},(err,record)=> {
+      if(err)
+          console.log(err);
+      else {
+         res.render("Competitions",{fest:fest,fests:record});    
+      }
+  });
+    
+});
+
 app.get("/cordhome/:fest",(req,res)=>{
     const {fest}= req.params;
     fests.findOne({festname:fest},(err,record)=> {
@@ -528,7 +541,7 @@ app.post("/Visitorhome/:fest/:compid",requireLogin,async (req,res)=>{
 app.get("/registrations",requireLogin,async (req,res)=> {
     var A = [];
     var D = [];
-    var N = [];
+    //var N = [];
     let festset = new Map() 
     users.findOne({_id:req.session.user_id}, async (err,user)=>{
         if(err)
