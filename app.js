@@ -35,6 +35,8 @@ let competitionsSchema = new mongoose.Schema({
     starttime: Date,
     endtime: Date,
     venue: String,
+    city: String,
+    address: String,
     candidates:[candidateSchema],
     currentcand:Array, 
     voting: Boolean,
@@ -190,6 +192,8 @@ app.post("/cordhome/:fest",(req,res)=>{
         eminutes = req.body.eminutes,
         starttime,
         endtime,
+        address = req.body.address,
+        city = req.body.city,
         venue = req.body.venue,
         voting = req.body.voting;
         starttime = new Date();
@@ -231,6 +235,7 @@ app.post("/cordhome/:fest",(req,res)=>{
             console.log(url);
               res.redirect(url);          
 });
+
 
 app.get("/cordhome/:fest/addcompetitions",(req,res)=>{
     const {fest}= req.params;

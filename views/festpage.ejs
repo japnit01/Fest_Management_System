@@ -9,7 +9,7 @@
     }
 </style>
 
-<button onclick="window.location.href='/cordhome/<%=fest%>/addcompetitions'">Add</button>
+<button onclick="window.location.href='/cordhome/<%=fest%>/addcompetitions'">Add Competition</button>
 
 <% let months = new Map();
     months.set(1,"January");
@@ -38,13 +38,13 @@
 <% var i%>
 <% for(i=0;i<fests.competitions.length; i++){ %> 
     <div>
-        Name : <%=fests.competitions[i].name%>
+        <strong>Name :</strong> <%=fests.competitions[i].name%>
     </div>
     <div>
-        Uploaded Image : <%=fests.competitions[i].imageUpload%>
+        <strong>Uploaded Image :</strong> <%=fests.competitions[i].imageUpload%>
     </div>
     <div>
-        Description : <%=fests.competitions[i].descr%>
+        <strong>Description :</strong> <%=fests.competitions[i].descr%>
     </div>
     <div>
 
@@ -58,20 +58,27 @@
                     break;
             default: suffix = "th";
         } %>
-        Date : <%=fests.competitions[i].date.getDate()%><%=suffix%><%=months.get(fests.competitions[i].date.getMonth()+1)%> 
+        <strong>Date :</strong> <%=fests.competitions[i].date.getDate()%><%=suffix%> <%=months.get(fests.competitions[i].date.getMonth()+1)%> 
         <%=fests.competitions[i].date.getFullYear()%>, 
         <%=days.get(fests.competitions[i].date.getDay())%>
-
     </div>
     <div>
-        Venue : <%=fests.competitions[i].venue%>
+        <strong>Venue :</strong> <%=fests.competitions[i].venue%>
     </div>
     <div>
-        Voting : <%=fests.competitions[i].voting%>
+        <strong>Address:</strong> <%=fests.competitions[i].address%>
+    </div>
+    <div>
+        <strong>City:</strong> <%=fests.competitions[i].city%>
+    </div>
+    <div>
+        <strong>Voting :</strong> <%=fests.competitions[i].voting%>
     </div>
     <div> 
-        Start Time : <%=fests.competitions[i].starttime.getHours()%>:<%=fests.competitions[i].starttime.getMinutes()%>
-        End Time : <%=fests.competitions[i].endtime.getHours()%>:<%=fests.competitions[i].endtime.getMinutes()%>
+        <strong>Start Time :</strong> <%=fests.competitions[i].starttime.getHours()%>:<%if(fests.competitions[i].starttime.getMinutes()<10){%>0<%}%><%=fests.competitions[i].starttime.getMinutes()%>
+    </div>
+    <div>
+        <strong>End Time :</strong> <%=fests.competitions[i].endtime.getHours()%>:<%if(fests.competitions[i].starttime.getMinutes()<10){%>0<%}%><%=fests.competitions[i].endtime.getMinutes()%>
     </div>
     <div>
         <%if(fests.competitions[i].currentcand.length == 0){%>

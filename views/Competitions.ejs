@@ -23,8 +23,8 @@
                 <hr>
                 <div class="formentity" style="position: fixed;">
                     <label for="type">Type of Competition:</label>
-                    <select name="events" required>
-                    <option value="" disabled selected>Event type</option>
+                    <select id="events" onchange="disableevent()" name="events" required>
+                    <option value="Event Type" disabled selected>Event type</option>
                     <option value="competitionss">Competition-single</option>
                     <option value="competitionsd">Competition-dual</option>
                     <option value="concerts">Concerts</option>
@@ -62,21 +62,29 @@
                         <%}%>
                     </select>
                 </div>
-                <div class="formentity">
-                    <label for="venue">Venue:</label>
-                    <input type="text" name="venue" required>
+                <div>
+                    <label for="address">Address:</label>
+                    <input name="address"  type="text" placeholder="Address" required>
+                </div>
+                <div>
+                    <label for="city">City:</label>
+                    <input name="city" type="text" placeholder="City" required>
                 </div>
                 <div class="formentity">
-                    <label for="voting" >Will there be any voting?</label>
+                    <label for="venue">Venue:</label>
+                    <input type="text" name="venue" placeholder="Venue" required>
+                </div>
+                <div class="formentity">
+                    <label for="voting">Will there be any voting?</label>
                     <select name="voting" required>
-                        <option value="select" selected>Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
+                        <option value="select" disabled selected>Select</option>
+                        <option class="ans" value="no">No</option>
+                        <option class="ans" value="yes">Yes</option>
                     </select>
                 </div>  
                 <div class="formentity">
                     <div><label for="description">Description of Competition:</label></div> 
-                    <div><textarea style="resize:none" name="description" required></textarea></div>   
+                    <div><textarea style="resize:none" name="description" placeholder="Description" required></textarea></div>   
                  </div>
                 <div class="formentity">
                     <button>Organize!</button>
@@ -86,6 +94,19 @@
     </div>
 </div>
 
+<script>
+
+   function disableevent() {
+        let events = document.querySelector("#events").value;
+        if(events != "competitionss")
+        {
+            let voting = document.getElementsByName("voting");
+
+            voting.disabled = true;
+        }
+   }
+
+</script>
 
 
 <%- include("partials/footer") %>
