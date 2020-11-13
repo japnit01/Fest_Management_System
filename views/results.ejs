@@ -1,1 +1,51 @@
-<h1>Ended</h1>
+<%- include("partials/header") %>
+
+<style>
+    .container{
+        margin :2rem auto 4rem auto;
+        padding: 0 0 0 0;
+        width: 85%;
+        text-align: center;
+    }
+    .rankcontent{
+        text-align: center;
+        width: 100%;
+        border: 3rem solid white;
+    }
+    .col-md-4{
+        padding: 0 0 0 0;
+    }
+    .row{
+        margin:0 0 0 0;
+        text-align: center;
+    }
+</style>
+
+
+
+<div class="container">
+    <h2>Competition has ended</h2>
+   <div class="rankcontent">  
+        <div class="row" style="background: gold; border-radius: 0.4rem; width:100%">
+            <div class="col-md-4" style="font-size: 5rem;"><%=doc.currentcand[0].rank%>st</div>
+            <div class="col-md-4" style="font-size:5rem;"><%=doc.currentcand[0].name%></div>  
+            <div class="col-md-4" style="font-size: 5rem">Winner</div>
+        </div>
+        <div class="row" style="background:rgba(245, 109, 46, 0.945); margin:2rem auto 0 auto; padding: 0.5rem 0 0.5rem 0; border-radius: 0.3rem; width:90%">
+            <div class="col-md-4" style="font-size: 2.5rem;"><%=doc.currentcand[1].rank%>nd</div>
+            <div class="col-md-4" style="font-size: 2.5rem;"><%=doc.currentcand[1].name%></div>
+            <div class="col-md-4" style="font-size: 2.5rem">Runner Up</div>
+        </div>
+        <div class="row" style="background: rgb(50, 219, 163); margin:2rem auto 0 auto; padding:0.5rem 0 0.5rem 0; border-radius: 0.3rem; width:80%">
+            <div class="col-md-4" style="font-size: 1.5rem" ><%=doc.currentcand[2].rank%>rd</div>
+            <div class="col-md-4" style="font-size: 1.5rem;"><%=doc.currentcand[2].name%></div>
+            <div class="col-md-4" style="font-size: 1.5rem" >Second Runner Up</div>
+        </div> 
+    </div>   
+    
+  <div style="font-weight: 400; font-size: 1.5rem;">
+     Thanks
+  </div>
+</div>
+
+<%- include("partials/footer") %>

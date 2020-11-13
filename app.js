@@ -165,18 +165,6 @@ app.post("/newfest",function(req,res){
 });
 
 
-app.get("/addcompetitions",(req,res)=>{
-    const {fest}= req.params;
-    fests.findOne({festname:fest},(err,record)=> {
-      if(err)
-          console.log(err);
-      else {
-         res.render("Competitions",{fest:fest,fests:record});    
-      }
-  });
-    
-});
-
 app.get("/cordhome/:fest",(req,res)=>{
     const {fest}= req.params;
     fests.findOne({festname:fest},(err,record)=> {
@@ -242,6 +230,18 @@ app.post("/cordhome/:fest",(req,res)=>{
             var url="/cordhome/"+fest;
             console.log(url);
               res.redirect(url);          
+});
+
+app.get("/cordhome/:fest/addcompetitions",(req,res)=>{
+    const {fest}= req.params;
+    fests.findOne({festname:fest},(err,record)=> {
+      if(err)
+          console.log(err);
+      else {
+         res.render("Competitions",{fest:fest,fests:record});    
+      }
+  });
+    
 });
 
 app.get("/cordhome/:fest/:compid/start",async(req,res)=>{
@@ -338,10 +338,15 @@ app.post("/cordhome/:fest/:compid",async (req,res)=>{
              }
         }
         else if(doc.round[doc.round.length-1]=="Round")
-        {  console.log("ended");
+        {  
            if(doc.result[doc.result.length-1].length==2)
-           {
-               res.render("results");
+           {   doc.result.push(A);
+               doc.result[doc.result.length-1].sort(function (a, b) {return a.score - b.score});
+               doc.result[doc.result.length-1].reverse()
+               console.log("ended");
+               fest.save()  
+               var url = "/cordhome/" + festname + "/" +  compid + "/results";
+               return res.redirect(url);
            }
         }
 
@@ -352,7 +357,7 @@ app.post("/cordhome/:fest/:compid",async (req,res)=>{
         //console.log(doc.result.length)
         console.log(doc.result[doc.result.length-1]);
        
-        if(doc.result.length == 2 && doc.currentround.length != doc.candidates)
+        if(doc.result.length == 2 && doc.candidates.length%2!=0 && doc.currentround.length != doc.candidates)
         {   console.log("sub round")
             doc.round.push("Special Round");
             doc.currentcand = [];
@@ -374,20 +379,64 @@ app.post("/cordhome/:fest/:compid",async (req,res)=>{
               doc.currentcand = B;
               console.log(doc.result[doc.result.length-1]);
         } 
-        else if((doc.result[doc.result.length-1].length)%2!=0)
-        {
-            doc.round.push("Round");  
+        else if((doc.result[doc.result.length-1].length)%2==0)
+        {   console.log("even")
+            doc.round.push("Round"); 
+            doc.currentcand = [];
+            doc.currentround = []; 
+            console.log(doc.result[doc.result.length-1]);
             doc.currentcand = doc.result[doc.result.length-1];
              doc.currentround = []; 
         }
         //console.log(doc.result.length,doc.result);
-        //console.log(doc.result[0][1]);
+        //console.log(doc.result[0][1]);\
             
             fest.save();
             var url = "/cordhome/" + festname + "/" +  compid;
             res.redirect(url);
     }
     
+});
+
+app.get("/cordhome/:fest/:compid/results",async(req,res)=>{
+    const festname = req.params.fest;
+    const compid = req.params.compid;
+    const fest = await fests.findOne({festname:festname});
+    const doc = await fest.competitions.id(compid);
+    const n = doc.result.length;
+    var final = new Map();
+    var count = 0;
+    for(i=n-1;i>=0;i--)
+    {
+        m = doc.result[i].length;
+        for(j=0;j<m;j++)
+        {
+             if(!final.has(doc.result[i][j].name))
+             {
+                 final.set(doc.result[i][j].name,{rank:count+1});
+                 count++;
+             }
+           if(count==3)
+           {
+               break;
+           }
+        }
+        if(count == 3)
+        {
+            break;
+        }
+    }
+    var A = [];
+    console.log(final);
+    const it = final.keys()
+    for(i=0;i<final.size;i++)
+            {   
+                var id = it.next().value;
+                A.push({name:id,rank:final.get(id).rank});
+            } 
+    console.log(A);      
+    doc.currentcand = A;  
+    res.render("results",{doc:doc})
 });
 
 app.post("/cordhome/:fest/:compid/:candidatesid",async (req,res)=>{
@@ -401,6 +450,7 @@ app.post("/cordhome/:fest/:compid/:candidatesid",async (req,res)=>{
     const doc = await fest.competitions.id(compid);
     const index = doc.currentcand.findIndex(x => x._id == candid);
     const candidate = doc.currentcand[index];
+    console.log(candidate.userid);
     console.log(index,candidate);
     
     if(!score2)
