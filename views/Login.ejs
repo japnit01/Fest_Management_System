@@ -7,7 +7,7 @@
     <title>Login</title>
 </head>
 <body>
-    
+    <button onclick="window.location.href='/'">Home</button>
     <style>
         .container {
             align-self: center;
@@ -50,7 +50,11 @@
                     <input type="email" name="email" placeholder=" Email ID" required>
                 </div>
                 <div class = "formgroup">
-                    <input type="password" name="password" placeholder=" Password" required>
+                    <input type="password" name="password" placeholder=" Password" minlength="8" maxlength="16" size="16" pattern="^(?=.{5,}$)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).*$" title="Password must follow the criteria:
+                    1. atleast 5 characters long
+                    2. atleast 1 uppercase letter
+                    3. atleast 1 lowercase letter
+                    4. atleast 1 special character " required>
                 </div>
             <div class="signlogin" style="padding-top: 2rem;">  
                 <div class="signuplink" style="width:60%; float:left; text-align:left">

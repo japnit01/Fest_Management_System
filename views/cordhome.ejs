@@ -1,4 +1,7 @@
 <%- include("partials/header") %>
+
+<button onclick="window.location.href='/'">Home</button>
+
 <style>
 .container{
     width:40%;
@@ -101,12 +104,32 @@ input.dt{
                            </td>
                             <td>
                             <span class="festdetails">
-                                <%=fests[i].from.getDate() + '-' + months[fests[i].from.getMonth()] + '-' + fests[i].from.getFullYear()%>
+                                <% let suffix;
+                                    switch((fests[i].from.getDate())%10) {
+                                        case 1: suffix = "st";
+                                                break;
+                                        case 2: suffix = "nd";
+                                                break;
+                                        case 3: suffix = "rd";
+                                                break;
+                                        default: suffix = "th";
+                                    } %>
+                                <%=fests[i].from.getDate()%><%=suffix%> <%=months[fests[i].from.getMonth()]%>, <%=fests[i].from.getFullYear()%> to
                             </span>
                           </td>
                           <td>
                             <span class="festdetails">
-                                <%=fests[i].to.getDate() + '-' + months[fests[i].to.getMonth()] + '-' + fests[i].to.getFullYear()%>
+                                <% suffix;
+                                    switch((fests[i].to.getDate())%10) {
+                                        case 1: suffix = "st";
+                                                break;
+                                        case 2: suffix = "nd";
+                                                break;
+                                        case 3: suffix = "rd";
+                                                break;
+                                        default: suffix = "th";
+                                    } %>
+                                <%=fests[i].to.getDate()%><%=suffix%> <%=months[fests[i].to.getMonth()]%>, <%=fests[i].to.getFullYear()%>
                             </span>
                           </td>
                     </tr>
