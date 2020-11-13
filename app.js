@@ -35,6 +35,8 @@ let competitionsSchema = new mongoose.Schema({
     starttime: Date,
     endtime: Date,
     venue: String,
+    city: String,
+    address: String,
     candidates:[candidateSchema],
     currentcand:Array, 
     voting: Boolean,
@@ -165,17 +167,6 @@ app.post("/newfest",function(req,res){
 });
 
 
-app.get("/addcompetitions",(req,res)=>{
-    const {fest}= req.params;
-    fests.findOne({festname:fest},(err,record)=> {
-      if(err)
-          console.log(err);
-      else {
-         res.render("Competitions",{fest:fest,fests:record});    
-      }
-  });
-    
-});
 
 app.get("/cordhome/:fest",(req,res)=>{
     const {fest}= req.params;
@@ -202,6 +193,8 @@ app.post("/cordhome/:fest",(req,res)=>{
         eminutes = req.body.eminutes,
         starttime,
         endtime,
+        address = req.body.address,
+        city = req.body.city,
         venue = req.body.venue,
         voting = req.body.voting;
         starttime = new Date();
@@ -242,6 +235,19 @@ app.post("/cordhome/:fest",(req,res)=>{
             var url="/cordhome/"+fest;
             console.log(url);
               res.redirect(url);          
+});
+
+
+app.get("/cordhome/:fest/addcompetitions",(req,res)=>{
+    const {fest}= req.params;
+    fests.findOne({festname:fest},(err,record)=> {
+      if(err)
+          console.log(err);
+      else {
+         res.render("Competitions",{fest:fest,fests:record});    
+      }
+  });
+    
 });
 
 app.get("/cordhome/:fest/:compid/start",async(req,res)=>{
