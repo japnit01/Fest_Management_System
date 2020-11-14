@@ -80,7 +80,7 @@ const requireLogin = (req,res,next)=>{
 
 app.get("/",function(req,res){ 
     
-    res.render("home");
+    res.render("home",{user:req.session.user_id});
 });
 
 app.get("/signup",function(req,res){
@@ -121,7 +121,13 @@ app.post("/login",async function(req,res){
         req.session.user_id = user._id;
         console.log("Succesfull Login")
         const url = req.session.returnto;
-        res.redirect(url);
+        if(url!=null)
+        {
+           res.redirect(url);
+        }
+        else{
+            res.redirect("/")
+        }
     }
     else{
         console.log("Try Again")
@@ -142,7 +148,7 @@ app.get("/cordhome",requireLogin,(req,res)=>{
         if(err)
            console.log(err);
         else
-           res.render("cordhome",{fests:fests});         
+           res.render("cordhome",{fests:fests,user:req.session.user_id});         
         });
 });
 
@@ -179,7 +185,7 @@ app.get("/cordhome/:fest",(req,res)=>{
         let festfrom = record.from;
         let festto = record.to;
         console.log(festfrom,festto);
-         res.render("festpage",{fest:fest,fests:record,details:details,festfrom:festfrom,festto:festto});    
+         res.render("festpage",{fest:fest,fests:record,details:details,festfrom:festfrom,festto:festto,user:req.session.user_id});    
       }
   });
     
@@ -272,7 +278,7 @@ app.get("/cordhome/:fest/addcompetitions",(req,res)=>{
       else {
         let festfrom = record.from;
         let festto = record.to;
-         res.render("Competitions",{fest:fest,fests:record,festfrom:festfrom,festto:festto});    
+         res.render("Competitions",{fest:fest,fests:record,festfrom:festfrom,festto:festto,user:req.session.user_id});    
       }
   });
     
@@ -282,7 +288,7 @@ app.get("/cordhome/:fest/:compid/start",async(req,res)=>{
     const festname = req.params.fest;
     const compid = req.params.compid;
 
-    res.render("startcomp",{fest:festname,compid:compid});
+    res.render("startcomp",{fest:festname,compid:compid,user:req.session.user_id});
 })
 
 app.post("/cordhome/:fest/:compid/start",async(req,res)=>{
@@ -334,7 +340,7 @@ app.get("/cordhome/:fest/:compid",requireLogin,async(req,res)=>{
          start = doc.currentround.length-1;
     }
 
-    res.render("livecompetition",{registrations:doc,fest:fest,start:start});
+    res.render("livecompetition",{registrations:doc,fest:fest,start:start,user:req.session.user_id});
 });
 
 
@@ -470,7 +476,7 @@ app.get("/cordhome/:fest/:compid/results",async(req,res)=>{
             } 
     console.log(A);      
     doc.currentcand = A;  
-    res.render("results",{doc:doc})
+    res.render("results",{doc:doc,user:req.session.user_id})
 });
 
 app.post("/cordhome/:fest/:compid/:candidatesid",async (req,res)=>{
@@ -532,7 +538,7 @@ app.get("/Visitorhome",function(req,res){
         if(err)
             console.log(err);
         else
-            res.render("Visitorhome",{fests:records});
+            res.render("Visitorhome",{fests:records,user:req.session.user_id});
     });
 
 });
@@ -545,7 +551,7 @@ app.get("/Visitorhome/:fest",requireLogin,(req,res)=> {
             console.log(err);
         else {
             // console.log("Fest Record: " + record);
-            res.render("visitorfestpage",{fest:fest, fests:record});    
+            res.render("visitorfestpage",{fest:fest, fests:record,user:req.session.user_id});    
         }
     });
 });
@@ -718,7 +724,7 @@ app.get("/registrations",requireLogin,async (req,res)=> {
            console.log(A);
         }
         console.log(festset);
-        res.render("registration",{A:A,N:festset});    
+        res.render("registration",{A:A,N:festset,user:req.session.user_id});    
     });
 });
 
@@ -817,7 +823,7 @@ app.get("/scheduler",requireLogin,async(req,res)=>{
            console.log(A);
         }
         console.log(festset);
-        res.render("scheduler",{A:A,N:festset});    
+        res.render("scheduler",{A:A,N:festset,user:req.session.user_id});    
     });
      
 });

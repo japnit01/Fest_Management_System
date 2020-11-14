@@ -13,6 +13,13 @@
         .navbar{
             background: #1A73E8;
         }
+        #navlogout:focus{
+            outline:none;
+        }
+        #navlogout{
+            border:none;
+            background:  #1A73E8;
+        }
     </style>
     <div>
     <nav class="navbar navbar-expand-lg navbar-dark">
@@ -27,12 +34,20 @@
             <li class="nav-item">
                <a class="nav-link active" href="/registrations" style="font-weight:400; font-size: 1.2rem;">Registered</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link active" href="/login" style="font-weight:400; font-size: 1.2rem;">Login</a>
-            </li>  
-            <li class="nav-item">
+            <%if(user == null){%>
+             <li class="nav-item">
+               <a class="nav-link active" href="/login" style="font-weight:400; font-size: 1.2rem;">Login</a>
+             </li>  
+             <li class="nav-item">
                 <a class="nav-link active" href="/signup" style="font-weight:400; font-size: 1.2rem;">Sign Up</a>
-            </li>      
+             </li>   
+            <%}else{%>
+            <li class="nav-item">
+                <form action="/logout" method="POST">
+                <button id="navlogout" style="color:white; font-weight:400; font-size: 1.2rem;">Logout</button>
+                </form>
+            </li> 
+             <%}%>
           </ul>
         </div>
       </nav>
