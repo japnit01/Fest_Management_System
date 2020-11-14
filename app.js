@@ -11,6 +11,7 @@ const port = 80;
 app.set("view engine","ejs");
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(session({secret:"yes its secret"}));
+app.use( express.static( "public" ));
 
 mongoose.connect("mongodb://localhost/festdb",{useNewUrlParser: true,useUnifiedTopology:true});
 
@@ -76,7 +77,9 @@ const requireLogin = (req,res,next)=>{
     next()
 };
 
+
 app.get("/",function(req,res){ 
+    
     res.render("home");
 });
 
@@ -116,7 +119,7 @@ app.post("/login",async function(req,res){
     if(valid)
     {
         req.session.user_id = user._id;
-        console.log("Succesfull Login");
+        console.log("Succesfull Login")
         const url = req.session.returnto;
         res.redirect(url);
     }
@@ -455,14 +458,15 @@ app.post("/cordhome/:fest/:compid/:candidatesid",async (req,res)=>{
     const doc = await fest.competitions.id(compid);
     const index = doc.currentcand.findIndex(x => x._id == candid);
     const candidate = doc.currentcand[index];
-    console.log(candidate.userid);
+    console.log();
     console.log(index,candidate);
-    
-    if(!score2)
+    candidate.score = null;
+    console.log(candidate);
+    if(score2 == null)
     {
         candidate.score = score1;
     }
-    else if(!score1)
+    else if(score1 ==null)
     {
         candidate.score = score2;
     }

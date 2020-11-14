@@ -25,20 +25,20 @@
 
 <div class="container">
     <h2>Competition has ended</h2>
-   <div class="rankcontent">  
-        <div class="row" style="background: gold; border-radius: 0.4rem; width:100%">
+   <div class="rankcontent">   
+        <div class="row" style="background: gold; border-radius: 0.4rem; width:100%; height:8rem">
             <div class="col-md-4" style="font-size: 5rem;"><%=doc.currentcand[0].rank%>st</div>
-            <div class="col-md-4" style="font-size:5rem;"><%=doc.currentcand[0].name%></div>  
+            <div class="col-md-4" style="font-size:5rem; height:7rem; overflow: hidden;"><%=doc.currentcand[0].name%></div>  
             <div class="col-md-4" style="font-size: 5rem">Winner</div>
         </div>
-        <div class="row" style="background:rgba(245, 109, 46, 0.945); margin:2rem auto 0 auto; padding: 0.5rem 0 0.5rem 0; border-radius: 0.3rem; width:90%">
+        <div class="row" style="height:5rem; background:rgba(245, 109, 46, 0.945); margin:2rem auto 0 auto; padding: 0.5rem 0 0.5rem 0; border-radius: 0.3rem; width:90%">
             <div class="col-md-4" style="font-size: 2.5rem;"><%=doc.currentcand[1].rank%>nd</div>
-            <div class="col-md-4" style="font-size: 2.5rem;"><%=doc.currentcand[1].name%></div>
+            <div class="col-md-4" style="font-size: 2.5rem; height: 4rem; overflow: hidden;"><%=doc.currentcand[1].name%></div>
             <div class="col-md-4" style="font-size: 2.5rem">Runner Up</div>
         </div>
-        <div class="row" style="background: rgb(50, 219, 163); margin:2rem auto 0 auto; padding:0.5rem 0 0.5rem 0; border-radius: 0.3rem; width:80%">
+        <div class="row" style="height:3.5rem; background: rgb(50, 219, 163); margin:2rem auto 0 auto; padding:0.5rem 0 0.5rem 0; border-radius: 0.3rem; width:80%">
             <div class="col-md-4" style="font-size: 1.5rem" ><%=doc.currentcand[2].rank%>rd</div>
-            <div class="col-md-4" style="font-size: 1.5rem;"><%=doc.currentcand[2].name%></div>
+            <div class="col-md-4" style="font-size: 1.5rem; height:3rem; overflow: hidden;"><%=doc.currentcand[2].name%></div>
             <div class="col-md-4" style="font-size: 1.5rem" >Second Runner Up</div>
         </div> 
     </div>   
