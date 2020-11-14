@@ -248,7 +248,6 @@ app.post("/cordhome/:fest",(req,res)=>{
                 console.log(url);
                 res.redirect(url);
             }
-              
               else
               {
                 //   res.send("Date of competition should be between the dates of the fest!!!");
