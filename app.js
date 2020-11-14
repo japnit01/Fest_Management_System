@@ -167,14 +167,16 @@ app.post("/newfest",function(req,res){
 });
 
 
-
 app.get("/cordhome/:fest",(req,res)=>{
     const {fest}= req.params;
     fests.findOne({festname:fest},(err,record)=> {
       if(err)
           console.log(err);
       else {
-         res.render("festpage",{fest:fest,fests:record});    
+        let festfrom = record.from;
+        let festto = record.to;
+        console.log(festfrom,festto);
+         res.render("festpage",{fest:fest,fests:record,details:details,festfrom:festfrom,festto:festto});    
       }
   });
     
@@ -224,27 +226,51 @@ app.post("/cordhome/:fest",(req,res)=>{
             venue: venue,
             voting: voting,
         };
+        fests.findOne({festname:fest},(err,record)=> {
+            if(err)
+                console.log(err);
+            else {
+              let festfrom = record.from;
+              let festto = record.to;  
+              if(date >= festfrom && date <= festto)
+              {
+                fests.updateOne({festname:fest},{$push:{competitions:[details]}}, (err,reco)=> {
+                    if(err)
+                        console.log(err);
+                    else {
+                        console.log("Competition organized!!");
+                        }
+                }); 
+                var url="/cordhome/"+fest;
+                console.log(url);
+                res.redirect(url);
+            }
+              
+              else
+              {
+                //   res.send("Date of competition should be between the dates of the fest!!!");
+                // alert("Date of competition should be between the dates of the fest!!!");
+                  let url = "/cordhome/" + fest + "/addcompetitions";
+                  res.redirect(url);
+              }
+        }
+
+        });
         
-            fests.updateOne({festname:fest},{$push:{competitions:[details]}}, (err,reco)=> {
-                if(err)
-                    console.log(err);
-                else {
-                    console.log("Competition organized!!");
-                    }
-            });
-            var url="/cordhome/"+fest;
-            console.log(url);
-              res.redirect(url);          
 });
 
 
 app.get("/cordhome/:fest/addcompetitions",(req,res)=>{
     const {fest}= req.params;
+
+   
     fests.findOne({festname:fest},(err,record)=> {
       if(err)
           console.log(err);
       else {
-         res.render("Competitions",{fest:fest,fests:record});    
+        let festfrom = record.from;
+        let festto = record.to;
+         res.render("Competitions",{fest:fest,fests:record,festfrom:festfrom,festto:festto});    
       }
   });
     

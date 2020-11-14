@@ -10,6 +10,31 @@
         text-align: center;
     }
 </style>
+
+<% let months = new Map();
+    months.set(1,"January");
+    months.set(2,"February");
+    months.set(3,"March");
+    months.set(4,"April");
+    months.set(5,"May");
+    months.set(6,"June");
+    months.set(7,"July");
+    months.set(8,"August");
+    months.set(9,"September");
+    months.set(10,"October");
+    months.set(11,"November");
+    months.set(12,"December"); %>
+
+<% let days = new Map();
+    days.set(1,"Monday");
+    days.set(2,"Tuesday");
+    days.set(3,"Wednesday");
+    days.set(4,"Thursday");
+    days.set(5,"Friday");
+    days.set(6,"Saturday");
+    days.set(7,"Sunday"); %>
+
+
 <div class="container">
     <div class="formcontent">
         <div>
@@ -32,7 +57,30 @@
                 </div>
                 <hr>
                 <div class="formentity">
-                    <input type="date" name="date" required>
+                    <% let suffix;
+                    switch((festfrom.getDate())%10) {
+                        case 1: suffix = "st";
+                                break;
+                        case 2: suffix = "nd";
+                                break;
+                        case 3: suffix = "rd";
+                                break;
+                        default: suffix = "th";
+                    } %>
+                    <%switch((festto.getDate())%10) {
+                        case 1: suffix = "st";
+                                break;
+                        case 2: suffix = "nd";
+                                break;
+                        case 3: suffix = "rd";
+                                break;
+                        default: suffix = "th";
+                    } %>
+                    <input type="date" name="date" title="Date of Event is between <%=festfrom.getDate()%><%=suffix%> <%=months.get(festfrom.getMonth()+1)%> 
+                    <%=festfrom.getFullYear()%>, 
+                    <%=days.get(festfrom.getDay())%> to <%=festto.getDate()%><%=suffix%> <%=months.get(festto.getMonth()+1)%> 
+                    <%=festto.getFullYear()%>, 
+                    <%=days.get(festto.getDay())%>" required>
                 </div>
                 <div class="formentity">
                     <label for="time">Start Time:</label>
@@ -105,6 +153,42 @@
             voting.disabled = true;
         }
    }
+
+//    function datecheck() {
+//         let date = document.getElementsByName("date").value;
+//         console.log(date);
+//         if(date.getTime() >= festfrom.getTime() && date.getTime() <= festto.getTime())
+//         {
+//             return true;
+//         }
+//         else
+//         {
+//             // let name = document.getElementsByName("name");
+//             // let events = document.getElementsByName("events");
+//             // let shours = document.getElementsByName("shours");
+//             // let sminutes = document.getElementsByName("sminutes");
+//             // let ehours = document.getElementsByName("ehours");
+//             // let eminutes = document.getElementsByName("eminutes");
+//             // let venue = document.getElementsByName("venue");
+//             // let address = document.getElementsByName("address");
+//             // let city = document.getElementsByName("city");
+//             // let voting = document.getElementsByName("voting");
+//             // let description = document.getElementsByName("description");
+//             // name.value = name.textContent;
+//             // events.value = events.textContent;
+//             // shours.value = shours.textContent;
+//             // sminutes.value = sminutes.textContent;
+//             // ehours.value = ehours.textContent;
+//             // eminutes.value = eminutes.textContent;
+//             // venue.value = venue.textContent;
+//             // address.value = address.textContent;
+//             // city.value = city.textContent;
+//             // voting.value = voting.textContent;
+//             // description.value = description.textContevents
+//             alert("Date of competition should be between the dates of the fest!!!")
+//             return false;
+//         }
+//    }
 
 </script>
 
