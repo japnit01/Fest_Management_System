@@ -88,8 +88,8 @@
                     <%=days.get(A[j][4].getDay())%>
                     </div>
                     <div> 
-                        Start Time : <%=A[j][5].getHours()%>:<%=A[j][5].getMinutes()%>
-                        End Time : <%=A[j][6].getHours()%>:<%=A[j][6].getMinutes()%>
+                        Start Time : <%=A[j][5].getHours()%>:<%if(A[j][5].getMinutes()<10) {%>0<%}%><%=A[j][5].getMinutes()%>
+                        End Time : <%=A[j][6].getHours()%>:<%if(A[j][6].getMinutes()<10) {%>0<%}%><%=A[j][6].getMinutes()%>
                     </div>
                     <form action="/scheduler/<%=A[j][1]%>/delete" method="POST">
                          <button>Delete</button>
