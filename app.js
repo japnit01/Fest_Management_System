@@ -67,7 +67,20 @@ let userSchema = new mongoose.Schema({
 });
 
 let fests = mongoose.model("fests",festSchema);
-let users = mongoose.model("users",userSchema); 
+let users = mongoose.model("users",userSchema);
+
+// fests.deleteMany({},(err,record)=> {
+//     if(err)
+//         console.log(err);
+//     else    
+//         console.log(record);
+// });
+// users.deleteMany({},(err,record)=> {
+//     if(err)
+//         console.log(err);
+//     else    
+//         console.log(record);
+// });
 
 const requireLogin = (req,res,next)=>{
     req.session.returnto = req.url;
@@ -77,7 +90,6 @@ const requireLogin = (req,res,next)=>{
     }
     next()
 };
-
 
 app.get("/", async (req,res)=>{ 
     res.render("home",{user:req.session.user_id});
