@@ -1,10 +1,5 @@
 <%- include("partials/header") %>
 
-<!-- <button onclick="goback()">Back</button> -->
-<button onclick="window.location.href='/'">Home</button>
-
-<h4>Registrations</h4>
-
 <style>
     .hidden{
         display:none;
@@ -13,11 +8,24 @@
         background-color: aliceblue;
     }
     .active{
-        color: royalblue;
+        color: white;
+        background:#1A73E8;
     }
     .disabled{
         pointer-events: none;
-        color :red;
+        color :#1A73E8;
+        border-bottom: 1px solid #1A73E8;
+    }
+    .container{
+        text-align: center;
+    }
+    button{
+        border:0;
+        width:7rem;
+        font-weight: 600;
+    }
+    button:focus{
+        outline:none !important;
     }
 </style>
 
@@ -46,14 +54,16 @@
 
 <%const it1 = N.keys()%>
 <%const s = N.size%>
+<div style="text-align: center; background:#1A73E8;">
 <%for(i=0;i<N.size;i++){%>
     <button id="festb<%=i%>"><%=N.get(it1.next().value)%></button> 
 <%}%>    
-
+</div>
 
 <%var i,j,id;%>
-  <% const it = N.keys();
-     for(i=0;i<N.size;i++){%>
+  <% const it = N.keys();%>
+<div class="conatiner">
+     <%for(i=0;i<N.size;i++){%>
          <%const fid = it.next().value%> 
          <div id="festd<%=i%>">  
          <%for(j=0;j<A.length;j++){ %> 

@@ -1,7 +1,5 @@
 <%- include("partials/header") %>
 
-<button onclick="window.location.href='/'">Home</button>
-
 <style>
 .container{
     width:40%;
@@ -9,6 +7,7 @@
     border:1px solid #dadce0;
     margin:3rem auto 5rem auto;
     text-align: center;
+    border-radius: 0.4rem;
 }
 .formcontent{
     padding-top: 2rem;
@@ -19,6 +18,7 @@
 }
 input{
     border:1px solid #dadce0;
+    border-radius: 0.2rem;
 }
 input.textfield{
     width:100%;
@@ -32,15 +32,17 @@ input.textfield{
 }
 input.dt{
     width:45%;
-    height:2.7rem;
+    height: 2.7rem;
+}
+.row{
+    padding-bottom: 1rem;
 }
 </style>    
 
 <div class="container">
     <div class="formcontent">
-      <div>
         <h3>Add Fest</h3>
-      </div>
+    </div>
     <div class="innerarea">
         <form class="form" action="/newfest" method="POST">
             <div class = "formgroup">
@@ -52,90 +54,98 @@ input.dt{
             <div class = "formgroup">
                 <input type="text" class="textfield" name="type" placeholder="Type of Fest" required>
             </div>
-            <div class="datecontent">
-                <span style="font-size:1rem; padding-bottom:0.6rem; font-weight: 500; width:50%; float:left; text-align:center">Start Date</span>
-                <span style="font-size:1rem; padding-bottom:0.6rem; font-weight: 500; width:50%; float:right; text-align:center;">End Date</span>
+            <div class="row" style="width:100%; margin:0 0 0 0;">
+                <div style="width:50%;">Start Date</div>
+                <div style="width:50%;">End Date</div>
             </div>
-            <div>
-            <span style="padding-right:2rem"><input type="date" class="dt" name="from"></span>
-            <span><input type="date" class="dt" name="to"></span>
+            <div class="row" style="width:100%; margin:0 0 0 0;">
+                <div style="width:50%;">
+                    <input style="width:95%; float:left;" type="date" class="dt" name="from">
+                </div>
+                <div style="width:50%;">
+                    <input style="width:95%; float: right;" type="date" class="dt" name="to">
+                </div>
+            </div>
+            <div class="row" style="width:100%; margin:0 0 0 0; padding-top:1rem; text-align:center; ">
+                <div style="width:50%;">
+                    <input style="width:95%; float:left" class="dt" name="state" type="text" placeholder="State" required>  
+                </div>
+                <div style="width:50%;">
+                    <input style="width:95%; float:right;" class="dt" name="city" type="text" placeholder="City" required>
+                </div>
             </div>
             <div style="padding: 3rem 0 0 0;">
-            <button class="btn btn-large btn-primary submit" type="submit">Add Fest and Enjoy!</button>
+                <button class="btn btn-large btn-primary submit" type="submit">Add Fest and Enjoy!</button>
             </div>
         </form>
     </div>
-  </div>
 </div>
 
-
-<div class="container">
-    <div class="displayform">
-        <%var months = [
-         'Jan', 'Feb', 'Mar', 'Apr', 'May',
-         'Jun', 'Jul', 'Aug', 'Sep',
-         'Oct', 'Nov', 'Dec'
-         ];%>
-        <%var i;%>
-             <table>
-                 <tr>
-                    <th>FEST Name</th>
-                    <th>COLLEGE Name</th>
-                    <th>TYPE of Fest</th>
-                 </tr>
-                <%for(i=0;i<fests.length;i++){ %> 
-                    <tr>
+<div class="displayform">
+    <%var months = [
+     'Jan', 'Feb', 'Mar', 'Apr', 'May',
+     'Jun', 'Jul', 'Aug', 'Sep',
+     'Oct', 'Nov', 'Dec'
+     ];%>
+    <%var i;%>
+         <table>
+             <tr>
+                <th>FEST Name</th>
+                <th>COLLEGE Name</th>
+                <th>TYPE of Fest</th>
+             </tr>
+            <%for(i=0;i<fests.length;i++){ %> 
+                <tr>
+                    <td>
+                        <a href="/cordhome/<%= fests[i].festname %>" >
+                            <span class="festdetails">
+                                <%=fests[i].festname%>
+                            </span>
+                           </a>
+                    </td>
+                      <td>
+                        <span class="festdetails">
+                            <%=fests[i].college%>
+                        </span>
+                      </td>
+                       <td>
+                        <span class="festdetails">
+                            <%=fests[i].type%>
+                        </span>
+                       </td>
                         <td>
-                            <a href="/cordhome/<%= fests[i].festname %>" >
-                                <span class="festdetails">
-                                    <%=fests[i].festname%>
-                                </span>
-                               </a>
-                        </td>
-                          <td>
-                            <span class="festdetails">
-                                <%=fests[i].college%>
-                            </span>
-                          </td>
-                           <td>
-                            <span class="festdetails">
-                                <%=fests[i].type%>
-                            </span>
-                           </td>
-                            <td>
-                            <span class="festdetails">
-                                <% let suffix;
-                                    switch((fests[i].from.getDate())%10) {
-                                        case 1: suffix = "st";
-                                                break;
-                                        case 2: suffix = "nd";
-                                                break;
-                                        case 3: suffix = "rd";
-                                                break;
-                                        default: suffix = "th";
-                                    } %>
-                                <%=fests[i].from.getDate()%><%=suffix%> <%=months[fests[i].from.getMonth()]%>, <%=fests[i].from.getFullYear()%> to
-                            </span>
-                          </td>
-                          <td>
-                            <span class="festdetails">
-                                <% suffix;
-                                    switch((fests[i].to.getDate())%10) {
-                                        case 1: suffix = "st";
-                                                break;
-                                        case 2: suffix = "nd";
-                                                break;
-                                        case 3: suffix = "rd";
-                                                break;
-                                        default: suffix = "th";
-                                    } %>
-                                <%=fests[i].to.getDate()%><%=suffix%> <%=months[fests[i].to.getMonth()]%>, <%=fests[i].to.getFullYear()%>
-                            </span>
-                          </td>
-                    </tr>
-                 <%}%>
-             </table>
-    </div>    
-</div>
+                        <span class="festdetails">
+                            <% let suffix;
+                                switch((fests[i].from.getDate())%10) {
+                                    case 1: suffix = "st";
+                                            break;
+                                    case 2: suffix = "nd";
+                                            break;
+                                    case 3: suffix = "rd";
+                                            break;
+                                    default: suffix = "th";
+                                } %>
+                            <%=fests[i].from.getDate()%><%=suffix%> <%=months[fests[i].from.getMonth()]%>, <%=fests[i].from.getFullYear()%> to
+                        </span>
+                      </td>
+                      <td>
+                        <span class="festdetails">
+                            <% suffix;
+                                switch((fests[i].to.getDate())%10) {
+                                    case 1: suffix = "st";
+                                            break;
+                                    case 2: suffix = "nd";
+                                            break;
+                                    case 3: suffix = "rd";
+                                            break;
+                                    default: suffix = "th";
+                                } %>
+                            <%=fests[i].to.getDate()%><%=suffix%> <%=months[fests[i].to.getMonth()]%>, <%=fests[i].to.getFullYear()%>
+                        </span>
+                      </td>
+                </tr>
+             <%}%>
+         </table>
+</div>    
 
 <%- include("partials/footer") %>

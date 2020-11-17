@@ -86,6 +86,9 @@
         <%}else{%>
            <button><a href="/cordhome/<%=fests.festname%>/<%=fests.competitions[i]._id%>">View</a></button>
         <%}%>
+        <form action="/cordhome/<%=fests.festname%>/<%=fests.competitions[i]._id%>/delete" method="POST">
+          <button>Delete</button>
+        </form>  
     </div>
     <hr>
 <% } %>

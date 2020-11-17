@@ -36,8 +36,6 @@ let competitionsSchema = new mongoose.Schema({
     starttime: Date,
     endtime: Date,
     venue: String,
-    city: String,
-    address: String,
     candidates:[candidateSchema],
     currentcand:Array, 
     voting: Boolean,
@@ -52,6 +50,8 @@ let festSchema = new mongoose.Schema({
    type:String,
    from:Date,
    to:Date,
+   city: String,
+   address: String,
    competitions: [competitionsSchema]
 });
 
@@ -78,8 +78,7 @@ const requireLogin = (req,res,next)=>{
 };
 
 
-app.get("/",function(req,res){ 
-    
+app.get("/", async (req,res)=>{ 
     res.render("home",{user:req.session.user_id});
 });
 
@@ -119,10 +118,16 @@ app.post("/login",async function(req,res){
     if(valid)
     {
         req.session.user_id = user._id;
+        req.session.user_name = user.name;
+        console.log(req.session.user_name);
         console.log("Succesfull Login")
+        // const user = await users.findOne({_id:req.session.user_id});
+        // user.scheduler = [];
+        // user.registration = [];
         const url = req.session.returnto;
         if(url!=null)
         {
+           
            res.redirect(url);
         }
         else{
@@ -138,6 +143,7 @@ app.post("/login",async function(req,res){
 app.post("/logout",(req,res)=>{
            console.log("session ended");
         req.session.user_id=null;
+        req.session.user_name=null;
            req.session.destroy();
            res.redirect("/");
 
@@ -159,11 +165,15 @@ app.post("/newfest",function(req,res){
      var type = req.body.type;
      var from = req.body.from;
      var to = req.body.to;
+     var city = req.body.city;
+     var state = req.body.state;
      details = {college:college,
                 festname:festname,
                 type:type,
                 from:from,
-                to:to
+                to:to,
+                city:city,
+                state:state
                };
      
      fests.create(details,(err,fest)=>{
@@ -204,8 +214,6 @@ app.post("/cordhome/:fest",(req,res)=>{
         eminutes = req.body.eminutes,
         starttime,
         endtime,
-        address = req.body.address,
-        city = req.body.city,
         venue = req.body.venue,
         voting = req.body.voting;
         starttime = new Date();
@@ -215,6 +223,8 @@ app.post("/cordhome/:fest",(req,res)=>{
         endtime = new Date();
         endtime.setHours(ehours);
         endtime.setMinutes(eminutes);
+
+        
 
         if(voting=="YES")
         {
@@ -239,10 +249,23 @@ app.post("/cordhome/:fest",(req,res)=>{
             if(err)
                 console.log(err);
             else {
-              let festfrom = record.from;
-              let festto = record.to;  
+              let festfrom = JSON.stringify(record.from.getFullYear()) + "-";
+              if(record.from.getMonth() < 10)
+                festfrom += "0";
+              festfrom += JSON.stringify(record.from.getMonth()+1) + "-";
+              if(record.from.getDate() < 10)
+                festfrom += "0";
+              festfrom += JSON.stringify(record.from.getDate());
+              let festto = JSON.stringify(record.to.getFullYear()) + "-";
+              if(record.from.getMonth() < 10)
+                festto += "0";
+              festto += JSON.stringify(record.to.getMonth()+1) + "-";
+              if(record.to.getDate() < 10)
+                festto += "0";
+              festto += JSON.stringify(record.to.getDate());
               if(date >= festfrom && date <= festto)
               {
+                  console.log(date);
                 fests.updateOne({festname:fest},{$push:{competitions:[details]}}, (err,reco)=> {
                     if(err)
                         console.log(err);
@@ -250,21 +273,22 @@ app.post("/cordhome/:fest",(req,res)=>{
                         console.log("Competition organized!!");
                         }
                 }); 
-                var url="/cordhome/"+fest;
+                var url = "/cordhome/" + fest;
                 console.log(url);
                 res.redirect(url);
-            }
-              else
-              {
+             }
+             else
+             {
                 //   res.send("Date of competition should be between the dates of the fest!!!");
                 // alert("Date of competition should be between the dates of the fest!!!");
-                  let url = "/cordhome/" + fest + "/addcompetitions";
+                console.log(date);
+                console.log(festfrom);
+                console.log(festto);
+                let url = "/cordhome/" + fest + "/addcompetitions";
                   res.redirect(url);
-              }
+             }
         }
-
-        });
-        
+    });     
 });
 
 
@@ -304,17 +328,54 @@ app.post("/cordhome/:fest/:compid/start",async(req,res)=>{
     // doc.currentcand = [];
     // doc.round = [];
     // fest.save();
-    doc.round.push("Round");
-    doc.currentcand  = doc.candidates;
-    if(doc.candidates.length%2!==0)
+    if(doc.type=="competitionsd")
     {
-        doc.currentcand = doc.currentcand.slice(0,doc.candidates.length-1)
+        doc.round.push("Round");
+        doc.currentcand  = doc.candidates;
+        if(doc.candidates.length%2!==0)
+        {
+            doc.currentcand = doc.currentcand.slice(0,doc.candidates.length-2)
+        }
+       fest.save();
     }
-    fest.save();
+    else if(doc.type=="competitionss")
+    {
+        doc.currentcand  = doc.candidates;
+        fest.save();
+    }
     //console.log(doc.currentcand[0],doc.candidates);  
     console.log(doc.currentcand.length) 
     var url = "/cordhome/" + festname + "/" + compid;
     res.redirect(url)
+});
+
+app.post("/cordhome/:fest/:compid/delete",async(req,res)=>{
+   const festname = req.params.fest;
+   const compid = req.params.compid;
+   
+   fests.update({festname:festname},{$pull:{competitions:{_id:compid}}},(err,comp)=>{
+       if(err)
+       {
+           console.log(err);
+       }
+       else{
+           console.log("Deleted");
+       }
+   });
+   
+   users.updateMany({"registration.compid":compid},{$pull:{scheduler:{compid:compid},registration:{compid:compid}}},(err,comp)=>{
+       if(err)
+       {
+           console.log(err);
+       }
+       else
+       {   
+           console.log(comp);
+           console.log("Deleted from registration and scheduler")
+       }
+   });
+   const url = "/cordhome/"+ festname;
+   res.redirect(url);
 });
 
 app.get("/cordhome/:fest/:compid",requireLogin,async(req,res)=>{
@@ -328,19 +389,27 @@ app.get("/cordhome/:fest/:compid",requireLogin,async(req,res)=>{
     // doc.currentcand = [];
     // doc.round = [];
     // fest.save();
-    console.log(doc.currentround.length)
-    
-    if((doc.currentround.length)%2 == 0)
-    {  
-           start = doc.currentround.length
-           console.log(start);
-    }
-    else if(start%2!=0)
+    if(doc.type=="competitionsd")
     {
-         start = doc.currentround.length-1;
+      console.log(doc.currentround.length)
+    
+       if((doc.currentround.length)%2 == 0)
+       {  
+              start = doc.currentround.length
+              console.log(start);
+       }
+       else if(start%2!=0)
+       {
+            start = doc.currentround.length-1;
+       }
+   
+       res.render("livecompetition",{registrations:doc,fest:fest,start:start,user:req.session.user_id});
     }
-
-    res.render("livecompetition",{registrations:doc,fest:fest,start:start,user:req.session.user_id});
+    else if(doc.type=="competitionss")
+    {
+        console.log(doc.currentcand);
+       res.render("livevoting",{registrations:doc,fest:fest,user:req.session.user_id});
+    }
 });
 
 
@@ -580,6 +649,7 @@ app.post("/Visitorhome/:fest/:compid",requireLogin,async (req,res)=>{
         {   var A = [];
             var candidate  = new Map();
             const doc = festfound.competitions.id(compid);   
+            console.log(req.session.user_name);
             doc.candidates.push({userid:req.session.user_id,name:req.session.user_name,score:0});
             //doc.candidates = A;
             //console.log(doc.candidates.length);
@@ -606,13 +676,6 @@ app.post("/Visitorhome/:fest/:compid",requireLogin,async (req,res)=>{
             console.log(doc.candidates)
             
             
-            users.findOne({_id:req.session.user_id},async (err,user)=>{
-                if(err)
-                {
-                   console.log(err);
-                }
-                else{
-                    
                    users.updateOne({_id:req.session.user_id},{$addToSet:{scheduler:[{compid:compid,festid:festfound._id}],registration:[{compid:compid,festid:festfound._id}]}},(err,record)=>{
                        if(err)
                        {
@@ -622,8 +685,6 @@ app.post("/Visitorhome/:fest/:compid",requireLogin,async (req,res)=>{
                            console.log("record added");
                        }
                    }); 
-                 }  
-             });
         }  
         var url = "/Visitorhome/"+fest;
             res.redirect(url)
@@ -640,7 +701,7 @@ app.get("/registrations",requireLogin,async (req,res)=> {
             console.log(err);
         }
         else
-        {
+        {  
            var i,j;         
            //var p = [compid,date,starttime,endtime];
            for(i=0;i<user.registration.length;i++)
@@ -729,6 +790,15 @@ app.get("/registrations",requireLogin,async (req,res)=> {
 });
 
 app.get("/scheduler",requireLogin,async(req,res)=>{
+    // users.count({},(err,user)=>{
+    //     if(err)
+    //     {
+    //         console.log(err);
+    //     }
+    //     else{
+    //         console.log(user);
+    //     }
+    // });
     var A = [];
     var D = [];
     var N = [];
@@ -826,6 +896,21 @@ app.get("/scheduler",requireLogin,async(req,res)=>{
         res.render("scheduler",{A:A,N:festset,user:req.session.user_id});    
     });
      
+});
+
+app.post("/scheduler/:compid/delete",(req,res)=>{
+    const compid = req.params.compid;
+    users.update({_id:req.session.user_id},{$pull:{scheduler:{compid:compid}},registration:{compid:compid}},(err,user)=>{
+       if(err)
+       {
+           console.log(err);
+       }
+       else
+       {
+           console.log("deleted");
+       }
+    });
+    res.redirect("/scheduler")
 });
 
 app.listen(port,()=>{

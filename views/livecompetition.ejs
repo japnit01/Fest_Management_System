@@ -8,7 +8,7 @@
 
   .player1,.player2{
     width:80%;
-    background: rgb(124, 60, 184);
+    background: rgb(84, 25, 139);
     border-radius: 0.4rem;
   }
   input:focus{
@@ -84,13 +84,13 @@
      <% for(i=start+2;i<n;i+=2) {%> 
       <div class="row" style="width:100%; margin: 0 0 0 0; text-align: center;">         
               <div style=" margin:1rem 0 1rem 0; width:45%">
-                <div style="width:50%; font-weight: 600; font-size: 1.1rem; padding:0.5rem 0 0.5rem 0; background: rgba(255, 42, 42, 0.774); float:right; border-radius: 2rem;">
+                <div style="width:50%; font-weight: 600; color:white; font-size: 1.1rem; padding:0.5rem 0 0.5rem 0; background: rgba(199, 23, 23, 0.774); float:right; border-radius: 2rem;">
                  <%=registrations.currentcand[i].name%>
                 </div>
               </div>
               <div style="width:10%; font-size: 2rem;">vs</div>
               <div style=" margin:1rem 0 1rem 0; width:45%">
-                 <div style="width:50%; font-weight: 600; font-size: 1.1rem; padding:0.5rem 0 0.5rem 0; background:  rgba(255, 42, 42, 0.774);; float:left; border-radius:2rem">
+                 <div style="width:50%; font-weight: 600; color:white; font-size: 1.1rem; padding:0.5rem 0 0.5rem 0; background:  rgba(199, 23, 23, 0.774); float:left; border-radius:2rem">
                    <%=registrations.currentcand[i+1].name%>
                  </div>  
              </div>

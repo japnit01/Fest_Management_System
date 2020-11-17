@@ -91,7 +91,9 @@
                         Start Time : <%=A[j][5].getHours()%>:<%=A[j][5].getMinutes()%>
                         End Time : <%=A[j][6].getHours()%>:<%=A[j][6].getMinutes()%>
                     </div>
-                  
+                    <form action="/scheduler/<%=A[j][1]%>/delete" method="POST">
+                         <button>Delete</button>
+                    </form>
                <%}%>
                             
           <%}%>
