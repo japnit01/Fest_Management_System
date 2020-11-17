@@ -73,7 +73,12 @@
              <button id="registerb" name="register" value="register">Register</button>
         <%}%>  
              <button id="scheduleb" name="schedule" value="schedule">Schedule</button>
-    </form>   
+    </form>
+        <%if(fests.competitions[i].type == "competitionss"){%>
+            <button><a href="/Visitorhome/<%=fest%>/<%= fests.competitions[i]._id%>">Vote</a></button>
+        <%}%>
+
+      
     <hr>
 <% } %>
 <%-include("partials/footer")%>
