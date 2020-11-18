@@ -30,27 +30,27 @@
 </style>
 
 <% let months = new Map();
-    months.set(1,"January");
-    months.set(2,"February");
-    months.set(3,"March");
-    months.set(4,"April");
+    months.set(1,"Jan");
+    months.set(2,"Feb");
+    months.set(3,"Mar");
+    months.set(4,"Apr");
     months.set(5,"May");
-    months.set(6,"June");
-    months.set(7,"July");
-    months.set(8,"August");
-    months.set(9,"September");
-    months.set(10,"October");
-    months.set(11,"November");
-    months.set(12,"December"); %>
+    months.set(6,"Jun");
+    months.set(7,"Jul");
+    months.set(8,"Aug");
+    months.set(9,"Sep");
+    months.set(10,"Oct");
+    months.set(11,"Nov");
+    months.set(12,"Dec"); %>
 
-<% let days = new Map();
+<!-- let days = new Map();
     days.set(1,"Monday");
     days.set(2,"Tuesday");
     days.set(3,"Wednesday");
     days.set(4,"Thursday");
     days.set(5,"Friday");
     days.set(6,"Saturday");
-    days.set(7,"Sunday"); %>
+    days.set(7,"Sunday");  -->
 
 <%const it1 = N.keys()%>
 <%const s = N.size%>
@@ -74,6 +74,8 @@
                     <div id="yes"><%=A[j][3]%></div>
                     <div><% let suffix;
                     switch((A[j][4].getDate())%10) {
+                        case 11: suffix = "th";
+                                    break;
                         case 1: suffix = "st";
                                 break;
                         case 2: suffix = "nd";
@@ -83,8 +85,7 @@
                         default: suffix = "th";
                     } %>
                     Date : <%=A[j][4].getDate()%><%=suffix%><%=months.get(A[j][4].getMonth()+1)%> 
-                    <%=A[j][4].getFullYear()%>, 
-                    <%=days.get(A[j][4].getDay())%>
+                    <%=A[j][4].getFullYear()%>
                     </div>
                     <div> 
                         Start Time : <%=A[j][5].getHours()%>:<%if(A[j][5].getMinutes()<10) {%>0<%}%><%=A[j][5].getMinutes()%>

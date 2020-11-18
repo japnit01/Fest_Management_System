@@ -34,27 +34,27 @@
 </style>
 
 <% let months = new Map();
-    months.set(1,"January");
-    months.set(2,"February");
-    months.set(3,"March");
-    months.set(4,"April");
+    months.set(1,"Jan");
+    months.set(2,"Feb");
+    months.set(3,"Mar");
+    months.set(4,"Apr");
     months.set(5,"May");
-    months.set(6,"June");
-    months.set(7,"July");
-    months.set(8,"August");
-    months.set(9,"September");
-    months.set(10,"October");
-    months.set(11,"November");
-    months.set(12,"December"); %>
+    months.set(6,"Jun");
+    months.set(7,"Jul");
+    months.set(8,"Aug");
+    months.set(9,"Sep");
+    months.set(10,"Oct");
+    months.set(11,"Nov");
+    months.set(12,"Dec"); %>
 
-<% let days = new Map();
+ <!-- let days = new Map();
     days.set(1,"Monday");
     days.set(2,"Tuesday");
     days.set(3,"Wednesday");
     days.set(4,"Thursday");
     days.set(5,"Friday");
     days.set(6,"Saturday");
-    days.set(7,"Sunday"); %>
+    days.set(7,"Sunday");  -->
 
 
 <div class="container">
@@ -90,6 +90,8 @@
                 <div style="width:100%; padding:1rem 0 1rem 0">
                     <% let suffix;
                     switch((festfrom.getDate())%10) {
+                        case 11: suffix = "th";
+                                    break;
                         case 1: suffix = "st";
                                 break;
                         case 2: suffix = "nd";
@@ -99,6 +101,8 @@
                         default: suffix = "th";
                     } %>
                     <%switch((festto.getDate())%10) {
+                        case 11: suffix = "th";
+                                    break;
                         case 1: suffix = "st";
                                 break;
                         case 2: suffix = "nd";
@@ -110,8 +114,7 @@
                     <input style="border-radius: 0.2rem; border: 1px solid #dadce0; width:100%; height:2.3rem;" type="date" name="date" title="Date of Event is between <%=festfrom.getDate()%><%=suffix%> <%=months.get(festfrom.getMonth()+1)%> 
                     <%=festfrom.getFullYear()%>, 
                     <%=days.get(festfrom.getDay())%> to <%=festto.getDate()%><%=suffix%> <%=months.get(festto.getMonth()+1)%> 
-                    <%=festto.getFullYear()%>, 
-                    <%=days.get(festto.getDay())%>" required>
+                    <%=festto.getFullYear()%>" required>
                 </div>
                 
 

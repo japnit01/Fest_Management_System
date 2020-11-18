@@ -317,7 +317,6 @@ app.get("/cordhome/:fest/addcompetitions",(req,res)=>{
          res.render("Competitions",{fest:fest,fests:record,festfrom:festfrom,festto:festto,user:req.session.user_id});    
       }
   });
-    
 });
 
 app.get("/cordhome/:fest/:compid/start",async(req,res)=>{
@@ -326,6 +325,14 @@ app.get("/cordhome/:fest/:compid/start",async(req,res)=>{
 
     res.render("startcomp",{fest:festname,compid:compid,user:req.session.user_id});
 })
+
+app.get("/competitionserror",async(req,res)=> {
+    res.render("competitionserror");
+});
+
+app.get("/candidateserror",async(req,res)=> {
+    res.render("canderror");
+});
 
 app.post("/cordhome/:fest/:compid/start",async(req,res)=>{
     const festname = req.params.fest;
