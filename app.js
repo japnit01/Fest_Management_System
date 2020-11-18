@@ -30,6 +30,7 @@ let currentroundSchema = new mongoose.Schema({
 let competitionsSchema = new mongoose.Schema({
     type: String,
     name: String,
+    start:{type:Boolean,default:false},
     imageUpload: String, 
     descr: String,
     date: Date,
@@ -358,8 +359,14 @@ app.post("/cordhome/:fest/:compid/start",async(req,res)=>{
        fest.save();
     }
     else if(doc.type=="competitionss")
-    {
-        doc.currentcand  = doc.candidates;
+    { 
+        for(i=0;i<doc.candidates.length;i++)
+        {  
+           if(doc.currentround.length<doc.candidates.length)
+           { 
+              doc.currentround.push({name:doc.candidates[i].name,candidateid:doc.candidates[i].userid,score:doc.candidates[i].score})  
+            }
+        }   
         fest.save();
     }
     //console.log(doc.currentcand[0],doc.candidates);  
@@ -425,12 +432,13 @@ app.get("/cordhome/:fest/:compid",requireLogin,async(req,res)=>{
        res.render("livecompetition",{registrations:doc,fest:fest,start:start,user:req.session.user_id});
     }
     else if(doc.type=="competitionss")
-    {
+    {   
+        doc.start == true;
+        start =0;
         console.log(doc.currentcand);
-       res.render("livevoting",{registrations:doc,fest:fest,user:req.session.user_id});
+        res.render("livevoting",{registrations:doc,fest:fest,start:start,user:req.session.user_id});
     }
 });
-
 
 app.post("/cordhome/:fest/:compid",async (req,res)=>{
     const festname = req.params.fest;
@@ -578,7 +586,6 @@ app.post("/cordhome/:fest/:compid/:candidatesid",async (req,res)=>{
     const doc = await fest.competitions.id(compid);
     const index = doc.currentcand.findIndex(x => x._id == candid);
     const candidate = doc.currentcand[index];
-    console.log();
     console.log(index,candidate);
     candidate.score = null;
     console.log(candidate);
@@ -621,6 +628,31 @@ app.post("/cordhome/:fest/:compid/:candidatesid",async (req,res)=>{
     res.redirect(url)
 });
 
+app.post("/cordhome/:fest/:compid/:candidatesid/voting",async (req,res)=>{
+    const festname = req.params.fest;
+    const compid = req.params.compid;
+    const candid = req.params.candidatesid;
+
+
+    const fest = await fests.findOne({festname:festname});
+    const doc = await fest.competitions.id(compid);
+    const candidate = doc.currentround.id(candid);
+    
+    for(i=0;i<doc.candidates.length;i++)
+    {  console.log(candidate.candidateid,doc.candidates[i].userid)
+       let a = candidate.candidateid.localeCompare(doc.candidates[i].userid);
+       if(a==0)
+       {
+          doc.candidates[i].score = candidate.score;
+       }
+    }
+    doc.currentround.shift();
+    fest.save();  
+
+    const url = "/cordhome/" +  festname + "/" + compid;
+    res.redirect(url);
+ });
+
 app.get("/Visitorhome",function(req,res){
     fests.find({},(err,records)=> {
         if(err)
@@ -628,7 +660,6 @@ app.get("/Visitorhome",function(req,res){
         else
             res.render("Visitorhome",{fests:records,user:req.session.user_id});
     });
-
 });
 
 app.get("/Visitorhome/:fest",requireLogin,(req,res)=> {
@@ -642,6 +673,16 @@ app.get("/Visitorhome/:fest",requireLogin,(req,res)=> {
             res.render("visitorfestpage",{fest:fest, fests:record,user:req.session.user_id});    
         }
     });
+});
+
+app.get("/Visitorhome/:fest/:compid",requireLogin,async (req,res)=>{
+    const festname = req.params.fest;
+    const compid = req.params.compid;
+
+    const fest = await fests.findOne({festname:festname});
+    const doc = await fest.competitions.id(compid);
+    
+    res.render("visitorvoting",{fest:fest,doc:doc,user:req.session.user_id});
 });
 
 app.post("/Visitorhome/:fest/:compid",requireLogin,async (req,res)=>{

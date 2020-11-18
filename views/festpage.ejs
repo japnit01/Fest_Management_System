@@ -89,7 +89,7 @@
         <strong>End Time :</strong> <%=fests.competitions[i].endtime.getHours()%>:<%if(fests.competitions[i].starttime.getMinutes()<10){%>0<%}%><%=fests.competitions[i].endtime.getMinutes()%>
     </div>
     <div>
-        <%if(fests.competitions[i].currentcand.length == 0){%>
+        <%if((fests.competitions[i].type=="competitionsd" && fests.competitions[i].currentcand.length == 0)||(fests.competitions[i].type=="competitionss" && fests.competitions[i].currentround.length == 0)){%>
            <button><a href="/cordhome/<%=fests.festname%>/<%=fests.competitions[i]._id%>/start">View</a></button>
         <%}else{%>
            <button><a href="/cordhome/<%=fests.festname%>/<%=fests.competitions[i]._id%>">View</a></button>
