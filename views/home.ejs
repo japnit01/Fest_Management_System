@@ -35,11 +35,80 @@
 
 
 
-<button><a href="/cordhome">Coordinator</a></button>
+<button><a href="/cordhome">Add Fest</a></button>
 <button><a href="/Visitorhome">Visitor</a></button>
 <form>
 <button formaction="/logout" formmethod="POST">Log Out</button>
 </form>
+
+
+<div class="displayform">
+    <%var months = [
+     'Jan', 'Feb', 'Mar', 'Apr', 'May',
+     'Jun', 'Jul', 'Aug', 'Sep',
+     'Oct', 'Nov', 'Dec'
+     ];%>
+    <%var i;%>
+         <table>
+             <tr>
+                <th>FEST Name</th>
+                <th>COLLEGE Name</th>
+                <th>TYPE of Fest</th>
+             </tr>
+            <%for(i=0;i<fests.length;i++){ %> 
+                <tr>
+                    <td>
+                        <a href="/cordhome/<%= fests[i].festname %>" >
+                            <span class="festdetails">
+                                <%=fests[i].festname%>
+                            </span>
+                           </a>
+                    </td>
+                      <td>
+                        <span class="festdetails">
+                            <%=fests[i].college%>
+                        </span>
+                      </td>
+                       <td>
+                        <span class="festdetails">
+                            <%=fests[i].type%>
+                        </span>
+                       </td>
+                        <td>
+                        <span class="festdetails">
+                            <% let suffix;
+                                switch((fests[i].from.getDate())%10) {
+                                    case 1: suffix = "st";
+                                            break;
+                                    case 2: suffix = "nd";
+                                            break;
+                                    case 3: suffix = "rd";
+                                            break;
+                                    default: suffix = "th";
+                                } %>
+                            <%=fests[i].from.getDate()%><%=suffix%> <%=months[fests[i].from.getMonth()]%>, <%=fests[i].from.getFullYear()%> to
+                        </span>
+                      </td>
+                      <td>
+                        <span class="festdetails">
+                            <% suffix;
+                                switch((fests[i].to.getDate())%10) {
+                                    case 1: suffix = "st";
+                                            break;
+                                    case 2: suffix = "nd";
+                                            break;
+                                    case 3: suffix = "rd";
+                                            break;
+                                    default: suffix = "th";
+                                } %>
+                            <%=fests[i].to.getDate()%><%=suffix%> <%=months[fests[i].to.getMonth()]%>, <%=fests[i].to.getFullYear()%>
+                        </span>
+                      </td>
+                </tr>
+             <%}%>
+         </table>
+</div>    
+
 
 
 

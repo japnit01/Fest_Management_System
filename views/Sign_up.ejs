@@ -34,13 +34,15 @@
     }
 </style>
 
+
+
 <div class="container">
    <div class = "formcontent"> 
     <div style="padding-top: 2rem;">
         <h3>Sign Up</h3>
     </div>
     <div class="inputarea">
-        <form  class="form-group" action="/signup" method="POST">
+        <form class="form-group" action="/signup" method="POST">
             <div class="formgroup">
                 <input class="formentity" type="text" name="name" placeholder=" Name" required>
             </div>
@@ -63,6 +65,13 @@
             </div>
             <div class="signupbutton" style="padding-top: 1rem;">
                 <button class="btn btn-large btn-danger">Sign Up</button>
+            </div>
+            <div>
+                <%if(signal === 1) {%>
+                    <strong>This username already exists!! Try another one...</strong>
+                <%}%>
+                
+                <%signal = 0;%>
             </div>
         </form>
     </div>    

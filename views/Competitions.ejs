@@ -1,5 +1,5 @@
 <%- include("partials/header") %>
-<button>Back</button>
+<button onclick="window.location.href='/cordhome/<%=fest%>'" style="border:none; margin:15px 15px;">Back</button>
 
 <style>
     .container{
@@ -112,8 +112,7 @@
                         default: suffix = "th";
                     } %>
                     <input style="border-radius: 0.2rem; border: 1px solid #dadce0; width:100%; height:2.3rem;" type="date" name="date" title="Date of Event is between <%=festfrom.getDate()%><%=suffix%> <%=months.get(festfrom.getMonth()+1)%> 
-                    <%=festfrom.getFullYear()%>, 
-                    <%=days.get(festfrom.getDay())%> to <%=festto.getDate()%><%=suffix%> <%=months.get(festto.getMonth()+1)%> 
+                    <%=festfrom.getFullYear()%> to <%=festto.getDate()%><%=suffix%> <%=months.get(festto.getMonth()+1)%> 
                     <%=festto.getFullYear()%>" required>
                 </div>
                 

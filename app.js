@@ -92,26 +92,52 @@ const requireLogin = (req,res,next)=>{
 };
 
 app.get("/", async (req,res)=>{ 
-    res.render("home",{user:req.session.user_id});
+    fests.find({},(err,record)=>{
+        if(err)
+            console.log(err);
+        else    
+        {
+            res.render("home",{user:req.session.user_id,fests:record});
+        }
+    });
 });
 
+var signal = 0;
 app.get("/signup",function(req,res){
-    res.render("Sign_up")
+    res.render("Sign_up",{signal:signal});
 });
 
 app.post("/signup",async function(req,res){
       const {email,password,name} = req.body;
-      const hash = await bcrypt.hash(password,12)
-      const userdetails = new users({
-          email,
-          password:hash,
-          name
-      });
-      req.session.user_id = userdetails._id;
-      req.session.user_name = userdetails.name
-      await userdetails.save()
-      console.log("Account Created");
-      res.redirect("/");
+      
+      users.findOne({name: name},async(err,record)=> {
+            if(err)
+                console.log(err);
+            else
+            {
+                if(record == null)
+                {
+                    signal = 0;
+                    const hash = await bcrypt.hash(password,12)
+                    const userdetails = new users({
+                        email,
+                        password:hash,
+                        name
+                    });
+                    req.session.user_id = userdetails._id;
+                    req.session.user_name = userdetails.name
+                    await userdetails.save()
+                    console.log("Account Created");
+                    res.redirect("/");
+                }
+                else
+                {
+                    signal = 1;
+                    console.log("This username already exists!! Try another one...");
+                    res.redirect("/signup");
+                }
+            }
+      })
 });
 
 app.get("/login",(req,res)=>{
