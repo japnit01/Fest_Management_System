@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <!-- Compiled and minified CSS -->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+     <!-- Compiled and minified JavaScript -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+
+     <title>Document</title>
+</head>
+<body>
+
+<style>
+  .container{
+    margin:3rem auto 2rem auto;
+    border:1px solid #dadce0;
+    width:33%;
+  }
+  .innerarea{
+    border:2rem solid white;
+  }
+</style>
+
+
+<div class="container">
+  <div class="innerarea">
+    <h3>Add Coordinator</h3>
+    
+      <div class="chips chips-placeholder"></div>
+       
+       <form action="/cordhome/<%=fest.festname%>/addcoordinator" method="POST">
+            <input id="hiddeninput" type="hidden" name="coord">
+            <div style="width:100%; height:4rem">
+            <button style="float: right; height:3rem; width:3rem; border-radius: 50%;" id="button">press</button>
+          </div>
+       </form>
+      
+       
+       
+       
+       <div style="margin:2rem 0 0 0; background: rgb(221, 216, 216); border:1px solid rgb(221, 216, 216); border-radius:0.5rem;">
+          <div style="border:2rem solid rgb(221, 216, 216); "> 
+             <%for(i=0;i<coordinator.length;i++){%>
+                    <div>
+                    <%=coordinator[i]%>
+                   </div>  
+                <%}%>
+                <%if(A.length>0){%>
+                  <p>User not found create Account</p>
+                <%}%>
+                <%for(var i=0;i<A.length;i++){%>
+                    <div>
+                      <%=A[i]%>
+                    </div>
+                <%}%>
+          </div>    
+       </div>
+</div>
+
+<script>
+   const tags  = document.querySelectorAll(".chips-placeholder");
+   var t = M.Chips.init(tags,{placeholder:'add coordinators',
+                               secondaryPlaceholder:"+ coordinator"});
+   var x ="";
+   $('#button').click(function(){
+     JSON.stringify(M.Chips.getInstance($('.chips')).chipsData.forEach(element => {
+            // console.log(element.tag);
+            x = x + element.tag +",";
+     }));     
+     $("#hiddeninput").val(x);
+   });
+</script>
+</body>
+</html>

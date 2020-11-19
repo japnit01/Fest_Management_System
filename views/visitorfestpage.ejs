@@ -28,46 +28,47 @@
 
 
 <% var i%>
+
 <% for(i=0;i<fests.competitions.length; i++){ %> 
-    <div>
-        <strong>Name :</strong> <%=fests.competitions[i].name%>
-    </div>
-    <div>
-        <strong>Uploaded Image :</strong><%=fests.competitions[i].imageUpload%>
-    </div>
-    <div>
-        <strong>Description :</strong> <%=fests.competitions[i].descr%>
-    </div>
-    <div>
-        <% let suffix;
-        switch((fests.competitions[i].date.getDate())%10) {
-            case 1: suffix = "st";
-                    break;
-            case 2: suffix = "nd";
-                    break;
-            case 3: suffix = "rd";
-                    break;
-            default: suffix = "th";
-        } %>
-        <strong>Date :</strong> <%=fests.competitions[i].date.getDate()%><%=suffix%> <%=months.get(fests.competitions[i].date.getMonth()+1)%> 
-        <%=fests.competitions[i].date.getFullYear()%>, 
-        <%=days.get(fests.competitions[i].date.getDay())%>
-    </div>
-    <div> 
-        <strong>Start Time :</strong> <%=fests.competitions[i].starttime.getHours()%>:<%if(fests.competitions[i].starttime.getMinutes()<10){%>0<%}%><%=fests.competitions[i].starttime.getMinutes()%>
-    </div>
-    <div>
-        <strong>End Time :</strong> <%=fests.competitions[i].endtime.getHours()%>:<%if(fests.competitions[i].starttime.getMinutes()<10){%>0<%}%><%=fests.competitions[i].endtime.getMinutes()%>
-    </div>
-    <div>
-        <strong>Venue :</strong> <%=fests.competitions[i].venue%>
-    </div>
-    <div>
-        <strong>Address:</strong> <%=fests.competitions[i].address%>
-    </div>
-    <div>
-        <strong>City:</strong> <%=fests.competitions[i].city%>
-    </div>
+
+<div class="card" style="width: 18rem;">
+    <img src="..." class="card-img-top" alt="...">
+    <div class="card-body">
+    <p class="card-text">
+        
+        <div>
+            <strong>Name :</strong> <%=fests.competitions[i].name%>
+        </div>
+    
+        <div>
+            <strong>Description :</strong> <%=fests.competitions[i].descr%>
+        </div>
+        <div>
+            <% let suffix;
+            switch((fests.competitions[i].date.getDate())%10) {
+                case 1: suffix = "st";
+                        break;
+                case 2: suffix = "nd";
+                        break;
+                case 3: suffix = "rd";
+                        break;
+                default: suffix = "th";
+            } %>
+            <strong>Date :</strong> <%=fests.competitions[i].date.getDate()%><%=suffix%> <%=months.get(fests.competitions[i].date.getMonth()+1)%> 
+            <%=fests.competitions[i].date.getFullYear()%>, 
+            <%=days.get(fests.competitions[i].date.getDay())%>
+        </div>
+        <div> 
+            <strong>Start Time :</strong> <%=fests.competitions[i].starttime.getHours()%>:<%if(fests.competitions[i].starttime.getMinutes()<10){%>0<%}%><%=fests.competitions[i].starttime.getMinutes()%>
+        </div>
+        <div>
+            <strong>End Time :</strong> <%=fests.competitions[i].endtime.getHours()%>:<%if(fests.competitions[i].starttime.getMinutes()<10){%>0<%}%><%=fests.competitions[i].endtime.getMinutes()%>
+        </div>
+        <div>
+            <strong>Venue :</strong> <%=fests.competitions[i].venue%>
+        </div>
+        
+    </p>
     <form action="/Visitorhome/<%=fest%>/<%= fests.competitions[i]._id%>" method="POST">
        <%if(fests.competitions[i].type == "competitionsd" || fests.competitions[i].type == "competitionss"){%> 
              <button id="registerb" name="register" value="register">Register</button>
@@ -77,8 +78,8 @@
         <%if(fests.competitions[i].type == "competitionss"){%>
             <button><a href="/Visitorhome/<%=fest%>/<%= fests.competitions[i]._id%>">Vote</a></button>
         <%}%>
-
-      
-    <hr>
+    
+    </div>
+</div>
 <% } %>
 <%-include("partials/footer")%>

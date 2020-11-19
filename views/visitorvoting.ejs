@@ -1,1 +1,26 @@
-<h1>Voting</h1>
+<style>
+    .disabled{
+        pointer-events:none;
+        color:blue;
+    }
+</style>
+
+ <div class="card" style="width: 18rem;">
+    <div class="card-body">
+      <h3 class="card-title"> <%=doc.currentround[0].name%></h3>
+      <form action="/Visitorhome/<%=fest.festname%>/<%=doc._id%>/vote" method="POST">
+        <div>
+            <button class="active">Yes Tick</button>
+        </div>
+     </form>
+     <div>
+        <button class="active">Cross</button>
+     </div>
+    </div>
+  </div>
+ 
+ <script>
+     document.querySelector(".active").addEventListener("click",(e)=>{
+         document.querySelector(".active").className = "disabled";   
+     });
+ </script>

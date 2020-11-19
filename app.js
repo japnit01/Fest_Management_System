@@ -31,7 +31,6 @@ let competitionsSchema = new mongoose.Schema({
     type: String,
     name: String,
     start:{type:Boolean,default:false},
-    imageUpload: String, 
     descr: String,
     date: Date,
     starttime: Date,
@@ -51,6 +50,7 @@ let festSchema = new mongoose.Schema({
    type:String,
    from:Date,
    to:Date,
+   coord:Array,
    city: String,
    address: String,
    competitions: [competitionsSchema]
@@ -63,7 +63,12 @@ let userSchema = new mongoose.Schema({
     age: Number, 
     college: String,
     scheduler: Array,
-    registration: Array
+    registration: Array,
+    festcoord:Array,
+    vote:{
+        type:Map,
+        of:String
+    }
 });
 
 let fests = mongoose.model("fests",festSchema);
@@ -198,7 +203,7 @@ app.post("/newfest",function(req,res){
      res.redirect("/cordhome");
 });
 
-
+var A = [];
 app.get("/cordhome/:fest",(req,res)=>{
     const {fest}= req.params;
     fests.findOne({festname:fest},(err,record)=> {
@@ -207,9 +212,11 @@ app.get("/cordhome/:fest",(req,res)=>{
       else {
         let festfrom = record.from;
         let festto = record.to;
+        A =[];
         console.log(festfrom,festto);
          res.render("festpage",{fest:fest,fests:record,details:details,festfrom:festfrom,festto:festto,user:req.session.user_id});    
-      }
+      
+     }
   });
     
 });
@@ -304,7 +311,6 @@ app.post("/cordhome/:fest",(req,res)=>{
     });     
 });
 
-
 app.get("/cordhome/:fest/addcompetitions",(req,res)=>{
     const {fest}= req.params;
 
@@ -321,10 +327,64 @@ app.get("/cordhome/:fest/addcompetitions",(req,res)=>{
     
 });
 
+app.get("/cordhome/:fest/addcoordinator",async (req,res)=>{
+   const{fest}  =req.params;
+   const usefest  = await fests.findOne({festname:fest});
+   var coordinator = [];
+   for(var i=0;i<usefest.coord.length;i++)
+   {  
+       const user = await users.findOne({_id:usefest.coord[i]});
+       coordinator.push(user.email)
+   }
+   console.log(coordinator);
+    res.render("coordinators",{fest:usefest,A:A,coordinator:coordinator});
+});
+
+app.post("/cordhome/:fest/addcoordinator",async(req,res)=>{
+    A=[];
+    const{fest}  =req.params;
+    const coords = req.body.coord;
+    //console.log(coords);
+
+    var x = coords.split(",");
+    x = x.slice(0,x.length-1);
+    console.log(x);
+    const usefest  = await fests.findOne({festname:fest});
+    
+    
+    for(var i=0;i<x.length;i++)
+    {  
+       const user = await users.findOne({email:x[i]});
+        try{
+               sp = user.festcoord.find(element => element == x[i]);
+               //console.log(sp)
+               if(sp==false)
+               {
+                 user.festcoord.push(x[i]);
+               }   
+               st = usefest.coord.find(element => element == user._id);
+               //console.log(st)
+               if(st==false)
+               {
+                 usefest.coord.push(user._id);
+               }
+               user.save();
+               usefest.save();
+           } 
+        catch{
+              A.push(x[i]);
+           }   
+        console.log(A);       
+    }
+    
+    const url = "/cordhome/" + fest + "/addcoordinator";
+    res.redirect(url);
+})
+
 app.get("/cordhome/:fest/:compid/start",async(req,res)=>{
     const festname = req.params.fest;
     const compid = req.params.compid;
-
+    
     res.render("startcomp",{fest:festname,compid:compid,user:req.session.user_id});
 })
 
@@ -676,6 +736,33 @@ app.get("/Visitorhome/:fest/:compid",requireLogin,async (req,res)=>{
     const doc = await fest.competitions.id(compid);
     
     res.render("visitorvoting",{fest:fest,doc:doc,user:req.session.user_id});
+});
+
+app.post("/Visitorhome/:fest/:compid/vote",async (req,res)=>{
+    const festname = req.params.fest;
+    const compid = req.params.compid;
+
+    const fest = await fests.findOne({festname:festname});
+    const doc = await fest.competitions.id(compid);
+    const user = await users.findOne({_id:req.session.user_id});
+   
+    // if(user.vote.size==0)
+    // {
+    //      user.vote = new Map();
+    // }
+    if(!user.vote.has(compid))
+    {  var A = new Map();
+       user.vote.set(compid,A)
+       user.vote.get(compid).set(doc.currentround[0].candidateid,0);
+    }
+    // else{
+    //    user.vote.get(compid).set(doc.currentround[0].candidateid,0); 
+    // }
+    console.log(user.vote.keys());
+    doc.currentround[0].score = doc.currentround[0].score + 1;
+    fest.save();
+    const url = "/Visitorhome/" + festname + "/" + compid;
+    res.redirect(url);
 });
 
 app.post("/Visitorhome/:fest/:compid",requireLogin,async (req,res)=>{
