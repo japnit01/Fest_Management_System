@@ -66,13 +66,23 @@ let userSchema = new mongoose.Schema({
     registration: Array,
     festcoord:Array,
     vote:{
-        type:Map,
-        of:String
-    }
+           type:Map,
+           of:Array
+         } 
 });
 
 let fests = mongoose.model("fests",festSchema);
 let users = mongoose.model("users",userSchema);
+
+// users.create({
+//     name:"teri behn di",
+//     email:"kutta@gmaildifuddi.com",
+//     password:"karo",
+//     vote:[['w4345657687jfhhbj','dttfhf']]
+// });
+
+
+
 
 // fests.deleteMany({},(err,record)=> {
 //     if(err)
@@ -779,18 +789,12 @@ app.post("/Visitorhome/:fest/:compid/vote",async (req,res)=>{
     const doc = await fest.competitions.id(compid);
     const user = await users.findOne({_id:req.session.user_id});
    
-    // if(user.vote.size==0)
-    // {
-    //      user.vote = new Map();
-    // }
-    if(!user.vote.has(compid))
-    {  var A = new Map();
+    if(user.vote.has(compid)==false)
+    {  var A = [];
        user.vote.set(compid,A)
-       user.vote.get(compid).set(doc.currentround[0].candidateid,0);
     }
-    // else{
-    //    user.vote.get(compid).set(doc.currentround[0].candidateid,0); 
-    // }
+    user.vote.get(compid).push(doc.currentround[0].candidateid);
+    
     console.log(user.vote.keys());
     doc.currentround[0].score = doc.currentround[0].score + 1;
     fest.save();
