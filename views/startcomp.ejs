@@ -13,9 +13,25 @@
             text-align: center;
             margin: 12rem auto 5rem auto;
         }
+        #back {
+            background-size: auto;
+            background-color: green;
+            background-size: auto;
+        }
+        button {
+            margin: 5px auto 15px 5px;
+            border: none;
+        }
+        button:focus {
+            outline:none;
+            border: none;    
+            box-shadow: none;
+        }
     </style>
     
-    <button onclick="window.location.href='/cordhome/<%=fest%>/<%=compid%>'">Back</button>
+    <div id="back">
+        <button onclick="window.location.href='/cordhome/<%=fest%>/<%=compid%>'">Back</button>
+    </div>
     
     <div class="container">
         <form action="/cordhome/<%=fest%>/<%=compid%>/start" method="POST">
