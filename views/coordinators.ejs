@@ -9,6 +9,7 @@
      <!-- Compiled and minified JavaScript -->
      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+     <script src="https://use.fontawesome.com/9038b022a0.js"></script>
 
      <title>Document</title>
 </head>
@@ -23,8 +24,17 @@
   .innerarea{
     border:2rem solid white;
   }
+  #button:hover {
+    cursor: pointer;
+  }
 </style>
-
+<style>
+  #back:hover {
+      cursor: pointer;
+  }
+  
+</style>
+<i class="fa fa-arrow-left" id="back" aria-hidden="true" style="font-size: 2rem; margin-top: 1%;margin-left: 1%;" onclick="window.location.href='/cordhome/<%=fest.festname%>'"></i>
 
 <div class="container">
   <div class="innerarea">

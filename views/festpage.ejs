@@ -1,23 +1,59 @@
 <%- include("partials/header") %>
 
-<button onclick="window.location.href='/cordhome'">Back</button>
+
+<style>
+    #back:hover {
+        cursor: pointer;
+    }
+
+  </style>
+  <div>
+    <i class="fa fa-arrow-left" id="back" aria-hidden="true" style="font-size: 2rem; margin: 1%" onclick="window.location.href='/cordhome'"></i>
+  </div>
 
 <style>
     .container {
         width:45%;
         padding: 50px 50px;
     }
+    .container1 {
+        margin: 1% 1%;   
+    }
 </style>
 
-<button onclick="window.location.href='/cordhome/<%=fest%>/addcompetitions'">Add Competition</button>
-<button onclick="window.location.href='/cordhome/<%=fest%>/addcoordinator'">Add Cordinator</button>
 
-<button onclick="window.location.href='/candidateserror'">
+<style>
+    #add:hover {
+        cursor: pointer;
+        margin: 0.1%;
+    }
+    #add2:hover {
+        cursor: pointer;
+        margin: 0.1%;
+    }
+    .add {
+        margin:0.4%;
+    }
+    /* .title {
+        margin-right: 0.01%;
+    } */
+    
+</style>
+
+<div class="container1">
+    <i class="fa fa-plus" aria-hidden="true" style="font-size: 1.5rem; margin: 0.4%; " class="add" id="add" title="Add Competition" onclick="window.location.href='/cordhome/<%=fest%>/addcompetitions'"></i>
+
+
+<i class="fa fa-user-plus" aria-hidden="true" style="font-size: 1.5rem; margin: 0.4%;  " class="add" id="add2" title="Add Coordinator" onclick="window.location.href='/cordhome/<%=fest%>/addcoordinator'"></i>
+
+<button onclick="window.location.href='/Visitorhome'">Visitor</button>
+
+<!-- <button onclick="window.location.href='/candidateserror'">
     Candidates error
 </button>
 <button onclick="window.location.href='/competitionserror'">
     Competitions error
-</button>
+</button> -->
 
 <% let months = new Map();
     months.set(1,"Jan");
@@ -42,14 +78,22 @@
     days.set(6,"Saturday");
     days.set(7,"Sunday");  -->
 
+    <style>
+        #iconsubmit {
+            outline:none;
+            border:0;
+            background-color: white;
+        }
+        #icon:focus {
+            border: 2px solid black;
+            box-shadow: rgb(49, 49, 49);
+        }
+    </style>
 
 <% var i%>
-<% for(i=0;i<fests.competitions.length; i++){ %> 
+<% for(i=0;i<fests.competitions.length; i++){ %>
     <div>
         <strong>Name :</strong> <%=fests.competitions[i].name%>
-    </div>
-    <div>
-        <strong>Uploaded Image :</strong> <%=fests.competitions[i].imageUpload%>
     </div>
     <div>
         <strong>Description :</strong> <%=fests.competitions[i].descr%>
@@ -68,7 +112,7 @@
                     break;
             default: suffix = "th";
         } %>
-        <strong>Date :</strong> <%=fests.competitions[i].date.getDate()%><%=suffix%> <%=months.get(fests.competitions[i].date.getMonth()+1)%> 
+        <strong>Date :</strong> <%=fests.competitions[i].date.getDate()%><%=suffix%> <%=months.get(fests.competitions[i].date.getMonth()+1)%>
         <%=fests.competitions[i].date.getFullYear()%>
     </div>
     <div>
@@ -83,7 +127,7 @@
     <div>
         <strong>Voting :</strong> <%=fests.competitions[i].voting%>
     </div>
-    <div> 
+    <div>
         <strong>Start Time :</strong> <%=fests.competitions[i].starttime.getHours()%>:<%if(fests.competitions[i].starttime.getMinutes()<10){%>0<%}%><%=fests.competitions[i].starttime.getMinutes()%>
     </div>
     <div>
@@ -95,19 +139,21 @@
         <%}else{%>
            <button><a href="/cordhome/<%=fests.festname%>/<%=fests.competitions[i]._id%>">View</a></button>
         <%}%>
-        <form action="/cordhome/<%=fests.festname%>/<%=fests.competitions[i]._id%>/delete" method="POST">
-          <button>Delete</button>
-        </form>  
+        <div style="margin: 0.8% 1.1%;">
+            <form action="/cordhome/<%=fests.festname%>/<%=fests.competitions[i]._id%>/delete" method="POST">
+                <button type="submit" id="iconsubmit"><i class="fa fa-trash-o" aria-hidden="true" id="icon" style="font-size: 1.5rem;"></i></button>
+            </form>
+        </div>
     </div>
     <hr>
 <% } %>
 </div>
 </div>
 
+</div>
 <%- include("partials/footer") %>
 
 
 
 
 
-       

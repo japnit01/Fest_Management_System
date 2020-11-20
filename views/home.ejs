@@ -33,9 +33,13 @@
 
 
 
+<style>
+    #add:hover {
+        cursor: pointer;
+    }
+</style>
 
-
-<button><a href="/cordhome">Add Fest</a></button>
+<i class="fa fa-plus" aria-hidden="true" style="font-size: 1.5rem; margin: 0.4%; " id="add" title="Add Fest" onclick="window.location.href='/cordhome'"></i>
 <button><a href="/Visitorhome">Visitor</a></button>
 
 
@@ -51,6 +55,7 @@
                 <th>FEST Name</th>
                 <th>COLLEGE Name</th>
                 <th>TYPE of Fest</th>
+                <th>Scheduled</th>
              </tr>
             <%for(i=0;i<fests.length;i++){ %> 
                 <tr>
