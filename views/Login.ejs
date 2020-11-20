@@ -7,7 +7,7 @@
     <title>Login</title>
 </head>
 <body>
-    <button onclick="window.location.href='/'">Home</button>
+    <button class="btn btn-primary" onclick="window.location.href='/'">Home</button>
     <style>
         .container {
             align-self: center;
@@ -44,7 +44,16 @@
             <div class="login">
                 <h3>Login</h3>
             </div>
+
+            
+
             <div class="inputarea">
+                <%if(signal == 1) {%>
+                    <div style="border: 2px solid black; width: 70%; background-color: rgb(245, 100, 100); text-align: center; margin: auto; padding: 1%;">
+                        <p>Wrong email or password!! Please try again...</p>
+                    </div>
+                    <%signal = 0;%>
+                <%}%>
             <form action="/login" method="POST">
                 <div class = "formgroup">
                     <input type="email" name="email" placeholder=" Email ID" required>

@@ -1,9 +1,18 @@
+<%- include("partials/header") %>
 <style>
     .disabled{
         pointer-events:none;
         color:blue;
     }
 </style>
+
+
+<style>
+    #back:hover {
+        cursor: pointer;
+    }
+  </style>
+  <i class="fa fa-arrow-left" id="back" aria-hidden="true" style="font-size: 2rem; margin-top: 1%;margin-left: 1%;" onclick="window.location.href='/cordhome/<%=fest.festname%>'"></i>
 
  <div class="card" style="width: 18rem;">
     <div class="card-body">
@@ -24,3 +33,5 @@
          document.querySelector(".active").className = "disabled";   
      });
  </script>
+
+ <%- include("partials/footer") %>

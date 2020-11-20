@@ -29,9 +29,12 @@
         }
     </style>
     
-    <div id="back">
-        <button onclick="window.location.href='/cordhome/<%=fest%>/<%=compid%>'">Back</button>
-    </div>
+    <style>
+        #back:hover {
+            cursor: pointer;
+        }
+      </style>
+      <i class="fa fa-arrow-left" id="back" aria-hidden="true" style="font-size: 2rem; margin-top: 1%;margin-left: 1%;" onclick="window.location.href='/cordhome/<%=fest%>/<%=compid%>'"></i>
     
     <div class="container">
         <form action="/cordhome/<%=fest%>/<%=compid%>/start" method="POST">

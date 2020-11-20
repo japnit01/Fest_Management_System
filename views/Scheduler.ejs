@@ -94,7 +94,7 @@
                         End Time : <%=A[j][6].getHours()%>:<%if(A[j][6].getMinutes()<10) {%>0<%}%><%=A[j][6].getMinutes()%>
                     </div>
                     <form action="/scheduler/<%=A[j][1]%>/delete" method="POST">
-                         <button>Delete</button>
+                        <button type="submit" id="iconsubmit" style="background-color: aliceblue; margin-top: 0.8%;"><i class="fa fa-trash-o" aria-hidden="true"  style="font-size: 1.5rem; "></i></button>
                     </form>
                <%}%>
                             

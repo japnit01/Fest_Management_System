@@ -155,9 +155,10 @@ app.post("/signup",async function(req,res){
       })
 });
 
+let sign = 0;
 app.get("/login",(req,res)=>{
     
-    res.render("login");
+    res.render("login",{signal:sign});
 });
 
 app.post("/login",async function(req,res){
@@ -171,6 +172,7 @@ app.post("/login",async function(req,res){
     const valid = await bcrypt.compare(password,user.password);
     if(valid)
     {
+        sign = 0;
         req.session.user_id = user._id;
         req.session.user_name = user.name;
         console.log(req.session.user_name);
@@ -187,9 +189,11 @@ app.post("/login",async function(req,res){
         else{
             res.redirect("/")
         }
+        
     }
     else{
         console.log("Try Again")
+        sign = 1;
         res.redirect("/login");
     }
 });
@@ -261,7 +265,6 @@ app.post("/cordhome/:fest",(req,res)=>{
     const {fest} = req.params;
     let type = req.body.events,
         name = req.body.name,
-        imageupload = req.body.imageupload,
         descr = req.body.description,
         date = req.body.date,
         shours = req.body.shours,
@@ -293,7 +296,6 @@ app.post("/cordhome/:fest",(req,res)=>{
         let details = {
             type: type,
             name: name,
-            imageUpload: imageupload,
             descr: descr,
             date: date,
             starttime : starttime,
@@ -347,7 +349,7 @@ app.post("/cordhome/:fest",(req,res)=>{
     });     
 });
 
-app.get("/cordhome/:fest/addcompetitions",(req,res)=>{
+app.get("/cordhome/:fest/addcompetitions",requireLogin,(req,res)=>{
     const {fest}= req.params;
 
    
@@ -668,7 +670,7 @@ app.get("/cordhome/:fest/:compid/results",async(req,res)=>{
             } 
     console.log(A);      
     doc.currentcand = A;  
-    res.render("results",{doc:doc,user:req.session.user_id})
+    res.render("results",{doc:doc,user:req.session.user_id,fest:fest})
 });
 
 app.post("/cordhome/:fest/:compid/:candidatesid",async (req,res)=>{
@@ -787,8 +789,8 @@ app.post("/Visitorhome/:fest/:compid/vote",async (req,res)=>{
 
     const fest = await fests.findOne({festname:festname});
     const doc = await fest.competitions.id(compid);
-    const user = await users.findOne({_id:req.session.user_id});
-   
+       const user = await users.findOne({_id:req.session.user_id});
+
     if(user.vote.has(compid)==false)
     {  var A = [];
        user.vote.set(compid,A)
