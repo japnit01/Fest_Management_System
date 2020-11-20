@@ -65,23 +65,15 @@ let userSchema = new mongoose.Schema({
     scheduler: Array,
     registration: Array,
     festcoord:Array,
-    vote:{
-           type:Map,
-           of:Array
-         } 
+    vote:Map,
+    mapOfString: {
+        type: Map,
+        of: String
+      }
 });
 
 let fests = mongoose.model("fests",festSchema);
 let users = mongoose.model("users",userSchema);
-
-// users.create({
-//     name:"teri behn di",
-//     email:"kutta@gmaildifuddi.com",
-//     password:"karo",
-//     vote:[['w4345657687jfhhbj','dttfhf']]
-// });
-
-
 
 
 // fests.deleteMany({},(err,record)=> {
@@ -137,7 +129,8 @@ app.post("/signup",async function(req,res){
                     const userdetails = new users({
                         email,
                         password:hash,
-                        name
+                        name,
+                        vote:{}
                     });
                     req.session.user_id = userdetails._id;
                     req.session.user_name = userdetails.name
@@ -788,14 +781,13 @@ app.post("/Visitorhome/:fest/:compid/vote",async (req,res)=>{
     const fest = await fests.findOne({festname:festname});
     const doc = await fest.competitions.id(compid);
     const user = await users.findOne({_id:req.session.user_id});
-   
-    if(user.vote.has(compid)==false)
-    {  var A = [];
-       user.vote.set(compid,A)
-    }
+    if(user.vote.has(compid));
+     {
+         user.vote.set(compid,A)
+     }
     user.vote.get(compid).push(doc.currentround[0].candidateid);
-    
-    console.log(user.vote.keys());
+    user.save();
+    console.log(user.vote);
     doc.currentround[0].score = doc.currentround[0].score + 1;
     fest.save();
     const url = "/Visitorhome/" + festname + "/" + compid;
