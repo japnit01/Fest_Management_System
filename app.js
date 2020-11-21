@@ -41,7 +41,8 @@ let competitionsSchema = new mongoose.Schema({
     voting: Boolean,
     result: Array,
     currentround:[currentroundSchema],
-    round:Array
+    round:Array,
+    resultsrelease:{type:Boolean,default:false}
 });
 
 let festSchema = new mongoose.Schema({
@@ -421,7 +422,7 @@ app.get("/cordhome/:fest/:compid/start",async(req,res)=>{
     const fest = await fests.findOne({festname:festname});
     const doc = await fest.competitions.id(compid);
 
-    if(doc.start==false && doc.candidates.length==0)
+    if(doc.start==false && doc.candidates.length<=2)
     {
         res.render("canderror")
     }
@@ -507,11 +508,12 @@ app.get("/cordhome/:fest/:compid",requireLogin,async(req,res)=>{
     var start ;
     const fest = await fests.findOne({festname:festname});
     const doc = fest.competitions.id(compid);
+    //doc.resultsrelease=false;
     // doc.currentround=[];
     // doc.result = [];
     // doc.currentcand = [];
     // doc.round = [];
-    // fest.save();
+    //fest.save();
     if(doc.type=="competitionsd")
     {
       console.log(doc.currentround.length)
@@ -529,11 +531,9 @@ app.get("/cordhome/:fest/:compid",requireLogin,async(req,res)=>{
        res.render("livecompetition",{registrations:doc,fest:fest,start:start,user:req.session.user_id});
     }
     else if(doc.type=="competitionss")
-    {   
-        doc.start == true;
-        start =0;
+    {  
         console.log(doc.currentcand);
-        res.render("livevoting",{registrations:doc,fest:fest,start:start,user:req.session.user_id});
+        res.render("livevoting",{registrations:doc,fest:fest,user:req.session.user_id});
     }
 });
 
@@ -631,6 +631,24 @@ app.post("/cordhome/:fest/:compid",async (req,res)=>{
     
 });
 
+
+app.post("/cordhome/:fest/:compid/reset",requireLogin,async(req,res)=>{
+    const festname = req.params.fest;
+    const compid = req.params.compid;
+
+    const fest = await fests.findOne({festname:festname});
+    const doc = fest.competitions.id(compid);
+
+    doc.currentround=[];
+    doc.result = [];
+    doc.currentcand = [];
+    doc.round = [];
+    fest.save();
+    
+    const url  = "/cordhome/" + festname;
+    res.redirect(url);
+ })
+
 app.get("/cordhome/:fest/:compid/results",async(req,res)=>{
     const festname = req.params.fest;
     const compid = req.params.compid;
@@ -639,6 +657,7 @@ app.get("/cordhome/:fest/:compid/results",async(req,res)=>{
     const n = doc.result.length;
     var final = new Map();
     var count = 0;
+
     for(i=n-1;i>=0;i--)
     {
         m = doc.result[i].length;
@@ -668,8 +687,24 @@ app.get("/cordhome/:fest/:compid/results",async(req,res)=>{
                 A.push({name:id,rank:final.get(id).rank});
             } 
     console.log(A);      
-    doc.currentcand = A;  
+    doc.currentcand = A;
+    doc.resultsrelease = true;
+    fest.save();
     res.render("results",{doc:doc,user:req.session.user_id,fest:fest})
+});
+
+app.get("/cordhome/:fest/:compid/voteresults",async(req,res)=>{
+    const festname = req.params.fest;
+    const compid = req.params.compid;
+
+    const fest = await fests.findOne({festname:festname});
+    const doc = await fest.competitions.id(compid);
+    doc.result = doc.currentround;
+    doc.result.sort(function (a, b) {return a.score - b.score});
+    doc.result.reverse()
+    console.log(doc.result);
+    fest.save()
+    res.render("voteresults",{doc:doc,user:req.session.user_id})
 });
 
 app.post("/cordhome/:fest/:compid/:candidatesid",async (req,res)=>{
@@ -724,33 +759,6 @@ app.post("/cordhome/:fest/:compid/:candidatesid",async (req,res)=>{
     const url = "/cordhome/" + festname + "/" + compid;
     res.redirect(url)
 });
-
-app.post("/cordhome/:fest/:compid/:candidatesid/voting",async (req,res)=>{
-    const festname = req.params.fest;
-    const compid = req.params.compid;
-    const candid = req.params.candidatesid;
-
-
-    const fest = await fests.findOne({festname:festname});
-    const doc = await fest.competitions.id(compid);
-    const candidate = doc.currentround.id(candid);
-    
-    for(i=0;i<doc.candidates.length;i++)
-    {  console.log(candidate.candidateid,doc.candidates[i].userid)
-       let a = candidate.candidateid.localeCompare(doc.candidates[i].userid);
-       if(a==0)
-       {
-          doc.candidates[i].score = candidate.score;
-       }
-    }
-    doc.currentround.shift();
-    
-    fest.save();  
-
-    const url = "/cordhome/" +  festname + "/" + compid;
-    res.redirect(url);
- });
-
 app.get("/Visitorhome",function(req,res){
     fests.find({},(err,records)=> {
         if(err)
@@ -780,47 +788,34 @@ app.get("/Visitorhome/:fest/:compid",requireLogin,async (req,res)=>{
     const doc = await fest.competitions.id(compid);
     const user = await users.findOne({_id:req.session.user_id});
     fest.save();
+
     if(doc.start==false)
     {
         res.render("competitionserror")
     }
+    else if(doc.r!=0)
+    {
+
+        res.render("voteresults",{doc:doc,user:req.session.user_id})
+    }
     else
     {
-       res.render("visitorvoting",{fest:fest,doc:doc,ch:ch,user:req.session.user_id});
+       res.render("visitorvoting",{fest:fest,doc:doc,uservote:user,user:req.session.user_id});
     }
+    
 });
-var ch=0;
-app.post("/Visitorhome/:fest/:compid/vote",async (req,res)=>{
+
+app.post("/Visitorhome/:fest/:compid/:index/vote",async (req,res)=>{
     const festname = req.params.fest;
     const compid = req.params.compid;
+    const index = req.params.index;
     
     const fest = await fests.findOne({festname:festname});
     const doc = await fest.competitions.id(compid);
     const user = await users.findOne({_id:req.session.user_id})
-    var x = user.vote.find(element => element.compid == compid)
     
-    
-    if(x==null)
-    {   
-        ch=0;
-        user.vote.push({compid:compid,candid:doc.currentround[0].candidateid}); 
-        doc.currentround[0].score = doc.currentround[0].score + 1;
-    }
-    else
-    {
-        if(x.candid != doc.currentround[0].candidateid || x.candid== null)
-        {  
-            ch=0;
-           user.vote.push({compid:compid,candid:doc.currentround[0].candidateid});
-           doc.currentround[0].score = doc.currentround[0].score + 1;
-        }
-        else
-        {
-            ch=1;
-        }
-    }
-    console.log(user.vote);
-    
+    user.vote.push({compid:compid,candid:doc.currentround[0].candidateid});
+    doc.currentround[index].score = doc.currentround[index].score +1
     user.save();
     fest.save();
     

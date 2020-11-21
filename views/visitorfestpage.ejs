@@ -66,13 +66,20 @@
                  <%}%>  
                       <button id="scheduleb" name="schedule" value="schedule">Schedule</button>
             </form>
+            <%if(fests.competitions[i].type == "competitionss"){%>
              <div>
                  <form action="/Visitorhome/<%=fest%>/<%= fests.competitions[i]._id%>">
-                    <%if(fests.competitions[i].type == "competitionss"){%>
-                     <button>Vote</button>
-                    <%}%>
+                     <button>Vote</button> 
                  </form> 
-             </div>       
+             </div>   
+             <%}%>    
+             <%if(fests.competitions[i].type == "competitionsd" && fests.competitions[i].resultsrelease==true){%>
+                <div>
+                    <form action="/cordhome/<%=fest%>/<%= fests.competitions[i]._id%>/results">
+                        <button>View</button> 
+                    </form> 
+                </div>   
+                <%}%>    
         </div>
     </div>                      
 <% } %>

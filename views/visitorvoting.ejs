@@ -4,13 +4,14 @@
         cursor: pointer;
     }
   </style>
-<%if(ch==0){%>
+
     <i class="fa fa-arrow-left" id="back" aria-hidden="true" style="font-size: 2rem; margin-top: 1%;margin-left: 1%;" onclick="window.location.href='/Visitorhome/<%=fest.festname%>'"></i>
-    
+<%if(uservote.vote.length==0){%>    
+    <%for(i=0;i<doc.currentround.length;i++){%>
      <div class="card" style="width: 18rem;">
         <div class="card-body">
-          <h3 class="card-title"> <%=doc.currentround[0].name%></h3>
-          <form action="/Visitorhome/<%=fest.festname%>/<%=doc._id%>/vote" method="POST">
+          <h3 class="card-title"> <%=doc.currentround[i].name%></h3>
+          <form action="/Visitorhome/<%=fest.festname%>/<%=doc._id%>/<%=i%>/vote" method="POST">
             <div>
                 <button>Yes Tick</button>
             </div>
@@ -20,10 +21,10 @@
          </div>
         </div>
       </div>
+    <%}%>  
 <%}else{%>
-    <h2>You have already voted for this contestant</h2>
-    <h4>Please wait for the next candidate</h4>
-<%}%>
+    <h2>Your vote has been recorded</h2>
+<%}%>  
  <script>
      document.querySelector(".active").addEventListener("click",(e)=>{
          document.querySelector(".active").className = "disabled";   

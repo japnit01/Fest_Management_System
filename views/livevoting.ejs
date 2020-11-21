@@ -1,19 +1,12 @@
 <h1>Live Voting</h1>
 
-<%if(registrations.currentround.length == 0){%>
+<%for(i=0;i<registrations.currentround.length;i++){%>
     <div>
-        <div>Competition has Ended</div>
-        <button>Results</button>
-    </div>
-<%}else{%>
-    <div>
-        <%=registrations.currentround[start].name%>
+        <%=registrations.currentround[i].name%>
     </div>
     <div>    
-        <%=registrations.currentround[start].score%>
+        <%=registrations.currentround[i].score%>
     </div>    
-    
-    <form action="/cordhome/<%=fest.festname%>/<%=registrations._id%>/<%=registrations.currentround[start]._id%>/voting" method="POST">
-       <button>Next</button>
-    </form>   
-<%}%>    
+<%}%>  
+
+<button><a href="/cordhome/<%=fest.festname%>/<%=registrations._id%>/voteresults">Stop and Release Results</a></button>
