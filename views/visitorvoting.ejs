@@ -1,27 +1,33 @@
 <%- include("partials/header") %>
+
 <style>
     #back:hover {
         cursor: pointer;
     }
   </style>
 
-    <i class="fa fa-arrow-left" id="back" aria-hidden="true" style="font-size: 2rem; margin-top: 1%;margin-left: 1%;" onclick="window.location.href='/Visitorhome/<%=fest.festname%>'"></i>
-<%if(uservote.vote.length==0){%>    
-    <%for(i=0;i<doc.currentround.length;i++){%>
-     <div class="card" style="width: 18rem;">
-        <div class="card-body">
-          <h3 class="card-title"> <%=doc.currentround[i].name%></h3>
-          <form action="/Visitorhome/<%=fest.festname%>/<%=doc._id%>/<%=i%>/vote" method="POST">
-            <div>
-                <button>Yes Tick</button>
-            </div>
-         </form>
-         <div>
-            <button>Cross</button>
-         </div>
+  <div id="backicon">
+    <i class="fa fa-arrow-left" id="back" aria-hidden="true" style="font-size: 1.5rem; margin-top: 1%;" onclick="window.location.href='/Visitorhome/<%=fest.festname%>'"></i>
+  </div>
+
+
+<%if(uservote.vote.length==0){%>  
+
+ <%for(var i=0;i<doc.currentround.length;i++){%>
+ <div class="card" style="width: 18rem;">
+    <div class="card-body">
+      <h3 class="card-title"> <%=doc.currentround[i].name%></h3>
+      <form action="/Visitorhome/<%=fest.festname%>/<%=doc._id%>/<%=i%>/vote" method="POST">
+        <div>
+            <button>Yes Tick</button>
         </div>
-      </div>
-    <%}%>  
+     </form>
+     <div>
+        <button>Cross</button>
+     </div>
+  </div>
+</div>
+<%}%>
 <%}else{%>
     <h2>Your vote has been recorded</h2>
 <%}%>  

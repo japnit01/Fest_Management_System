@@ -1,12 +1,40 @@
+<%- include("partials/header") %>
+
+<div>
+    <form action="/cordhome/<%=fest.festname%>/<%=registrations._id%>/reset" method="POST">
+          <button style="border-radius: 0;" class="btn btn-primary">Reset</button>
+    </form>
+</div>
+
+
 <h1>Live Voting</h1>
 
-<%for(i=0;i<registrations.currentround.length;i++){%>
-    <div>
-        <%=registrations.currentround[i].name%>
-    </div>
-    <div>    
-        <%=registrations.currentround[i].score%>
-    </div>    
+<div style="text-align: center;">
+
+<div class="row" style="width:90%; text-align: center; margin:auto auto">
+<%for(var i=0;i<registrations.currentround.length;i++){%>
+  
+        <div class="col-md-4" style="width: 33%; text-align: center;">   
+           <div class="card mb-3 cards" style="width:80%; text-align: center;">
+              <div class="card-header"><%=registrations.currentround[i].name%></div>
+               <div class="card-body">
+                 <h5 class="card-title"><%=registrations.currentround[i].score%></h5>
+               </div>
+           </div>  
+         </div>  
 <%}%>  
+</div>  
+</div>
 
 <button><a href="/cordhome/<%=fest.festname%>/<%=registrations._id%>/voteresults">Stop and Release Results</a></button>
+
+<script>
+  var colors = ["#ffc107","#17a2b8","#28a745","#6c757d","#dc3545","yellow"];
+
+  var buttons = document.getElementsByClassName("cards")
+  for(var i=0;i<buttons.length;i++){
+       buttons[i].style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];;
+  }
+</script>
+
+<%- include("partials/footer") %>

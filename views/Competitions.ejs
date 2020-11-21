@@ -4,8 +4,13 @@
     #back:hover {
         cursor: pointer;
     }
+    #back {
+        margin-left: 0.5rem;
+    }
   </style>
-  <i class="fa fa-arrow-left" id="back" aria-hidden="true" style="font-size: 2rem; margin-top: 1%;margin-left: 1%;" onclick="window.location.href='/cordhome/<%=fest%>'"></i>
+ <div id="backicon">
+    <i class="fa fa-arrow-left" id="back" aria-hidden="true" style="font-size: 1.5rem; margin-top: 1%;" onclick="window.location.href='/cordhome/<%=fest%>'"></i>
+ </div>
 
 <style>
     .container{
@@ -37,6 +42,9 @@
         width:100%;
         padding:1rem 0 0 0;
     }
+    .disable{
+       display: none;
+    }
 </style>
 
 <% let months = new Map();
@@ -66,17 +74,17 @@
 <div class="container">
     <div class="formcontent">
         <div>
-            <h3 style="font-size: 2rem;">New Competition</h3>
+            <h3 style="font-size: 2rem;">New Event</h3>
         </div>
         <div class="inputarea" style="margin: 3.5rem 0  1rem 0;">
             <form action="/cordhome/<%=fest%>" method="POST">
                 <div class="textgroup">
-                    <input class="textfield" style="border-radius: 0.2rem; border: 1px solid #dadce0" type="text" name="name" placeholder="Name of Competition" required>
+                    <input class="textfield" style="border-radius: 0.2rem; border: 1px solid #dadce0" type="text" name="name" placeholder="Name of Event" required>
                 </div>
 
                 <div class="row" style="width:100%; padding-bottom: 1rem;">
                     <div style="width:50%">
-                        <select style="width:95%; border-radius: 0.2rem; border: 1px solid #dadce0; height:2.3rem; float:left;" id="events" onchange="disableevent()" name="events" required>
+                        <select  id="events" style="width:95%; border-radius: 0.2rem; border: 1px solid #dadce0; height:2.3rem; float:left;"  name="events" required>
                         <option value="Event Type" disabled selected>Event type</option>
                         <option value="competitionss">Competition-single</option>
                         <option value="competitionsd">Competition-dual</option>
@@ -85,7 +93,7 @@
                     </div>
                     
                     <div style="width:50%">
-                        <select style="border-radius: 0.2rem; border: 1px solid #dadce0; width:95%; height:2.3rem; float:right;" name="voting" required>
+                        <select id="voting" class="disable" style="border-radius: 0.2rem; border: 1px solid #dadce0; width:95%; height:2.3rem; float:right;" name="voting" required>
                             <option value="Voting" disable selected>Will there be any voting?</option>
                             <option class="ans" value="no">No</option>
                             <option class="ans" value="yes">Yes</option>
@@ -163,7 +171,11 @@
                     </div>
                 
                 </div>
-      
+                
+                <div class="textgroup">
+                    <input class="textfield"  style="border-radius: 0.2rem; border: 1px solid #dadce0" type="text" name="guests" placeholder="Guests">
+                </div>
+
                 <div class="textgroup">
                     <input class="textfield"  style="border-radius: 0.2rem; border: 1px solid #dadce0" type="text" name="venue" placeholder="Venue" required>
                 </div>
@@ -179,5 +191,22 @@
         </div>
     </div>
 </div>
+
+<script>
+  document.querySelector("#events").addEventListener("change", (e)=>{
+       if(document.querySelector("#events").value=="competitionss")
+       {
+        document.querySelector("#voting").classList.toggle("disable")
+       }
+       else 
+       { 
+         if(document.querySelector("#voting").classList.contains("disable")==false)
+          {    console.log("it is")
+               document.querySelector("#voting").className = "disable";
+          }
+        }
+  })
+  console.log(x)
+</script>
 
 <%- include("partials/footer") %>

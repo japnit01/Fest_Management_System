@@ -5,10 +5,9 @@
     #back:hover {
         cursor: pointer;
     }
-
   </style>
-  <div>
-    <i class="fa fa-arrow-left" id="back" aria-hidden="true" style="font-size: 2rem; margin: 1%" onclick="window.location.href='/cordhome'"></i>
+  <div id="backicon">
+    <i class="fa fa-arrow-left" id="back" aria-hidden="true" style="font-size: 1.5rem; margin-top: 1%" onclick="window.location.href='/cordhome'"></i>
   </div>
 
 <style>
@@ -119,19 +118,7 @@
         <strong>Venue :</strong> <%=fests.competitions[i].venue%>
     </div>
     <div>
-        <strong>Address:</strong> <%=fests.competitions[i].address%>
-    </div>
-    <div>
-        <strong>City:</strong> <%=fests.competitions[i].city%>
-    </div>
-    <div>
         <strong>Voting :</strong> <%=fests.competitions[i].voting%>
-    </div>
-    <div>
-        <strong>Start Time :</strong> <%=fests.competitions[i].starttime.getHours()%>:<%if(fests.competitions[i].starttime.getMinutes()<10){%>0<%}%><%=fests.competitions[i].starttime.getMinutes()%>
-    </div>
-    <div>
-        <strong>End Time :</strong> <%=fests.competitions[i].endtime.getHours()%>:<%if(fests.competitions[i].starttime.getMinutes()<10){%>0<%}%><%=fests.competitions[i].endtime.getMinutes()%>
     </div>
     <div>
         <%if((fests.competitions[i].type=="competitionsd" && fests.competitions[i].currentcand.length == 0)||(fests.competitions[i].type=="competitionss" && fests.competitions[i].currentround.length == 0)){%>

@@ -33,6 +33,7 @@ let competitionsSchema = new mongoose.Schema({
     start:{type:Boolean,default:false},
     descr: String,
     date: Date,
+    guests:String,
     starttime: Date,
     endtime: Date,
     venue: String,
@@ -48,6 +49,7 @@ let competitionsSchema = new mongoose.Schema({
 let festSchema = new mongoose.Schema({
    college:String,
    festname:String,
+   Description:String,
    type:String,
    from:Date,
    to:Date,
@@ -71,20 +73,6 @@ let userSchema = new mongoose.Schema({
 
 let fests = mongoose.model("fests",festSchema);
 let users = mongoose.model("users",userSchema);
-
-
-// fests.deleteMany({},(err,record)=> {
-//     if(err)
-//         console.log(err);
-//     else    
-//         console.log(record);
-// });
-// users.deleteMany({},(err,record)=> {
-//     if(err)
-//         console.log(err);
-//     else    
-//         console.log(record);
-// });
 
 const requireLogin = (req,res,next)=>{
     req.session.returnto = req.url;
@@ -222,13 +210,15 @@ app.post("/newfest",function(req,res){
      var to = req.body.to;
      var city = req.body.city;
      var state = req.body.state;
+     var desc = req.body.description;
      details = {college:college,
                 festname:festname,
                 type:type,
                 from:from,
                 to:to,
                 city:city,
-                state:state
+                state:state,
+                Description:desc
                };
      
      fests.create(details,(err,fest)=>{
@@ -237,7 +227,7 @@ app.post("/newfest",function(req,res){
          else
            console.log("Created new fest");  
      });
-     res.redirect("/cordhome");
+     res.redirect("/");
 });
 
 var A = [];
@@ -272,6 +262,7 @@ app.post("/cordhome/:fest",(req,res)=>{
         endtime,
         venue = req.body.venue,
         voting = req.body.voting;
+        guests = req.body.guests
         starttime = new Date();
         starttime.setHours(shours);
         starttime.setMinutes(sminutes);
@@ -299,6 +290,7 @@ app.post("/cordhome/:fest",(req,res)=>{
             endtime:endtime,
             venue: venue,
             voting: voting,
+            guests:guests
         };
         fests.findOne({festname:fest},(err,record)=> {
             if(err)
@@ -793,7 +785,7 @@ app.get("/Visitorhome/:fest/:compid",requireLogin,async (req,res)=>{
     {
         res.render("competitionserror")
     }
-    else if(doc.r!=0)
+    else if(doc.result.length!=0)
     {
 
         res.render("voteresults",{doc:doc,user:req.session.user_id})
@@ -816,6 +808,7 @@ app.post("/Visitorhome/:fest/:compid/:index/vote",async (req,res)=>{
     
     user.vote.push({compid:compid,candid:doc.currentround[0].candidateid});
     doc.currentround[index].score = doc.currentround[index].score +1
+    
     user.save();
     fest.save();
     
