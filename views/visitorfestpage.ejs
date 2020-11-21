@@ -1,5 +1,4 @@
-  <%-include("partials/header")%>
-<button onclick="window.location.href='/'">Home</button>
+[1:14 am, 21/11/2020] Japnit: <%-include("partials/header")%>
 
 <style>
     #back:hover {
@@ -8,79 +7,102 @@
   </style>
   <i class="fa fa-arrow-left" id="back" aria-hidden="true" style="font-size: 2rem; margin-top: 1%;margin-left: 1%;" onclick="window.location.href='/Visitorhome'"></i>
     
+    
 <% let months = new Map();
-    months.set(1,"Jan");
-    months.set(2,"Feb");
-    months.set(3,"Mar");
-    months.set(4,"Apr");
+    months.set(1,"January");
+    months.set(2,"February");
+    months.set(3,"March");
+    months.set(4,"April");
     months.set(5,"May");
-    months.set(6,"Jun");
-    months.set(7,"Jul");
-    months.set(8,"Aug");
-    months.set(9,"Sep");
-    months.set(10,"Oct");
-    months.set(11,"Nov");
-    months.set(12,"Dec"); %>
+    months.set(6,"June");
+    months.set(7,"July");
+    months.set(8,"August");
+    months.set(9,"September");
+    months.set(10,"October");
+    months.set(11,"November");
+    months.set(12,"December"); %>
 
- <!-- let days = new Map();
+<% let days = new Map();
     days.set(1,"Monday");
     days.set(2,"Tuesday");
     days.set(3,"Wednesday");
-    days.set(4,"Thursday");
-    days.set(5,"Friday");
-    days.set(6,"Saturday");
-    days.set(7,"Sunday");  -->
+    days.se…
+[1:31 am, 21/11/2020] Japnit: <%-include("partials/header")%>
 
+<style>
+    #back:hover {
+        cursor: pointer;
+    }
+  </style>
+  <i class="fa fa-arrow-left" id="back" aria-hidden="true" style="font-size: 1.5rem; margin-top: 1%;" onclick="window.location.href='/Visitorhome'"></i>
+    
+    
+  <% let months = new Map();
+  months.set(1,"Jan");
+  months.set(2,"Feb");
+  months.set(3,"Mar");
+  months.set(4,"Apr");
+  months.set(5,"May");
+  months.set(6,"Jun");
+  months.set(7,"Jul");
+  months.set(8,"Aug");
+  months.set(9,"Sep");
+  months.set(10,"Oct");
+  months.set(11,"Nov");
+  months.set(12,"Dec"); %>
 
 <% var i%>
 <% for(i=0;i<fests.competitions.length; i++){ %> 
-    <div>
-        <strong>Name :</strong> <%=fests.competitions[i].name%>
-    </div>
-    <div>
-        <strong>Description :</strong> <%=fests.competitions[i].descr%>
-    </div>
-    <div>
-        <% let suffix;
-        switch((fests.competitions[i].date.getDate())%10) {
-            case 11: suffix = "th";
-                        break;
-            case 1: suffix = "st";
-                    break;
-            case 2: suffix = "nd";
-                    break;
-            case 3: suffix = "rd";
-                    break;
-            default: suffix = "th";
-        } %>
-        <strong>Date :</strong> <%=fests.competitions[i].date.getDate()%><%=suffix%> <%=months.get(fests.competitions[i].date.getMonth()+1)%> 
-        <%=fests.competitions[i].date.getFullYear()%>
-    </div>
-    <div> 
-        <strong>Start Time :</strong> <%=fests.competitions[i].starttime.getHours()%>:<%if(fests.competitions[i].starttime.getMinutes()<10){%>0<%}%><%=fests.competitions[i].starttime.getMinutes()%>
-    </div>
-    <div>
-        <strong>End Time :</strong> <%=fests.competitions[i].endtime.getHours()%>:<%if(fests.competitions[i].starttime.getMinutes()<10){%>0<%}%><%=fests.competitions[i].endtime.getMinutes()%>
-    </div>
-    <div>
-        <strong>Venue :</strong> <%=fests.competitions[i].venue%>
-    </div>
-    <div>
-        <strong>Address:</strong> <%=fests.competitions[i].address%>
-    </div>
-    <div>
-        <strong>City:</strong> <%=fests.competitions[i].city%>
-    </div>
-    <form action="/Visitorhome/<%=fest%>/<%= fests.competitions[i]._id%>" method="POST">
-       <%if(fests.competitions[i].type == "competitionsd" || fests.competitions[i].type == "competitionss"){%> 
-             <button id="registerb" name="register" value="register">Register</button>
-        <%}%>  
-             <button id="scheduleb" name="schedule" value="schedule">Schedule</button>
-    </form>
-        <%if(fests.competitions[i].type == "competitionss"){%>
-            <button><a href="/Visitorhome/<%=fest%>/<%= fests.competitions[i]._id%>">Vote</a></button>
-        <%}%>
-      
-    <hr>
+    <div class="card" style="width: 18rem;">
+        
+        <div class="card-body">
+            <div>
+                <strong>Name :</strong> <%=fests.competitions[i].name%>
+            </div>
+            <div>
+                <strong>Description :</strong> <%=fests.competitions[i].descr%>
+            </div>
+            <div>
+                <% let suffix;
+                switch((fests.competitions[i].date.getDate())%10) {
+                    case 11: suffix = "th";
+                                break;
+                    case 1: suffix = "st";
+                            break;
+                    case 2: suffix = "nd";
+                            break;
+                    case 3: suffix = "rd";
+                            break;
+                    default: suffix = "th";
+                } %>
+                <strong>Date :</strong> <%=fests.competitions[i].date.getDate()%><%=suffix%> <%=months.get(fests.competitions[i].date.getMonth()+1)%> 
+                <%=fests.competitions[i].date.getFullYear()%>
+            </div>
+            <div>
+                <span> 
+                    <strong>Time :</strong> <%=fests.competitions[i].starttime.getHours()%>:<%if(fests.competitions[i].starttime.getMinutes()<10){%>0<%}%><%=fests.competitions[i].starttime.getMinutes()%>
+                </span>
+                <span>
+                    - <%=fests.competitions[i].endtime.getHours()%>:<%if(fests.competitions[i].starttime.getMinutes()<10){%>0<%}%><%=fests.competitions[i].endtime.getMinutes()%>
+                </span>
+            </div>    
+            <div>
+                <strong>Venue :</strong> <%=fests.competitions[i].venue%>
+            </div>
+            <form action="/Visitorhome/<%=fest%>/<%= fests.competitions[i]._id%>" method="POST">
+                <%if(fests.competitions[i].type == "competitionsd" || fests.competitions[i].type == "competitionss"){%> 
+                      <button id="registerb" name="register" value="register">Register</button>
+                 <%}%>  
+                      <button id="scheduleb" name="schedule" value="schedule">Schedule</button>
+            </form>
+             <div>
+                 <form action="/Visitorhome/<%=fest%>/<%= fests.competitions[i]._id%>">
+                    <%if(fests.competitions[i].type == "competitionss"){%>
+                     <button>Vote</button>
+                    <%}%>
+                 </form> 
+             </div>       
+        </div>
+    </div>                      
 <% } %>
 <%-include("partials/footer")%>

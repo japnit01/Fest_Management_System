@@ -21,10 +21,28 @@
             border:none;
             background:  #1A73E8;
         }
+        #backicon {
+            background-color: #1A73E8;
+            background-size: 100%;
+        }
+        #back {
+            color: white;
+            margin-left: 0.7rem;
+            margin-bottom:0.6rem;
+        }
+        #home {
+            color: white;
+        }
+        #home:hover {
+            cursor: pointer;
+        }
+
     </style>
     <div>
     <nav class="navbar navbar-expand-lg navbar-dark">
-        <a class="navbar-brand" href="/">Home</a>
+        <div>
+            <i class="fa fa-home" aria-hidden="true" id="home" style="font-size: 2.2rem;" onclick="window.location.href='/'"></i>
+        </div>
        
       
         <div class="collapse navbar-collapse" id="navbarSupportedContent">

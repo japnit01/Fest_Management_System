@@ -84,18 +84,18 @@ let users = mongoose.model("users",userSchema);
 
 
 
-// fests.deleteMany({},(err,record)=> {
-//     if(err)
-//         console.log(err);
-//     else    
-//         console.log(record);
-// });
-// users.deleteMany({},(err,record)=> {
-//     if(err)
-//         console.log(err);
-//     else    
-//         console.log(record);
-// });
+fests.deleteMany({},(err,record)=> {
+    if(err)
+        console.log(err);
+    else    
+        console.log(record);
+});
+users.deleteMany({},(err,record)=> {
+    if(err)
+        console.log(err);
+    else    
+        console.log(record);
+});
 
 const requireLogin = (req,res,next)=>{
     req.session.returnto = req.url;
@@ -786,20 +786,20 @@ app.get("/Visitorhome/:fest/:compid",requireLogin,async (req,res)=>{
 app.post("/Visitorhome/:fest/:compid/vote",async (req,res)=>{
     const festname = req.params.fest;
     const compid = req.params.compid;
-
+    
     const fest = await fests.findOne({festname:festname});
     const doc = await fest.competitions.id(compid);
-       const user = await users.findOne({_id:req.session.user_id});
-
-    if(user.vote.has(compid)==false)
-    {  var A = [];
-       user.vote.set(compid,A)
+    const user = await users.findOne({_id:req.session.user_id})
+    var x = user.vote.find(element => element.compid == compid)
+    if(x=null)
+    {
+      user.vote.push({compid:compid,candid:doc.currentround[0].candidateid})
     }
-    user.vote.get(compid).push(doc.currentround[0].candidateid);
-    
-    console.log(user.vote.keys());
+    console.log(user.vote);
     doc.currentround[0].score = doc.currentround[0].score + 1;
+    user.save();
     fest.save();
+    
     const url = "/Visitorhome/" + festname + "/" + compid;
     res.redirect(url);
 });
