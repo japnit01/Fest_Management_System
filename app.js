@@ -184,14 +184,6 @@ app.post("/logout",(req,res)=>{
 
 });
 
-app.get("/competitionserror",async(req,res)=> {
-    res.render("competitionserror");
-});
-
-app.get("/candidateserror",async(req,res)=> {
-    res.render("canderror");
-});
-
 app.get("/cordhome",requireLogin,(req,res)=>{
     fests.find({},function(err,fests){
         if(err)
@@ -273,7 +265,7 @@ app.post("/cordhome/:fest",(req,res)=>{
 
         
 
-        if(voting=="YES")
+        if(voting=="yes")
         {
             voting=true;
         }
@@ -462,6 +454,16 @@ app.post("/cordhome/:fest/:compid/start",async(req,res)=>{
     console.log(doc.currentcand.length) 
     var url = "/cordhome/" + festname + "/" + compid;
     res.redirect(url)
+});
+
+app.get("/cordhome/:fest/:compid/viewcandidates",async (req,res)=>{
+    const festname = req.params.fest;
+    const compid = req.params.compid;
+    
+    const fest  = await fests.findOne({festname:festname});
+    const doc = fest.competitions.id(compid);
+
+    res.render("viewcandidates",{doc:doc,user:req.session.user_id});
 });
 
 app.post("/cordhome/:fest/:compid/delete",async(req,res)=>{

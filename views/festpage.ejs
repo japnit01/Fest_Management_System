@@ -121,10 +121,12 @@
         <strong>Voting :</strong> <%=fests.competitions[i].voting%>
     </div>
     <div>
-        <%if((fests.competitions[i].type=="competitionsd" && fests.competitions[i].currentcand.length == 0)||(fests.competitions[i].type=="competitionss" && fests.competitions[i].currentround.length == 0)){%>
+        <%if((fests.competitions[i].type=="competitionsd" && fests.competitions[i].currentcand.length == 0)||(fests.competitions[i].voting==true && fests.competitions[i].type=="competitionss" && fests.competitions[i].currentround.length == 0)){%>
            <button><a href="/cordhome/<%=fests.festname%>/<%=fests.competitions[i]._id%>/start">View</a></button>
-        <%}else{%>
-           <button><a href="/cordhome/<%=fests.festname%>/<%=fests.competitions[i]._id%>">View</a></button>
+        <%}else if((fests.competitions[i].type=="competitionsd")||(fests.competitions[i].type=="competitionss" && fests.competitions[i].voting==true)){%>
+            <button><a href="/cordhome/<%=fests.festname%>/<%=fests.competitions[i]._id%>">View</a></button>
+        <%}else if(fests.competitions[i].type=="competitionss" && fests.competitions[i].voting==false){%>
+            <button><a href="/cordhome/<%=fests.festname%>/<%=fests.competitions[i]._id%>/viewcandidates">View</a></button>
         <%}%>
         <div style="margin: 0.8% 1.1%;">
             <form action="/cordhome/<%=fests.festname%>/<%=fests.competitions[i]._id%>/delete" method="POST">
