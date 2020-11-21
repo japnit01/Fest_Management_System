@@ -65,23 +65,11 @@ let userSchema = new mongoose.Schema({
     scheduler: Array,
     registration: Array,
     festcoord:Array,
-    vote:{
-           type:Map,
-           of:Array
-         } 
+    vote:Array
 });
 
 let fests = mongoose.model("fests",festSchema);
 let users = mongoose.model("users",userSchema);
-
-// users.create({
-//     name:"teri behn di",
-//     email:"kutta@gmaildifuddi.com",
-//     password:"karo",
-//     vote:[['w4345657687jfhhbj','dttfhf']]
-// });
-
-
 
 
 fests.deleteMany({},(err,record)=> {
@@ -137,7 +125,7 @@ app.post("/signup",async function(req,res){
                     const userdetails = new users({
                         email,
                         password:hash,
-                        name
+                        name,
                     });
                     req.session.user_id = userdetails._id;
                     req.session.user_name = userdetails.name
@@ -205,6 +193,14 @@ app.post("/logout",(req,res)=>{
            req.session.destroy();
            res.redirect("/");
 
+});
+
+app.get("/competitionserror",async(req,res)=> {
+    res.render("competitionserror");
+});
+
+app.get("/candidateserror",async(req,res)=> {
+    res.render("canderror");
 });
 
 app.get("/cordhome",requireLogin,(req,res)=>{
@@ -421,17 +417,19 @@ app.post("/cordhome/:fest/addcoordinator",async(req,res)=>{
 app.get("/cordhome/:fest/:compid/start",async(req,res)=>{
     const festname = req.params.fest;
     const compid = req.params.compid;
-    
-    res.render("startcomp",{fest:festname,compid:compid,user:req.session.user_id});
+
+    const fest = await fests.findOne({festname:festname});
+    const doc = await fest.competitions.id(compid);
+
+    if(doc.start==false && doc.candidates.length==0)
+    {
+        res.render("canderror")
+    }
+    else
+    {
+      res.render("startcomp",{fest:festname,compid:compid,user:req.session.user_id});
+    }
 })
-
-app.get("/competitionserror",async(req,res)=> {
-    res.render("competitionserror");
-});
-
-app.get("/candidateserror",async(req,res)=> {
-    res.render("canderror");
-});
 
 app.post("/cordhome/:fest/:compid/start",async(req,res)=>{
     const festname = req.params.fest;
@@ -457,7 +455,7 @@ app.post("/cordhome/:fest/:compid/start",async(req,res)=>{
        fest.save();
     }
     else if(doc.type=="competitionss")
-    { 
+    {    doc.start=true
         for(i=0;i<doc.candidates.length;i++)
         {  
            if(doc.currentround.length<doc.candidates.length)
@@ -501,6 +499,7 @@ app.post("/cordhome/:fest/:compid/delete",async(req,res)=>{
    const url = "/cordhome/"+ festname;
    res.redirect(url);
 });
+
 
 app.get("/cordhome/:fest/:compid",requireLogin,async(req,res)=>{
     const festname = req.params.fest;
@@ -745,6 +744,7 @@ app.post("/cordhome/:fest/:compid/:candidatesid/voting",async (req,res)=>{
        }
     }
     doc.currentround.shift();
+    
     fest.save();  
 
     const url = "/cordhome/" +  festname + "/" + compid;
@@ -767,7 +767,7 @@ app.get("/Visitorhome/:fest",requireLogin,(req,res)=> {
         if(err)
             console.log(err);
         else {
-            // console.log("Fest Record: " + record);
+            console.log("Fest Record: " + record);
             res.render("visitorfestpage",{fest:fest, fests:record,user:req.session.user_id});    
         }
     });
@@ -776,13 +776,20 @@ app.get("/Visitorhome/:fest",requireLogin,(req,res)=> {
 app.get("/Visitorhome/:fest/:compid",requireLogin,async (req,res)=>{
     const festname = req.params.fest;
     const compid = req.params.compid;
-
     const fest = await fests.findOne({festname:festname});
     const doc = await fest.competitions.id(compid);
-    
-    res.render("visitorvoting",{fest:fest,doc:doc,user:req.session.user_id});
+    const user = await users.findOne({_id:req.session.user_id});
+    fest.save();
+    if(doc.start==false)
+    {
+        res.render("competitionserror")
+    }
+    else
+    {
+       res.render("visitorvoting",{fest:fest,doc:doc,ch:ch,user:req.session.user_id});
+    }
 });
-
+var ch=0;
 app.post("/Visitorhome/:fest/:compid/vote",async (req,res)=>{
     const festname = req.params.fest;
     const compid = req.params.compid;
@@ -791,12 +798,38 @@ app.post("/Visitorhome/:fest/:compid/vote",async (req,res)=>{
     const doc = await fest.competitions.id(compid);
     const user = await users.findOne({_id:req.session.user_id})
     var x = user.vote.find(element => element.compid == compid)
+<<<<<<< HEAD
     if(x=null)
     {
       user.vote.push({compid:compid,candid:doc.currentround[0].candidateid})
     }
     console.log(user.vote);
     doc.currentround[0].score = doc.currentround[0].score + 1;
+=======
+    
+    
+    if(x==null)
+    {   
+        ch=0;
+        user.vote.push({compid:compid,candid:doc.currentround[0].candidateid}); 
+        doc.currentround[0].score = doc.currentround[0].score + 1;
+    }
+    else
+    {
+        if(x.candid != doc.currentround[0].candidateid || x.candid== null)
+        {  
+            ch=0;
+           user.vote.push({compid:compid,candid:doc.currentround[0].candidateid});
+           doc.currentround[0].score = doc.currentround[0].score + 1;
+        }
+        else
+        {
+            ch=1;
+        }
+    }
+    console.log(user.vote);
+    
+>>>>>>> 7a264e69300db7bf11dcbe45fe58ebd7d957f778
     user.save();
     fest.save();
     
@@ -805,7 +838,7 @@ app.post("/Visitorhome/:fest/:compid/vote",async (req,res)=>{
 });
 
 app.post("/Visitorhome/:fest/:compid",requireLogin,async (req,res)=>{
-    const {fest} = req.params;
+    const fest = req.params.fest;
     const {compid} = req.params;
     var register = req.body.register; 
     var schedule = req.body.schedule;
@@ -865,8 +898,8 @@ app.post("/Visitorhome/:fest/:compid",requireLogin,async (req,res)=>{
                        }
                    }); 
         }  
-        var url = "/Visitorhome/"+fest;
-            res.redirect(url)
+        const url = "/Visitorhome/"+fest;
+        res.redirect(url)
 });
 
 app.get("/registrations",requireLogin,async (req,res)=> {
