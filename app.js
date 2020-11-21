@@ -100,7 +100,9 @@ app.get("/signup",function(req,res){
 });
 
 app.post("/signup",async function(req,res){
-      const {email,password,name} = req.body;
+      const {email,name} = req.body;
+      let create = req.body.create;
+      let confirm = req.body.confirm;
       
       users.findOne({name: name},async(err,record)=> {
             if(err)
@@ -109,18 +111,28 @@ app.post("/signup",async function(req,res){
             {
                 if(record == null)
                 {
-                    signal = 0;
-                    const hash = await bcrypt.hash(password,12)
-                    const userdetails = new users({
-                        email,
-                        password:hash,
-                        name,
-                    });
-                    req.session.user_id = userdetails._id;
-                    req.session.user_name = userdetails.name
-                    await userdetails.save()
-                    console.log("Account Created");
-                    res.redirect("/");
+                    if(bcrypt.compare(create,confirm)==true)
+                    {
+                        signal = 0;
+                        let password = create;
+                        const hash = await bcrypt.hash(password,12)
+                        const userdetails = new users({
+                            email,
+                            password:hash,
+                            name,
+                        });
+                        req.session.user_id = userdetails._id;
+                        req.session.user_name = userdetails.name
+                        await userdetails.save()
+                        console.log("Account Created");
+                        res.redirect("/");
+                    }
+                    else
+                    {
+                        signal = 1;
+                        console.log("Passwords don't match!!");
+                        res.redirect("/signup");
+                    }
                 }
                 else
                 {
