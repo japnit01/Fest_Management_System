@@ -41,7 +41,7 @@
 </style>
 
 <div>
-    <i class="fa fa-home" aria-hidden="true" id="home" style="font-size: 2.2rem;" onclick="window.location.href='/'"></i>
+    <i class="fa fa-home" aria-hidden="true" id="home" style="font-size: 2.2rem; color:#bd2130" onclick="window.location.href='/'"></i>
 </div>
 
 <div class="container">
@@ -51,6 +51,10 @@
     </div>
     <div class="inputarea">
         <form class="form-group" action="/signup" method="POST">
+            
+            <%if(signal === 1) {%>
+                <strong>This username already exists!! Try another one...</strong>
+            <%}%>
             <div class="formgroup">
                 <input class="formentity" type="text" name="name" placeholder=" Name" required>
             </div>
@@ -75,9 +79,6 @@
                 <button class="btn btn-large btn-danger">Sign Up</button>
             </div>
             <div>
-                <%if(signal === 1) {%>
-                    <strong>This username already exists!! Try another one...</strong>
-                <%}%>
                 
                 <%signal = 0;%>
             </div>
