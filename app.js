@@ -121,53 +121,24 @@ app.get("/", async (req,res)=>{
 
 var signal = 0;
 app.get("/signup",function(req,res){
-    res.render("Sign_up",{signal:signal});
+    res.render("Sign_up");
 });
 
 app.post("/signup",async function(req,res){
-      const {email,name} = req.body;
-      let create = req.body.create;
-      let confirm = req.body.confirm;
-      
-      users.findOne({name: name},async(err,record)=> {
-            if(err)
-                console.log(err);
-            else
-            {
-                if(record == null)
-                {
-                    if(bcrypt.compare(create,confirm)==true)
-                    {
-                        signal = 0;
-                        let password = create;
-                        const hash = await bcrypt.hash(password,12)
-                        const userdetails = new users({
-                            email,
-                            password:hash,
-                            name,
-                        });
-                        req.session.user_id = userdetails._id;
-                        req.session.user_name = userdetails.name
-                        await userdetails.save()
-                        console.log("Account Created");
-                        res.redirect("/");
-                    }
-                    else
-                    {
-                        signal = 1;
-                        console.log("Passwords don't match!!");
-                        res.redirect("/signup");
-                    }
-                }
-                else
-                {
-                    signal = 1;
-                    console.log("This username already exists!! Try another one...");
-                    res.redirect("/signup");
-                }
-            }
-      })
+        const {email,password,name} = req.body;
+        const hash = await bcrypt.hash(password,12)
+        const userdetails = new users({
+            email,
+            password:hash,
+            name
+        });
+        req.session.user_id = userdetails._id;
+        req.session.user_name = userdetails.name
+        await userdetails.save()
+        console.log("Account Created");
+        res.redirect("/");
 });
+
 
 let sign = 0;
 app.get("/login",(req,res)=>{
@@ -553,12 +524,12 @@ app.get("/cordhome/:fest/:compid",requireLogin,async(req,res)=>{
     var start ;
     const fest = await fests.findOne({festname:festname});
     const doc = fest.competitions.id(compid);
-    //doc.resultsrelease=false;
+    // doc.resultsrelease=false;
     // doc.currentround=[];
     // doc.result = [];
     // doc.currentcand = [];
     // doc.round = [];
-    //fest.save();
+    // fest.save();
     if(doc.type=="competitionsd")
     {
       console.log(doc.currentround.length)

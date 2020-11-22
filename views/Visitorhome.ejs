@@ -9,16 +9,71 @@
     window.onunload=function(){null};
   </script>
 
-<h1>Visitor Home Page</h1>
 
+<div style="margin: 2rem 2rem 2rem 2rem; text-align:center">
+  <h1>Fests</h1>
 <%var i;%>
-         <%for(i=0;i<fests.length;i++){ %> 
             <div>
-                <a href="/Visitorhome/<%= fests[i].festname %>" >
-                 <%=fests[i].festname%>
-                 <%=fests[i].college%>
-                 <%=fests[i].type%>
-                </a>
-            </div>
-         <%}%>
+              <%var months = [
+              'Jan', 'Feb', 'Mar', 'Apr', 'May',
+            'Jun', 'Jul', 'Aug', 'Sep',
+              'Oct', 'Nov', 'Dec'
+              ];%>
+                     <%for(var i=0;i<fests.length;i++){ %> 
+                      <a href="/Visitorhome/<%=fests[i].festname%>" style="text-decoration: none;">
+                         <div style="padding-bottom: 1rem;margin-top: 2rem; font-size:1.5rem; font-weight:500; color:coral">
+                                
+                                     <span class="festdetails">
+                                         <%=fests[i].festname%>
+                                     </span>
+                                 
+                          
+                                 <span class="festdetails">
+                                     <%=fests[i].college%>
+                                 </span>
+  
+                                 <span class="festdetails">
+                                     <%=fests[i].type%>
+                                 </span>
+                                </div>
+                             <div style="color:black">
+                                <%=fests[i].Description%>
+                             </div>
+                             <div style="padding-top:1rem">
+                                <span class="festdetails">
+                                    <% let suffix;
+                                        switch((fests[i].from.getDate())%10) {
+                                            case 1: suffix = "st";
+                                                    break;
+                                            case 2: suffix = "nd";
+                                                    break;
+                                            case 3: suffix = "rd";
+                                                    break;
+                                            default: suffix = "th";
+                                        } %>
+                                    <%=fests[i].from.getDate()%><%=suffix%> <%=months[fests[i].from.getMonth()]%>, <%=fests[i].from.getFullYear()%> to
+                                </span>
+                                <span class="festdetails">
+                                    <% suffix;
+                                        switch((fests[i].to.getDate())%10) {
+                                            case 1: suffix = "st";
+                                                    break;
+                                            case 2: suffix = "nd";
+                                                    break;
+                                            case 3: suffix = "rd";
+                                                    break;
+                                            default: suffix = "th";
+                                        } %>
+                                    <%=fests[i].to.getDate()%><%=suffix%> <%=months[fests[i].to.getMonth()]%>, <%=fests[i].to.getFullYear()%>
+                                </span>
+                             </div>
+                             <div>
+                                <span>
+                                  City: <%=fests[i].city%>
+                                </span>
+                             </div>
+                             </a>
+                       <%}%> 
+          
+            </div>       
 <%-include("partials/footer")%>

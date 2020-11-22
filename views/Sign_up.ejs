@@ -54,9 +54,6 @@
     <div class="inputarea">
         <form class="form-group" action="/signup" method="POST">
             
-            <%if(signal === 1) {%>
-                <strong>This username already exists!! Try another one...</strong>
-            <%}%>
             <div class="formgroup">
                 <input class="formentity" type="text" name="name" placeholder=" Name" required>
             </div>
@@ -82,7 +79,7 @@
             </div>
             <div>
                 
-                <%signal = 0;%>
+                
             </div>
         </form>
     </div>    
