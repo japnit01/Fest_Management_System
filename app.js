@@ -84,14 +84,39 @@ const requireLogin = (req,res,next)=>{
 };
 
 app.get("/", async (req,res)=>{ 
-    fests.find({},(err,record)=>{
-        if(err)
-            console.log(err);
-        else    
-        {
-            res.render("home",{user:req.session.user_id,fests:record});
-        }
-    });
+    if(req.session.user_id==null)
+    {
+        fests.find({},(err,record)=>{
+            if(err)
+                console.log(err);
+            else    
+            {
+                res.render("home",{user:req.session.user_id,fests:record});
+            }
+          });
+    }
+    else
+    {
+        const user = await users.findOne({_id:req.session.user_id});
+        // user.festcoord =[];
+        // user.save();
+         var A =[];
+        
+         for(var i=0;i<user.festcoord.length;i++)
+         {
+             const fest = await fests.findOne({festname:user.festcoord[i]});
+             var f =[];
+             f.push(fest.festname);
+             f.push(fest.college);
+             f.push(fest.type);
+             f.push(fest.from);
+             f.push(fest.to);
+             A.push(f);
+         }
+         console.log(A);
+
+             res.render("home",{user:req.session.user_id,A:A});
+    }
 });
 
 var signal = 0;
@@ -206,7 +231,7 @@ app.get("/cordhome",requireLogin,(req,res)=>{
 });
 
 let details;
-app.post("/newfest",function(req,res){
+app.post("/newfest",async(req,res)=>{
      var college = req.body.collegename;
      var festname = req.body.festname;
      var type = req.body.type;
@@ -217,6 +242,7 @@ app.post("/newfest",function(req,res){
      var desc = req.body.description;
      details = {college:college,
                 festname:festname,
+                coord:[req.session.user_id],  
                 type:type,
                 from:from,
                 to:to,
@@ -225,12 +251,19 @@ app.post("/newfest",function(req,res){
                 Description:desc
                };
      
+    
+    const user = await users.findOne({_id:req.session.user_id});
+    user.festcoord.push(festname);
+    user.save();
+               
+
      fests.create(details,(err,fest)=>{
          if(err)
            console.log(err);
          else
            console.log("Created new fest");  
      });
+
      res.redirect("/");
 });
 
@@ -357,6 +390,7 @@ app.get("/cordhome/:fest/addcompetitions",requireLogin,(req,res)=>{
   });
 });
 
+var A = []
 app.get("/cordhome/:fest/addcoordinator",async (req,res)=>{
    const{fest}  =req.params;
    const usefest  = await fests.findOne({festname:fest});
@@ -380,31 +414,36 @@ app.post("/cordhome/:fest/addcoordinator",async(req,res)=>{
     x = x.slice(0,x.length-1);
     console.log(x);
     const usefest  = await fests.findOne({festname:fest});
-    
+    //console.log(usefest)
     
     for(var i=0;i<x.length;i++)
     {  
        const user = await users.findOne({email:x[i]});
+       //console.log(user);
         try{
                sp = user.festcoord.find(element => element == x[i]);
-               //console.log(sp)
-               if(sp==false)
+               console.log(sp)
+               if(sp==undefined)
                {
-                 user.festcoord.push(x[i]);
+                 user.festcoord.push(usefest.festname);
                }   
                st = usefest.coord.find(element => element == user._id);
-               //console.log(st)
-               if(st==false)
+               console.log(st)
+               if(st==undefined)
                {
                  usefest.coord.push(user._id);
                }
+               console.log(usefest.coord);
+                // user.festcoord = [];
+                // usefest.coord = [];
                user.save();
                usefest.save();
            } 
         catch{
+              //console.log("i am here to")
               A.push(x[i]);
            }   
-        console.log(A);       
+        //console.log(A);       
     }
     
     const url = "/cordhome/" + fest + "/addcoordinator";
@@ -475,7 +514,7 @@ app.get("/cordhome/:fest/:compid/viewcandidates",async (req,res)=>{
     const fest  = await fests.findOne({festname:festname});
     const doc = fest.competitions.id(compid);
 
-    res.render("viewcandidates",{doc:doc,user:req.session.user_id});
+    res.render("viewcandidates",{doc:doc,fest:fest,user:req.session.user_id});
 });
 
 app.post("/cordhome/:fest/:compid/delete",async(req,res)=>{

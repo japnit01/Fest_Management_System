@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <!-- Compiled and minified CSS -->
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-
+     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
      <!-- Compiled and minified JavaScript -->
      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
@@ -15,10 +15,20 @@
 </head>
 <body>
 
+  <script type="text/javascript">
+    function preback(){
+      window.history.forward();
+    }
+    setTimeout("preback()", 0);
+    window.onunload=function(){null};
+  </script>
+  
+
 <style>
   .container{
     margin:3rem auto 2rem auto;
     border:1px solid #dadce0;
+    border-radius: 0.5rem;
     width:33%;
   }
   .innerarea{
@@ -32,40 +42,66 @@
   #back:hover {
       cursor: pointer;
   }
-  
+  .navbarlinks{
+    font-weight: 400;
+    font-size: 1.3rem;
+    padding-left: 0.5rem;
+  }
+  nav{
+    background-color: #1A73E8;
+  }
+  .istext{
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
 </style>
+
+<nav>
+  <div class="nav-wrapper">
+    <i class="fa fa-home" aria-hidden="true" id="home" style="font-size: 2.2rem; padding-left: 1rem;" onclick="window.location.href='/'"></i>
+    <ul id="nav-mobile" class="right hide-on-med-and-down">
+      <li><a class="navbarlinks" href="/scheduler">Schedule</a></li>
+      <li><a class="navbarlinks" href="/registerations">Registered</a></li>
+      <li><a class="navbarlinks" href="/Login">Login</a></li>
+      <li><a class="navbarlinks" href="/signup">Sign Up</a></li>
+    </ul>
+  </div>
+</nav>
+      
+
 <div id="backicon">
-  <i class="fa fa-arrow-left" id="back" aria-hidden="true" style="font-size: 1.5rem; margin-top: 1%;" onclick="window.location.href='/cordhome/<%=fest.festname%>'"></i>
+  <i class="fa fa-arrow-left" id="back" aria-hidden="true" style="padding-left:1rem; font-size: 1.5rem; margin-top: 1%; color: #1A73E8" onclick="window.location.href='/cordhome/<%=fest.festname%>'"></i>
 </div>
 
 <div class="container">
   <div class="innerarea">
     <h3>Add Coordinator</h3>
     
-      <div class="chips chips-placeholder"></div>
+      <div class="chips chips-placeholder">
+      </div>
        
        <form action="/cordhome/<%=fest.festname%>/addcoordinator" method="POST">
             <input id="hiddeninput" type="hidden" name="coord">
             <div style="width:100%; height:4rem">
-            <button style="float: right; height:3rem; width:3rem; border-radius: 50%;" id="button">press</button>
+            <button style="border:0;  text-align:center; background-color: #1A73E8; float: right; height:3rem; width:3rem; border-radius: 50%; " id="button"><i class="fa fa-paper-plane" style="color:white" aria-hidden="true"></i></button>
           </div>
        </form>
 
        
        
        
-       <div style="margin:2rem 0 0 0; background: rgb(221, 216, 216); border:1px solid rgb(221, 216, 216); border-radius:0.5rem;">
-          <div style="border:2rem solid rgb(221, 216, 216); "> 
+       <div style="margin:2rem 0 0 0; background: rgb(247, 243, 243); border:1px solid rgb(247, 243, 243); border-radius:0.5rem;">
+          <div style="border:2rem solid rgb(247, 243, 243); border-radius: 0.3rem;"> 
              <%for(i=0;i<coordinator.length;i++){%>
-                    <div>
+                    <div class="istext">
                     <%=coordinator[i]%>
                    </div>  
                 <%}%>
                 <%if(A.length>0){%>
-                  <p>User not found create Account</p>
+                  <p style="color:#ffc107">User not found!!     <a href="/signup">Create Account</a> </p>
                 <%}%>
                 <%for(var i=0;i<A.length;i++){%>
-                    <div>
+                    <div class="istext">
                       <%=A[i]%>
                     </div>
                 <%}%>
@@ -75,7 +111,7 @@
 
 <script>
    const tags  = document.querySelectorAll(".chips-placeholder");
-   var t = M.Chips.init(tags,{placeholder:'add coordinators',
+   var t = M.Chips.init(tags,{placeholder:'Add coordinators',
                                secondaryPlaceholder:"+ coordinator"});
    var x ="";
    $('#button').click(function(){

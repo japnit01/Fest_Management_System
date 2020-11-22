@@ -1,5 +1,13 @@
 <%- include("partials/header") %>
 
+<script type="text/javascript">
+    function preback(){
+      window.history.forward();
+    }
+    setTimeout("preback()", 0);
+    window.onunload=function(){null};
+  </script>
+
 
 <style>
     #back:hover {
@@ -7,7 +15,7 @@
     }
   </style>
   <div id="backicon">
-    <i class="fa fa-arrow-left" id="back" aria-hidden="true" style="font-size: 1.5rem; margin-top: 1%" onclick="window.location.href='/cordhome'"></i>
+    <i class="fa fa-arrow-left" id="back" aria-hidden="true" style="font-size: 1.5rem; margin-top: 1%" onclick="window.location.href='/'"></i>
   </div>
 
 <style>
@@ -136,10 +144,6 @@
     </div>
     <hr>
 <% } %>
-</div>
-</div>
-
-</div>
 <%- include("partials/footer") %>
 
 

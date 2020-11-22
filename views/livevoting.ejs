@@ -1,5 +1,14 @@
 <%- include("partials/header") %>
 
+
+<script type="text/javascript">
+  function preback(){
+    window.history.forward();
+  }
+  setTimeout("preback()", 0);
+  window.onunload=function(){null};
+</script>
+
 <div>
     <form action="/cordhome/<%=fest.festname%>/<%=registrations._id%>/reset" method="POST">
           <button style="border-radius: 0;" class="btn btn-primary">Reset</button>

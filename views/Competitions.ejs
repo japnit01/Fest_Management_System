@@ -1,5 +1,15 @@
 <%- include("partials/header") %>
 <!-- <button onclick="window.location.href=''" style="border:none; margin:15px 15px;">Back</button> -->
+
+<script type="text/javascript">
+    function preback(){
+      window.history.forward();
+    }
+    setTimeout("preback()", 0);
+    window.onunload=function(){null};
+  </script>
+  
+
 <style>
     #back:hover {
         cursor: pointer;

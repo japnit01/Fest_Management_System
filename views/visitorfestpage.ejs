@@ -8,6 +8,14 @@
   <i class="fa fa-arrow-left" id="back" aria-hidden="true" style="color:#1A73E8; font-size: 2rem; margin-top: 1%;margin-left: 1%;" onclick="window.location.href='/Visitorhome'"></i>
     
     
+<script type="text/javascript">
+    function preback(){
+      window.history.forward();
+    }
+    setTimeout("preback()", 0);
+    window.onunload=function(){null};
+  </script>
+  
   <% let months = new Map();
   months.set(1,"Jan");
   months.set(2,"Feb");
