@@ -521,6 +521,7 @@ app.post("/cordhome/:fest/:compid/delete",async(req,res)=>{
 app.get("/cordhome/:fest/:compid",requireLogin,async(req,res)=>{
     const festname = req.params.fest;
     const compid = req.params.compid;
+    console.log(compid);
     var start ;
     const fest = await fests.findOne({festname:festname});
     const doc = fest.competitions.id(compid);
@@ -553,6 +554,17 @@ app.get("/cordhome/:fest/:compid",requireLogin,async(req,res)=>{
     }
 });
 
+// function selectplayer(A,x,names){
+
+//     for(var i=0;i<A.length;i++)
+//     {
+//         if(A[i].score==x)
+//         {
+//             names.push(A[i].name);
+//         }
+//     }
+// }
+
 app.post("/cordhome/:fest/:compid",async (req,res)=>{
     const festname = req.params.fest;
     const compid = req.params.compid;
@@ -565,6 +577,7 @@ app.post("/cordhome/:fest/:compid",async (req,res)=>{
     {   var A = [];
         //console.log(doc.currentround);
         doc.result.push(doc.currentround);
+        var x =Number.MAX_SAFE_INTEGER;
         for(i=0;i<doc.currentround.length;i+=2)
         {
             if(doc.currentround[i].score < doc.currentround[i+1].score)
@@ -574,13 +587,16 @@ app.post("/cordhome/:fest/:compid",async (req,res)=>{
             else if(doc.currentround[i].score > doc.currentround[i+1].score)
             {
                 A.push(doc.currentround[i]);
-            }            
+            } 
+            x = Math.min(x,A[A.length-1].score);
         }
-        console.log(A);
-        
+        //  var names = [];
+        //  selectplayer(A,x,names);
+        //  console.log(names);
         if(doc.round[doc.round.length-1]=="Special Round")
         {
            var i;
+             
              for(i=0;i<doc.result[1].length-1;i++)
              {
                  A.push(doc.result[1][i]);
@@ -736,7 +752,6 @@ app.post("/cordhome/:fest/:compid/:candidatesid",async (req,res)=>{
     const candidate = doc.currentcand[index];
     console.log(index,candidate);
     candidate.score = null;
-    console.log(candidate);
     if(score2 == null)
     {
         candidate.score = score1;
@@ -748,6 +763,14 @@ app.post("/cordhome/:fest/:compid/:candidatesid",async (req,res)=>{
 
     if(candidate.score!=null)
     {  var A = [];
+        if(doc.currentround.length%2!=0)
+        {   console.log("i am here")
+            if(doc.currentround[doc.currentround.length-1].score==candidate.score)
+            {
+                const url1 = "/cordhome/" + festname + "/" + compid;
+               return res.redirect(url1);
+            }
+        } 
        doc.currentround.push({candidateid:candid,name:candidate.name,score:candidate.score});
        //doc.currentround=[];
        //console.log(candidate,doc.currentround);
