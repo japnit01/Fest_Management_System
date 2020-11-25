@@ -91,8 +91,8 @@
                              <%}%>    
                             <%if(fests.competitions[i].type == "competitionsd" && fests.competitions[i].resultsrelease==true){%>
                                 
-                                <form class="btn btn-info" action="/cordhome/<%=fest%>/<%= fests.competitions[i]._id%>/results">
-                                    <button>View</button> 
+                                <form  action="/cordhome/<%=fest%>/<%= fests.competitions[i]._id%>/results">
+                                    <button class="btn btn-info">View</button> 
                                 </form> 
                             <%}%>
                         </div>  

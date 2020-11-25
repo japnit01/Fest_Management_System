@@ -53,15 +53,6 @@
     months.set(11,"Nov");
     months.set(12,"Dec"); %>
 
-<!-- let days = new Map();
-    days.set(1,"Monday");
-    days.set(2,"Tuesday");
-    days.set(3,"Wednesday");
-    days.set(4,"Thursday");
-    days.set(5,"Friday");
-    days.set(6,"Saturday");
-    days.set(7,"Sunday");  -->
-
 <%const it1 = N.keys()%>
 <%const s = N.size%>
 <div style="text-align: center; background:#1A73E8;">
@@ -72,7 +63,7 @@
 
 <%var i,j,id;%>
   <% const it = N.keys();%>
-<div class="conatiner">
+<div class="conatiner" style="text-align:center; margin:2rem auto 2rem auto;">
      <%for(i=0;i<N.size;i++){%>
          <%const fid = it.next().value%> 
          <div id="festd<%=i%>">  

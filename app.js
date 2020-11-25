@@ -101,7 +101,7 @@ app.get("/", async (req,res)=>{
         // user.festcoord =[];
         // user.save();
          var A =[];
-        
+         
          for(var i=0;i<user.festcoord.length;i++)
          {
              const fest = await fests.findOne({festname:user.festcoord[i]});
@@ -249,8 +249,7 @@ app.get("/cordhome/:fest",(req,res)=>{
         let festto = record.to;
         A =[];
         console.log(festfrom,festto);
-         res.render("festpage",{fest:fest,fests:record,details:details,festfrom:festfrom,festto:festto,user:req.session.user_id});    
-      
+         res.render("festpage",{fest:fest,fests:record,details:details,festfrom:festfrom,festto:festto,user:req.session.user_id});          
      }
   });
     
@@ -457,7 +456,7 @@ app.post("/cordhome/:fest/:compid/start",async(req,res)=>{
         doc.currentcand  = doc.candidates;
         if(doc.candidates.length%2!==0)
         {
-            doc.currentcand = doc.currentcand.slice(0,doc.candidates.length-2)
+            doc.currentcand = doc.currentcand.slice(0,doc.candidates.length-1)
         }
        fest.save();
     }
@@ -484,7 +483,8 @@ app.get("/cordhome/:fest/:compid/viewcandidates",async (req,res)=>{
     
     const fest  = await fests.findOne({festname:festname});
     const doc = fest.competitions.id(compid);
-
+    // doc.candidates =[];
+    // fest.save();
     res.render("viewcandidates",{doc:doc,fest:fest,user:req.session.user_id});
 });
 
@@ -525,6 +525,7 @@ app.get("/cordhome/:fest/:compid",requireLogin,async(req,res)=>{
     var start ;
     const fest = await fests.findOne({festname:festname});
     const doc = fest.competitions.id(compid);
+    // doc.candidates =[];
     // doc.resultsrelease=false;
     // doc.currentround=[];
     // doc.result = [];
@@ -722,7 +723,7 @@ app.get("/cordhome/:fest/:compid/results",async(req,res)=>{
     doc.currentcand = A;
     doc.resultsrelease = true;
     fest.save();
-    res.render("results",{doc:doc,user:req.session.user_id,fest:fest})
+    res.render("results",{fest:fest,doc:doc,user:req.session.user_id,fest:fest})
 });
 
 app.get("/cordhome/:fest/:compid/voteresults",async(req,res)=>{
@@ -798,6 +799,8 @@ app.post("/cordhome/:fest/:compid/:candidatesid",async (req,res)=>{
     const url = "/cordhome/" + festname + "/" + compid;
     res.redirect(url)
 });
+
+
 app.get("/Visitorhome",function(req,res){
     fests.find({},(err,records)=> {
         if(err)
@@ -872,7 +875,7 @@ app.post("/Visitorhome/:fest/:compid",requireLogin,async (req,res)=>{
     const festfound = await fests.findOne({festname:fest});
     if(schedule == "schedule")
         {
-            users.updateOne({_id:req.session.user_id},{$addToSet:{scheduler:[{compid:compid,festid:festfound._id}],registration:[compid]}},(err,record)=>{
+            users.updateOne({_id:req.session.user_id},{$addToSet:{scheduler:[{compid:compid,festid:festfound._id}]}},(err,record)=>{
                 if(err)
                 {
                     console.log(err);

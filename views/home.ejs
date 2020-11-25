@@ -35,13 +35,13 @@
       <div class="carousel-item" style="height:32rem">
           <img class="d-block w-100" src="ds images\college-fest.jpg"  alt="Second slide">
           <<div class="carousel-caption d-none d-md-block">
-            <h2><a href="/Visitorhome" style="color:white;">Enjoy Exciting Fests this Fest Season</a></h2>
+            <h2><a href="/Visitorhome" style="color:white;">Enjoy Exciting Fests this Fest Season!</a></h2>
           </div>
       </div>
       <div class="carousel-item"  style="height:32rem">
           <img class="d-block w-100" src="ds images\college-fest-1050x591.jpg" style="opacity: 75%;"alt="Third slide">
           <div class="carousel-caption d-none d-md-block">
-            <h2><a href="/Visitorhome" style="color:white;">Enjoy Exciting Fests this Fest Season</a></h2>
+            <h2><a href="/Visitorhome" style="color:white;">Don't be too prude, refresh your mood!!!</a></h2>
           </div>
       </div>
   </div>
@@ -76,15 +76,17 @@
     </div>
 <%}else{%>
 
-     
+        <%var i%>
         <%var months = [
          'Jan', 'Feb', 'Mar', 'Apr', 'May',
          'Jun', 'Jul', 'Aug', 'Sep',
          'Oct', 'Nov', 'Dec'
          ];%>
+       
              <table style="text-align:center; margin:2rem auto 2rem auto">
-                <%for(var i=0;i<A.length;i++){ %> 
+                <%for(i=0;i<A.length;i++){ %> 
                     <tr>
+                      
                         <td>
                             <a href="/cordhome/<%=A[i][0]%>" >
                                 <span class="festdetails">
