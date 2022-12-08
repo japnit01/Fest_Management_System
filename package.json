@@ -18,9 +18,9 @@
   "homepage": "https://github.com/sarthak-1503/Fest_Management_System#readme",
   "dependencies": {
     "bcrypt": "^5.0.0",
-    "body-parser": "^1.19.0",
+    "body-parser": "^1.20.1",
     "ejs": "^3.1.5",
-    "express": "^4.17.1",
+    "express": "^4.18.2",
     "express-session": "^1.17.1",
     "mongoose": "^5.10.11",
     "nodemon": "^2.0.6"
